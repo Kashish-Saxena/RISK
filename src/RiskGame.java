@@ -45,7 +45,7 @@ public class RiskGame implements Observer {
         Territory defendingTerritory = parser.getTerritory(); //TODO: ensure input is valid choice
 
         int attackingArmy = attackingTerritory.getArmies();
-        int maxAttackDice = attackingArmy - 1 < 3? attackingArmy - 1 : 3; //TODO: define constants instead of using 3
+        int maxAttackDice = Math.min(attackingArmy - 1, 3); //TODO: define constants instead of using 3
         String diceList = "";
         for (int i = 1; i <= maxAttackDice; i++) {
             diceList += i + " ";
@@ -54,7 +54,7 @@ public class RiskGame implements Observer {
         int attackDiceNum = parser.getInt();  //TODO: ensure input is valid choice
 
         //defender will throw max dice possible (instead of letting them choose)
-        int defendDiceNum = defendingTerritory.getArmies() >= 2? 2 : defendingTerritory.getArmies(); //TODO: define constants instead of using 2
+        int defendDiceNum = Math.min(defendingTerritory.getArmies(), 2); //TODO: define constants instead of using 2
         Random rand = new Random();
 
         ArrayList<Integer> attackDice = new ArrayList<>();
