@@ -8,7 +8,7 @@ public class InputParser {
         reader = new Scanner(System.in);
     }
 
-    public CommandWord getCommand() {
+    public String getCommand() {
         String inputLine;
         String word = null;
 
@@ -19,15 +19,10 @@ public class InputParser {
         // Finding the word on the line.
         Scanner tokenizer = new Scanner(inputLine);
         if (tokenizer.hasNext()) {
-            word = tokenizer.next();      // get word
-
+            word = tokenizer.next(); // get word
         }
-        return CommandWord.valueOf(word);
+        return word;
     }
-
-    /*public Territory getTerritory() {
-
-    }*/
 
     public int getInt() {
 
