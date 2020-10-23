@@ -1,5 +1,4 @@
-import java.util.List;
-import java.util.Observable;
+import java.util.*;
 
 public class Player extends Observable {
 
@@ -71,8 +70,16 @@ public class Player extends Observable {
     }
 
     public void handleBattle(BattleEvent battle){
+        if (this == battle.getDefender()) {
+            this.removeTerritory(battle.getTerritory());
+            this.removeContinent(battle.getContinent());
+        }
+        else if (this == battle.getAttacker()) {
+            this.addTerritory(battle.getTerritory());
 
+            if (this.ownedTerritories.containsAll(battle.getContinent().getTerritories())) {
+                this.addContinent(battle.getContinent());
+            }
+        }
     }
-
-
 }
