@@ -12,14 +12,14 @@ public class InputParser {
         String inputLine;
         String word = null;
 
-        System.out.print("> ");     // print prompt
+        System.out.print("> ");
 
         inputLine = reader.nextLine();
 
         // Finding the word on the line.
         Scanner tokenizer = new Scanner(inputLine);
         if (tokenizer.hasNext()) {
-            word = tokenizer.next(); // get word
+            word = tokenizer.next();
         }
         return word;
     }
@@ -28,6 +28,7 @@ public class InputParser {
 
         String inputLine;
 
+        System.out.print("> ");
         inputLine = reader.nextLine();
 
         char[] chars = inputLine.toCharArray();
