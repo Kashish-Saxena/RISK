@@ -26,7 +26,12 @@ public class Player extends Observable {
     }
 
     public List<Territory> getAttackableTerritories(){
-        return null;
+        List<Territory> attackableTerritories = new ArrayList<>();
+        for (int i = 0; i < ownedTerritories.size(); i++){
+            if (ownedTerritories.get(i).getArmies()>2 && ownedTerritories.get(i).getAdjacentEnemyTerritories() != null)
+                attackableTerritories.add(ownedTerritories.get(i));
+        }
+        return attackableTerritories;
     }
 
     public void addTerritory(Territory territory){
