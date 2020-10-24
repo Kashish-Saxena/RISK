@@ -46,7 +46,8 @@ public class Player extends Observable {
     }
 
     public void removeTerritory(Territory territory){
-
+        if (ownedTerritories.size() == 1 && ownedTerritories.remove(territory))
+            notifyObservers();
     }
 
     public List<Continent> getContinents(){
@@ -54,11 +55,12 @@ public class Player extends Observable {
     }
 
     public void addContinent(Continent continent){
-
+        this.ownedContinents.add(continent);
     }
 
     public void removeContinent(Continent continent){
-
+        if (ownedContinents.size() == 1 && ownedContinents.remove(continent))
+            notifyObservers();
     }
 
     public void setGameStanding(int placing){
