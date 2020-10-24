@@ -1,4 +1,7 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Observable;
+
 
 public class Player extends Observable {
 
@@ -6,11 +9,14 @@ public class Player extends Observable {
     private List<Territory> ownedTerritories;
     private List<Continent> ownedContinents;
     private int gameStanding;
+    private int armiesToPlace;
     private TurnPhase turnPhase;
 
     //Constructor
     public Player(String name){
         this.name = name;
+        this.ownedTerritories = new ArrayList<Territory>();
+        this.ownedContinents = new ArrayList<Continent>();
     }
 
     public String getName(){
@@ -25,6 +31,7 @@ public class Player extends Observable {
         return this.ownedTerritories;
     }
 
+    //todo, maybe rename to getNeighbor territories
     public List<Territory> getAttackableTerritories(){
         List<Territory> attackableTerritories = new ArrayList<>();
         for (int i = 0; i < ownedTerritories.size(); i++){
@@ -35,7 +42,7 @@ public class Player extends Observable {
     }
 
     public void addTerritory(Territory territory){
-
+        this.ownedTerritories.add(territory);
     }
 
     public void removeTerritory(Territory territory){
@@ -86,5 +93,13 @@ public class Player extends Observable {
                 this.addContinent(battle.getContinent());
             }
         }
+    }
+
+    public void setArmiesToPlace(int num){
+        this.armiesToPlace = num;
+    }
+
+    public int getArmiesToPlace(){
+        return this.armiesToPlace;
     }
 }

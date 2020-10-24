@@ -16,7 +16,7 @@ public class Continent {
     }
 
     public List<Territory> getTerritories(){
-        return null;
+        return this.territories;
     }
 
 }
