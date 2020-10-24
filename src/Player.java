@@ -78,7 +78,9 @@ public class Player extends Observable {
     }
 
     public boolean canAttack(){
-        return true;
+        if (this.getAttackableTerritories().size() > 0)
+            return true;
+        return false;
     }
 
     public void handleBattle(BattleEvent battle){
