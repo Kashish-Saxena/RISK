@@ -22,7 +22,7 @@ public class RiskGame implements Observer {
     }
 
     public void update(Observable o, Object arg) {
-
+        updateGameInProgress();
     }
 
     //todo, add javadoc comments
