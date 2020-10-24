@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
+
 public class Player extends Observable {
 
     private final String name;
@@ -32,7 +33,12 @@ public class Player extends Observable {
 
     //todo, maybe rename to getNeighbor territories
     public List<Territory> getAttackableTerritories(){
-        return null;
+        List<Territory> attackableTerritories = new ArrayList<>();
+        for (int i = 0; i < ownedTerritories.size(); i++){
+            if (ownedTerritories.get(i).getArmies()>2 && ownedTerritories.get(i).getAdjacentEnemyTerritories() != null)
+                attackableTerritories.add(ownedTerritories.get(i));
+        }
+        return attackableTerritories;
     }
 
     public void addTerritory(Territory territory){
@@ -76,7 +82,17 @@ public class Player extends Observable {
     }
 
     public void handleBattle(BattleEvent battle){
+        if (this == battle.getDefender()) {
+            this.removeTerritory(battle.getTerritory());
+            this.removeContinent(battle.getContinent());
+        }
+        else if (this == battle.getAttacker()) {
+            this.addTerritory(battle.getTerritory());
 
+            if (this.ownedTerritories.containsAll(battle.getContinent().getTerritories())) {
+                this.addContinent(battle.getContinent());
+            }
+        }
     }
 
     public void setArmiesToPlace(int num){
@@ -86,6 +102,4 @@ public class Player extends Observable {
     public int getArmiesToPlace(){
         return this.armiesToPlace;
     }
-
-
 }
