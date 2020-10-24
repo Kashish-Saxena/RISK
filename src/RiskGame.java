@@ -21,17 +21,6 @@ public class RiskGame implements Observer {
         setupOptions();
     }
 
-    public void update(Observable o, Object arg) {
-        Player p = (Player) o;
-        int maxstanding = players.get(0).getGameStanding();
-        for (int i = 1; i < players.size(); i++) {
-            if (players.get(i).getGameStanding() > maxstanding)
-                maxstanding = players.get(i).getGameStanding();
-        }
-        p.setGameStanding(maxstanding + 1);
-        updateGameInProgress();
-    }
-
     //todo, add javadoc comments
     private void setupOptions(){
         System.out.println("===========================================");
@@ -359,6 +348,11 @@ public class RiskGame implements Observer {
 
     }
 
+    public void update(Observable o, Object arg) {
+        updatePlayerGameStanding((Player) o);
+        updateGameInProgress();
+    }
+
     private void updateGameInProgress(){
         int playersleft = 0;
         for (Player p : players){
@@ -369,7 +363,12 @@ public class RiskGame implements Observer {
     }
 
     private void updatePlayerGameStanding(Player player){
-
+        int maxstanding = players.get(0).getGameStanding();
+        for (int i = 1; i < players.size(); i++) {
+            if (players.get(i).getGameStanding() > maxstanding)
+                maxstanding = players.get(i).getGameStanding();
+        }
+        player.setGameStanding(maxstanding + 1);
     }
 
     //main
