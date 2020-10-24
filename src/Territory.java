@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class Territory {
@@ -10,6 +11,8 @@ public class Territory {
     //Constructor
     public Territory(String name){
         this.name = name;
+        this.numArmies = 0;
+        this.adjacentTerritories = new ArrayList<>();
     }
 
     public String getName(){
@@ -17,7 +20,8 @@ public class Territory {
     }
 
     public String toString(){
-        return null;
+        //does not include Player or Continent so we can choose which to group Territories by
+        return name + ", " + numArmies + "armies";
     }
 
     public void setOwner(Player owner){
@@ -49,7 +53,14 @@ public class Territory {
     }
 
     public List<Territory> getAdjacentEnemyTerritories(){
-        return null;
+        ArrayList<Territory> adjacentEnemyTerritories = new ArrayList<>();
+        for (Territory adj : this.adjacentTerritories) {
+            if (adj.getOwner() != this.owner) {
+                adjacentEnemyTerritories.add(adj);
+            }
+        }
+
+        return adjacentEnemyTerritories;
     }
 
     public void setAdjacentTerritories(List<Territory> adjacentTerritories) {
