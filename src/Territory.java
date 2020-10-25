@@ -1,5 +1,7 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Territory {
 
@@ -7,12 +9,14 @@ public class Territory {
     private Player owner;
     private int numArmies;
     private List<Territory> adjacentTerritories;
+    private static Map<String, Territory> territoryMap = new HashMap<>();
 
     //Constructor
     public Territory(String name){
         this.name = name;
         this.numArmies = 0;
         this.adjacentTerritories = new ArrayList<>();
+        territoryMap.put(name.toLowerCase(), this);
     }
 
     public String getName(){
@@ -65,5 +69,19 @@ public class Territory {
 
     public void setAdjacentTerritories(List<Territory> adjacentTerritories) {
         this.adjacentTerritories = adjacentTerritories;
+    }
+
+    public static Territory getTerritoryFromString(String input) {
+        return territoryMap.get(input);
+    }
+
+    public static Territory getTerritoryFromIndex(int index) {
+        ArrayList<String> keys = new ArrayList<>();
+        keys.addAll(territoryMap.keySet());
+        return territoryMap.get(keys.get(index));
+    }
+
+    public static int numTerritories() {
+        return territoryMap.size();
     }
 }
