@@ -118,7 +118,7 @@ public class InputParser {
                 System.out.println("Ensure a number is input.");
                 System.out.print("> ");
             }
-            System.out.println("Please choose a number between (and including) " + lowerBound + " to " + upperBound + ".");
+            //System.out.println("Please choose a number between (and including) " + lowerBound + " to " + upperBound + ".");
             input = reader.nextInt();
             reader.nextLine();
         } while (input < lowerBound || input > upperBound);

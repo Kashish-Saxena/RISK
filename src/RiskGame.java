@@ -14,32 +14,67 @@ public class RiskGame implements Observer {
         gameInProgress = true;
         parser = new InputParser();
 
+        //create all Players, Territories and Continents
         setupOptions();
-        autoPlaceArmies();
 
+        //auto assign starting player armies to territories
+        autoPlaceArmies();
 
         List<CommandWord> validCommands = new ArrayList<CommandWord>();
         validCommands.add(CommandWord.STATUS);
         validCommands.add(CommandWord.ATTACK);
         validCommands.add(CommandWord.PASS);
 
+        boolean stalemateOccured = false;
 
         //main game loop
         while (gameInProgress) {
+
+            int playersWhoPassed = 0;
+            int playersleft = 0;
+
+            //calculate amount of players left (used in stalemate check)
+            for (Player p : players){
+                if (p.getGameStanding() == 0)
+                    playersleft++;
+            }
+
             for (int i = 0; i < players.size(); i++)
             {
+                System.out.println("");
+                System.out.println("===========================================");
                 Player currPlayer = players.get(i);
                 if (currPlayer.getGameStanding() == 0) {
                     System.out.println(currPlayer.getName() + "'s turn");
                     currPlayer.setTurnPhase(TurnPhase.ATTACK);
 
                     while(currPlayer.getTurnPhase() == TurnPhase.ATTACK && gameInProgress){
-                        CommandWord command = parser.getCommand(validCommands);
-                        processCommand(currPlayer, command);
+
+                        if(currPlayer.canAttack()){
+                            CommandWord command = parser.getCommand(validCommands);
+                            processCommand(currPlayer, command);
+                        }
+                        //if the player couldn't attack, force pass their turn
+                        else{
+                            System.out.println("passing " + currPlayer.getName() + "'s turn since none of their territories have enough armies to attack");
+                            currPlayer.setTurnPhase(TurnPhase.END);
+                            playersWhoPassed ++;
+                        }
                     }
-                    //battle(currPlayer);
                 }
             }
+
+            //check stalemate
+            if(playersleft == playersWhoPassed){
+                printStalemate();
+                stalemateOccured = true;
+                break;
+            }
+        }
+
+        //if game ended without a stalemate
+        if(!stalemateOccured){
+            printWinner();
         }
     }
 
@@ -253,16 +288,16 @@ public class RiskGame implements Observer {
 
         //now that every territory has at least 1 army on it, add the remaining
         //player armies randomly across the territories which they own
-        int randTerrIndex;
-        Territory randTerr;
-        for(Player p: players){
-            for(int i = p.getArmiesToPlace(); i > 0; i--){
-                randTerrIndex = ran.nextInt(p.getTerritories().size()-1);
-                randTerr = p.getTerritories().get(randTerrIndex);
-                randTerr.addArmies(1);
-            }
-            p.setArmiesToPlace(0);
-        }
+//        int randTerrIndex;
+//        Territory randTerr;
+//        for(Player p: players){
+//            for(int i = p.getArmiesToPlace(); i > 0; i--){
+//                randTerrIndex = ran.nextInt(p.getTerritories().size()-1);
+//                randTerr = p.getTerritories().get(randTerrIndex);
+//                randTerr.addArmies(1);
+//            }
+//            p.setArmiesToPlace(0);
+//        }
 
         //todo, remove this later on (im just using for debugging)
         printMapState();
@@ -270,6 +305,7 @@ public class RiskGame implements Observer {
 
     //todo, make prettier
     private void printMapState(){
+        System.out.println("=============== MAP STATE =================");
         for(Player p: players){
             System.out.println("======= "+ p.getName() +" =======");
 
@@ -299,6 +335,31 @@ public class RiskGame implements Observer {
                 System.out.println("");
             }
         }
+    }
+
+    private void printWinner(){
+        System.out.println("");
+        System.out.println("================ GAME OVER ================");
+        for(int i = 0; i <= players.size()-1; i++){
+            for(Player p : players){
+                if(p.getGameStanding() == i){
+                    if(i == 0){
+                        System.out.println(p.getName() + " wins!");
+                    }
+                    else{
+                        System.out.println(p.getName() + " had a standing of " + (i+1));
+                    }
+
+                }
+            }
+
+        }
+    }
+
+    private void printStalemate(){
+        System.out.println("");
+        System.out.println("=============== STALEMATE =================");
+        System.out.println("all remaining player have enough troops to mount an attack");
     }
 
     private void processCommand(Player player, CommandWord command){
@@ -377,10 +438,10 @@ public class RiskGame implements Observer {
         }
         else {
             defendingTerritory.setOwner(player);
-            Continent continent = Continent.getContinentFromTerritory(defendingTerritory);
+            Continent defendingContinent = Continent.getContinentFromTerritory(defendingTerritory);
 
             for (Player p : players) {
-                p.handleBattle(new BattleEvent(this, player, defendingTerritory.getOwner(), defendingTerritory, continent));
+                p.handleBattle(new BattleEvent(this, player, defendingTerritory.getOwner(), defendingTerritory, defendingContinent));
             }
 
             if (attackingTerritory.getArmies() <= 4) { //TODO: define constants (need 5 or more army to choose a number to move)
@@ -397,20 +458,23 @@ public class RiskGame implements Observer {
 
     }
 
+    //triggered whenever a player dies
     public void update(Observable o, Object arg) {
         updatePlayerGameStanding((Player) o);
         updateGameInProgress();
     }
 
+    //checks if there are enough players to continue the game
     private void updateGameInProgress(){
-        int playersleft = 0;
+        int currPlayersleft = 0;
         for (Player p : players){
             if (p.getGameStanding() == 0)
-                playersleft++;
+                currPlayersleft++;
         }
-        gameInProgress = (playersleft >= 2);
+        gameInProgress = (currPlayersleft >= 2);
     }
 
+    //sets a player to "dead" by setting their game standing (the default 0 means they are alive, anything else means dead)
     private void updatePlayerGameStanding(Player player){
         int maxstanding = players.get(0).getGameStanding();
         for (int i = 1; i < players.size(); i++) {

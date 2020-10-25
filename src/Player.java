@@ -54,8 +54,11 @@ public class Player extends Observable {
     }
 
     public void removeTerritory(Territory territory, Continent parentContinent){
-        if (ownedTerritories.size() == 1 && ownedTerritories.remove(territory))
+        if (ownedTerritories.size() == 1){
+            ownedTerritories.remove(territory);
             notifyObservers();
+        }
+
 
         this.removeContinent(parentContinent);
     }
@@ -94,6 +97,7 @@ public class Player extends Observable {
 
     public void handleBattle(BattleEvent battle){
         if (this == battle.getDefender()) {
+            System.out.println("removing" + this.getName());
             this.removeTerritory(battle.getTerritory(), battle.getContinent());
         }
         else if (this == battle.getAttacker()) {
