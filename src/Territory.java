@@ -25,7 +25,7 @@ public class Territory {
 
     public String toString(){
         //does not include Player or Continent so we can choose which to group Territories by
-        return name + ", " + numArmies + "armies";
+        return name + ": " + numArmies + " armies";
     }
 
     public void setOwner(Player owner){

@@ -48,6 +48,7 @@ public class Player extends Observable {
 
     public void addTerritory(Territory territory, Continent parentContinent){
         this.ownedTerritories.add(territory);
+        territory.setOwner(this);
         if (this.ownedTerritories.containsAll(parentContinent.getTerritories())) {
             this.addContinent(parentContinent);
         }
