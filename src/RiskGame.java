@@ -1,5 +1,14 @@
 import java.util.*;
 
+/**
+ * This is the main class of the Risk Game. It creates and instantiates the players, territories and continents, creates the parser
+ * and takes input from the user for the command words, number of players, player names, attacking and defending territories,
+ * attacking and defending dice numbers, starts the battle, determines the game standing of players and determines the outcome
+ * of the game.
+ *
+ * @author David Sciola - 101082459, Kevin Quach - 101115704 and Kashish Saxena - 101107204
+ * @version October 25, 2020
+ */
 public class RiskGame implements Observer {
 
     private List<Player> players;
@@ -7,9 +16,11 @@ public class RiskGame implements Observer {
     private InputParser parser;
     private int numPlayers;
 
-    //Constructor
+    /**
+     * Constructor of the RiskGame class. It initializes the field values, sets up the initial game state and has the main
+     * game loop
+     */
     public RiskGame(){
-        //initialize field values
         players = new ArrayList<>();
         gameInProgress = true;
         parser = new InputParser();
@@ -43,7 +54,10 @@ public class RiskGame implements Observer {
         }
     }
 
-    //todo, add javadoc comments
+    /**
+     * setupOptions sets up the game's initial state, takes input from user for the number of players, instantiates player
+     * objects, territories, continents and set adjacent territories connections.
+     */
     private void setupOptions(){
         System.out.println("===========================================");
         System.out.println("==           RISK MILESTONE 1            ==");
@@ -177,10 +191,13 @@ public class RiskGame implements Observer {
         westernAustralia.setAdjacentTerritories(Arrays.asList(indonesia,easternAustralia));
     }
 
-    //todo, descriptive javadoc
     //auto unit placement algorithm
     //the following algorithm will dynamically set Territory ownership and army numbers for all players
     //note that instead of placing them randomly, this algorithm places Player armies in a few grouped clusters
+    /**
+     * autoPlaceArmies is the auto unit placement algorithm. it dynamically sets Territory Ownership and army numbers
+     * for all players in a few grouped clusters.
+     */
     private void autoPlaceArmies() {
 
         //first calculate the number of armies they have to place
@@ -269,6 +286,9 @@ public class RiskGame implements Observer {
     }
 
     //todo, make prettier
+    /**
+     * printMapState prints the current map state of the game.
+     */
     private void printMapState(){
         for(Player p: players){
             System.out.println("======= "+ p.getName() +" =======");
@@ -301,6 +321,11 @@ public class RiskGame implements Observer {
         }
     }
 
+    /**
+     * processCommand executes a command once given an input.
+     * @param player An input player object used by the methods.
+     * @param command The command to be processed.
+     */
     private void processCommand(Player player, CommandWord command){
         if(command == CommandWord.ATTACK){
             System.out.println("attack");
@@ -316,7 +341,12 @@ public class RiskGame implements Observer {
         }
 
     }
-  
+
+    /**
+     * battle determines the territories a player attacks and attacks from as well as the outcomes of a battle and their
+     * placement in the game
+     * @param player The player that starts the attack.
+     */
     private void battle(Player player){
         //TODO: condense below 2 sections into a method accepting a List<Territory> param
         String territoryString = "";
@@ -413,14 +443,24 @@ public class RiskGame implements Observer {
                 attackingTerritory.subtractArmies(armyToMove);
             }
         }
-
     }
 
+    /**
+     * Update is triggered whenever a player is eliminated from the game, it updates the game in progress status and
+     * updates the game standing of the player.
+     * @param o The observable object.
+     * @param arg an argument passed to the notifyObservers method.
+     */
     public void update(Observable o, Object arg) {
         updatePlayerGameStanding((Player) o);
         updateGameInProgress();
     }
 
+    /**
+     * UpdateGameInProgress updates the gameInProgress flag that determines if the game is over or is in progress based
+     * on the number of players left in the game.
+     *
+     */
     private void updateGameInProgress(){
         int playersleft = 0;
         for (Player p : players){
@@ -430,6 +470,10 @@ public class RiskGame implements Observer {
         gameInProgress = (playersleft >= 2);
     }
 
+    /**
+     * updatePlayerGameStanding updates the game standing of the player once the player has been eliminated.
+     * @param player The player that was eliminated.
+     */
     private void updatePlayerGameStanding(Player player){
         int maxstanding = players.get(0).getGameStanding();
         for (int i = 1; i < players.size(); i++) {
@@ -439,7 +483,7 @@ public class RiskGame implements Observer {
         player.setGameStanding(maxstanding + 1);
     }
 
-    //main
+
     public static void main(String[] args){
         RiskGame game = new RiskGame();
 
