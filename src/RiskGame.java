@@ -27,31 +27,6 @@ public class RiskGame implements Observer {
 
         setupOptions();
         autoPlaceArmies();
-
-
-        List<CommandWord> validCommands = new ArrayList<>();
-        validCommands.add(CommandWord.STATUS);
-        validCommands.add(CommandWord.ATTACK);
-        validCommands.add(CommandWord.PASS);
-
-
-        //main game loop
-        while (gameInProgress) {
-            for (int i = 0; i < players.size(); i++)
-            {
-                Player currPlayer = players.get(i);
-                if (currPlayer.getGameStanding() == 0) {
-                    System.out.println(currPlayer.getName() + "'s turn");
-                    currPlayer.setTurnPhase(TurnPhase.ATTACK);
-
-                    while(currPlayer.getTurnPhase() == TurnPhase.ATTACK && gameInProgress){
-                        CommandWord command = parser.getCommand(validCommands);
-                        processCommand(currPlayer, command);
-                    }
-                    //battle(currPlayer);
-                }
-            }
-        }
     }
 
     /**
@@ -69,7 +44,7 @@ public class RiskGame implements Observer {
 
         //prompt user for the number of players playing
         System.out.print("How many players will be playing? (2-6) :");
-        int numPlayers = parser.getInt(2, 6); //TODO: define constants for player bounds
+        numPlayers = parser.getInt(2, 6); //TODO: define constants for player bounds
 
         //instantiate Player objects
         for(int i = 1; i <= numPlayers; i++){
@@ -326,15 +301,12 @@ public class RiskGame implements Observer {
      */
     private void processCommand(Player player, CommandWord command){
         if(command == CommandWord.ATTACK){
-            System.out.println("attack");
             battle(player);
         }
         else if(command == CommandWord.STATUS){
-            System.out.println("status");
             printMapState();
         }
         else if(command == CommandWord.PASS){
-            System.out.println("pass");
             player.setTurnPhase(TurnPhase.END);
         }
 
@@ -460,12 +432,12 @@ public class RiskGame implements Observer {
      *
      */
     private void updateGameInProgress(){
-        int playersleft = 0;
+        int playersLeft = 0;
         for (Player p : players){
             if (p.getGameStanding() == 0)
-                playersleft++;
+                playersLeft++;
         }
-        gameInProgress = (playersleft >= 2);
+        gameInProgress = (playersLeft >= 2);
     }
 
     /**
@@ -473,17 +445,49 @@ public class RiskGame implements Observer {
      * @param player The player that was eliminated.
      */
     private void updatePlayerGameStanding(Player player){
-        int maxstanding = players.get(0).getGameStanding();
+        int maxStanding = players.get(0).getGameStanding();
         for (int i = 1; i < players.size(); i++) {
-            if (players.get(i).getGameStanding() > maxstanding)
-                maxstanding = players.get(i).getGameStanding();
+            if (players.get(i).getGameStanding() > maxStanding)
+                maxStanding = players.get(i).getGameStanding();
         }
-        player.setGameStanding(maxstanding + 1);
+        player.setGameStanding(maxStanding + 1);
+        System.out.println(player.getName() + " was eliminated at " + (numPlayers - player.getGameStanding() + 1) + "th place.");
     }
 
 
     public static void main(String[] args){
         RiskGame game = new RiskGame();
+        List<CommandWord> validCommands = new ArrayList<>();
+        //for now, there are no commands that can only happen at specific times, so all commands are always available
+        validCommands.add(CommandWord.STATUS);
+        validCommands.add(CommandWord.ATTACK);
+        validCommands.add(CommandWord.PASS);
+
+
+        //main game loop
+        int i = 0;
+
+        while (game.gameInProgress) {
+            Player currPlayer = game.players.get(i);
+            if (currPlayer.getGameStanding() == 0) {
+                System.out.println(currPlayer.getName() + "'s turn");
+                currPlayer.setTurnPhase(TurnPhase.ATTACK);
+
+                while(currPlayer.getTurnPhase() == TurnPhase.ATTACK && game.gameInProgress){
+                    CommandWord command = game.parser.getCommand(validCommands);
+                    game.processCommand(currPlayer, command);
+                }
+            }
+            i = (i+1) % game.numPlayers;
+        }
+
+        for (Player currPlayer : game.players) {
+            if (currPlayer.getGameStanding() == 0) {
+                System.out.println(currPlayer.getName() + " won!");
+            } else {
+                System.out.println(currPlayer.getName() + " finished in " + (game.numPlayers - currPlayer.getGameStanding() + 1) + "th place.");
+            }
+        }
     }
 
 }
