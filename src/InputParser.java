@@ -43,7 +43,11 @@ public class InputParser {
 
         do {
             word = "";
-            System.out.print("> ");
+            System.out.print("Enter a command ( ");
+            for (String s : validInputs) {
+                System.out.print(s + " ");
+            }
+            System.out.print(")> ");
             inputLine = reader.nextLine();
             // Finding the word on the line.
             Scanner tokenizer = new Scanner(inputLine);
@@ -120,21 +124,5 @@ public class InputParser {
         } while (input < lowerBound || input > upperBound);
 
         return input;
-    }
-
-    public String getName() {
-        String inputLine;
-        String word = null;
-
-        System.out.print("> ");
-
-        inputLine = reader.nextLine();
-
-        // Finding the word on the line.
-        Scanner tokenizer = new Scanner(inputLine);
-        if (tokenizer.hasNext()) {
-            word = tokenizer.next();
-        }
-        return word;
     }
 }
