@@ -16,6 +16,31 @@ public class RiskGame implements Observer {
 
         setupOptions();
         autoPlaceArmies();
+
+
+        List<CommandWord> validCommands = new ArrayList<CommandWord>();
+        validCommands.add(CommandWord.STATUS);
+        validCommands.add(CommandWord.ATTACK);
+        validCommands.add(CommandWord.PASS);
+
+
+        //main game loop
+        while (gameInProgress) {
+            for (int i = 0; i < players.size(); i++)
+            {
+                Player currPlayer = players.get(i);
+                if (currPlayer.getGameStanding() == 0) {
+                    System.out.println(currPlayer.getName() + "'s turn");
+                    currPlayer.setTurnPhase(TurnPhase.ATTACK);
+
+                    while(currPlayer.getTurnPhase() == TurnPhase.ATTACK && gameInProgress){
+                        CommandWord command = parser.getCommand(validCommands);
+                        processCommand(currPlayer, command);
+                    }
+                    //battle(currPlayer);
+                }
+            }
+        }
     }
 
     //todo, add javadoc comments
@@ -35,10 +60,9 @@ public class RiskGame implements Observer {
         //instantiate Player objects
         for(int i = 1; i <= numPlayers; i++){
             System.out.print("Player " + i + " what is your name? :");
-            String playerName = parser.getString();
 
             //create Player object and add it to players
-            Player player = new Player(parser.getName());
+            Player player = new Player(parser.getString());
             players.add(player);
         }
 
@@ -278,6 +302,18 @@ public class RiskGame implements Observer {
     }
 
     private void processCommand(Player player, CommandWord command){
+        if(command == CommandWord.ATTACK){
+            System.out.println("attack");
+            battle(player);
+        }
+        else if(command == CommandWord.STATUS){
+            System.out.println("status");
+            printMapState();
+        }
+        else if(command == CommandWord.PASS){
+            System.out.println("pass");
+            player.setTurnPhase(TurnPhase.END);
+        }
 
     }
   
