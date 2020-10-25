@@ -2,14 +2,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * This parser reads user input and tries to interpret it as a command word,
+ * a territory, a number or a string. It also checks if an input is valid and
+ * gives options of valid inputs that the user can select from.
+ *
+ * @author David Sciola - 101082459, Kevin Quach - 101115704 and Kashish Saxena - 101107204
+ * @version October 25, 2020
+ */
 public class InputParser {
 
     private Scanner reader;
 
+    /**
+     * Constructor of the InputParser class. It creates the parser that reads from the terminal window.
+     */
     public InputParser() {
         reader = new Scanner(System.in);
     }
 
+    /**
+     * Reads user input and returns a string.
+     * @return String A string input from the user.
+     */
     public String getString() {
         String inputLine;
         String word = "";
@@ -27,6 +42,11 @@ public class InputParser {
         return word.substring(0, word.length() - 1);
     }
 
+    /**
+     * Reads user input and returns a command word.
+     * @param validCommands A list of valid commands.
+     * @return The command word associated with the input command.
+     */
     public CommandWord getCommand(List<CommandWord> validCommands) {
         String inputLine;
         String word = "";
@@ -64,6 +84,11 @@ public class InputParser {
         return CommandWord.valueOf(word);
     }
 
+    /**
+     * Reads user input and returns a territory.
+     * @param validTerritoryInputs A list of valid territories.
+     * @return The territory associated with the input territory.
+     */
     public Territory getTerritory(List<Territory> validTerritoryInputs) {
         String inputLine;
         String word = "";
@@ -98,6 +123,12 @@ public class InputParser {
         return Territory.getTerritoryFromString(word);
     }
 
+    /**
+     * Reads user input and returns a number within a given range.
+     * @param bound1 The first bound
+     * @param bound2 The second bound
+     * @return The number associated with the input number.
+     */
     public int getInt(int bound1, int bound2) {
         int lowerBound, upperBound;
         if (bound1 < bound2) {
