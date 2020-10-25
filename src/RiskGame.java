@@ -190,7 +190,7 @@ public class RiskGame implements Observer {
         Player tempPlay = players.get(0);
         Territory tempTerr;
 
-        while(initialNumArmiesToBePlaced > 0){
+        while(initialNumArmiesToBePlaced >= 0){
             //point tempTerr towards a territory to add army
             //(20% to be a random un-owned territory, 80% to be an un-owned neighbor territory)
 
@@ -255,29 +255,27 @@ public class RiskGame implements Observer {
             p.setArmiesToPlace(0);
         }
 
-        //todo, remove this later on (im just using for debugging)
+        //print the map state after initial auto army placement
         printMapState();
     }
 
-    //todo, make prettier
     /**
      * printMapState prints the current map state of the game.
      */
     private void printMapState(){
-        System.out.println("");
-        System.out.println("=============== MAP STATE =================");
+
+        System.out.println();
+        System.out.println("================ MAP STATE ================");
         for(Player p: players){
-            System.out.println("======= "+ p.getName() +" =======");
-
-            if(p.getGameStanding() == 0) {//if they aren't dead
-
+            System.out.println("========== "+ p.getName() +" ==========");
+            if (p.getGameStanding() == 0) {//if they aren't dead
+              
                 //print owned continents
                 System.out.println("owned continents: ");
                 if (p.getContinents().size() == 0) {
                     System.out.print("none");
                 } else {
                     for (Continent c : p.getContinents()) {
-
                         System.out.println(c);
                     }
                 }
@@ -288,11 +286,11 @@ public class RiskGame implements Observer {
                 for (Territory t : p.getTerritories()) {
                     System.out.println(t.getName() + ":" + t.getArmies());
                 }
-                System.out.println("");
+                System.out.println();
             }
             else{
                 System.out.println("dead");
-                System.out.println("");
+                System.out.println();
             }
         }
     }
@@ -314,6 +312,7 @@ public class RiskGame implements Observer {
                     }
                 }
             }
+
         }
     }
 
@@ -488,15 +487,16 @@ public class RiskGame implements Observer {
 
     public static void main(String[] args){
         RiskGame game = new RiskGame();
-        List<CommandWord> validCommands = new ArrayList<>();
+
         //for now, there are no commands that can only happen at specific times, so all commands are always available
+        List<CommandWord> validCommands = new ArrayList<>();
         validCommands.add(CommandWord.STATUS);
         validCommands.add(CommandWord.ATTACK);
         validCommands.add(CommandWord.PASS);
 
         boolean stalemateOccured = false;
 
-        //Main game loop
+        //main game loop
         while (game.gameInProgress) {
 
             int playersWhoPassed = 0;
