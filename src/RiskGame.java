@@ -258,7 +258,7 @@ public class RiskGame implements Observer {
                 } else {
                     for (Continent c : p.getContinents()) {
 
-                        System.out.println(c.getName());
+                        System.out.println(c);
                     }
                 }
                 System.out.println("");
@@ -325,12 +325,25 @@ public class RiskGame implements Observer {
         }
         Collections.sort(defendDice, Collections.reverseOrder());
 
+        String diceRolls = "";
+        for (Integer i : attackDice) {
+            diceRolls += i + ", ";
+        }
+        diceRolls = diceRolls.substring(0, diceRolls.length() - 2);
+        System.out.println("Attacker rolls: " + diceRolls);
+
+        diceRolls = "";
+        for (Integer i : defendDice) {
+            diceRolls += i + ", ";
+        }
+        diceRolls = diceRolls.substring(0, diceRolls.length() - 2);
+        System.out.println("Defender rolls: " + diceRolls);
+
         int attackArmyLoss = 0;
         int defendArmyLoss = 0;
 
-        for (int i = 0; i < defendDiceNum; i++) {
-            System.out.println("Attackers roll: " + attackDice.get(i));
-            System.out.println("Defenders roll: " + defendDice.get(i));
+        int maxDiceNum = attackDiceNum < defendDiceNum? attackDiceNum : defendDiceNum;
+        for (int i = 0; i < maxDiceNum; i++) {
             if (attackDice.get(i) <= defendDice.get(i)) {
                 attackArmyLoss++;
             }
