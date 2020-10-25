@@ -358,7 +358,6 @@ public class RiskGame implements Observer {
      * @param player The player that starts the attack.
      */
     private void battle(Player player){
-        //TODO: condense below 2 sections into a method accepting a List<Territory> param
         String territoryString = "";
         for (Territory territory : player.getAttackableTerritories()) {
             territoryString += territory.toString() + ", ";
