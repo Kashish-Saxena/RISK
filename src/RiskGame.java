@@ -496,7 +496,7 @@ public class RiskGame implements Observer {
 
         boolean stalemateOccured = false;
 
-        //main game loop
+        //Main game loop
         while (game.gameInProgress) {
 
             int playersWhoPassed = 0;
