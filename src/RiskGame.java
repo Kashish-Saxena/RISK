@@ -4,19 +4,14 @@ public class RiskGame implements Observer {
 
     private List<Player> players;
     private boolean gameInProgress;
-    private List<Territory> territories;
-    private Map<Territory, Continent> territoryContinentMap;
-    private Scanner scanner;
     private InputParser parser;
 
     //Constructor
     public RiskGame(){
         //initialize field values
-        players = new ArrayList<Player>();
+        players = new ArrayList<>();
         gameInProgress = true;
-        territories = new ArrayList<Territory>();
-        territoryContinentMap = new HashMap<>();
-        scanner = new Scanner(System.in);
+        parser = new InputParser();
 
         setupOptions();
     }
@@ -32,13 +27,13 @@ public class RiskGame implements Observer {
         System.out.println("===========================================");
 
         //prompt user for the number of players playing
-        System.out.print("How many players will be playing? (2-6) :"); //TODO: change this to use parser.getInt()
-        int numPlayers = Integer.parseInt(scanner.nextLine());
+        System.out.print("How many players will be playing? (2-6) :");
+        int numPlayers = parser.getInt(2, 6); //TODO: define constants for player bounds
 
         //instantiate Player objects
         for(int i = 1; i <= numPlayers; i++){
             System.out.print("Player " + i + " what is your name? :");
-            String playerName = scanner.nextLine(); //TODO: change this to use parser.getString()
+            String playerName = parser.getString();
 
             //create Player object and add it to players
             Player player = new Player(playerName);
@@ -100,14 +95,6 @@ public class RiskGame implements Observer {
         Territory newGuinea = new Territory("New Guinea");
         Territory westernAustralia = new Territory("Western Australia");
 
-        //add all territories to territories List
-        territories.addAll(Arrays.asList(alaska,alberta,centralAmerica,easternUnitedStates,greenland,
-                northwestTerritory,ontario,quebec,westernUnitedStates,argentina,brazil,peru,venezuela,
-                greatBritain,iceland,northernEurope,scandinavia,southernEurope,ukraine,westernEurope,
-                congo,eastAfrica,egypt,madagascar,northAfrica,southAfrica,afghanistan,china,india,
-                irkutsk,japan,kamchatka,middleEast,mongolia,siam,siberia,ural,yakutsk,easternAustralia,
-                indonesia,newGuinea,westernAustralia));
-
         //instantiate continents
         Continent northAmerica = new Continent("North America", Arrays.asList(alaska,alberta,centralAmerica,easternUnitedStates,
                 greenland,northwestTerritory,ontario,quebec,westernUnitedStates));
@@ -118,55 +105,6 @@ public class RiskGame implements Observer {
         Continent asia = new Continent("Asia", Arrays.asList(afghanistan,china,india,irkutsk,japan,kamchatka,middleEast,
                 mongolia,siam,siberia,ural,yakutsk));
         Continent australia = new Continent("Australia", Arrays.asList(easternAustralia,indonesia,newGuinea,westernAustralia));
-
-        //add continent objects to map
-        territoryContinentMap.put(alaska, northAmerica);
-        territoryContinentMap.put(alberta, northAmerica);
-        territoryContinentMap.put(centralAmerica, northAmerica);
-        territoryContinentMap.put(easternUnitedStates, northAmerica);
-        territoryContinentMap.put(greenland, northAmerica);
-        territoryContinentMap.put(northwestTerritory, northAmerica);
-        territoryContinentMap.put(ontario, northAmerica);
-        territoryContinentMap.put(quebec, northAmerica);
-        territoryContinentMap.put(westernUnitedStates, northAmerica);
-
-        territoryContinentMap.put(argentina, southAmerica);
-        territoryContinentMap.put(brazil, southAmerica);
-        territoryContinentMap.put(peru, southAmerica);
-        territoryContinentMap.put(venezuela, southAmerica);
-
-        territoryContinentMap.put(greatBritain, europe);
-        territoryContinentMap.put(iceland, europe);
-        territoryContinentMap.put(northernEurope, europe);
-        territoryContinentMap.put(scandinavia, europe);
-        territoryContinentMap.put(southernEurope, europe);
-        territoryContinentMap.put(ukraine, europe);
-        territoryContinentMap.put(westernEurope, europe);
-
-        territoryContinentMap.put(congo, africa);
-        territoryContinentMap.put(eastAfrica, africa);
-        territoryContinentMap.put(egypt, africa);
-        territoryContinentMap.put(madagascar, africa);
-        territoryContinentMap.put(northAfrica, africa);
-        territoryContinentMap.put(southAfrica, africa);
-
-        territoryContinentMap.put(afghanistan, asia);
-        territoryContinentMap.put(china, asia);
-        territoryContinentMap.put(india, asia);
-        territoryContinentMap.put(irkutsk, asia);
-        territoryContinentMap.put(japan, asia);
-        territoryContinentMap.put(kamchatka, asia);
-        territoryContinentMap.put(middleEast, asia);
-        territoryContinentMap.put(mongolia, asia);
-        territoryContinentMap.put(siam, asia);
-        territoryContinentMap.put(siberia, asia);
-        territoryContinentMap.put(ural, asia);
-        territoryContinentMap.put(yakutsk, asia);
-
-        territoryContinentMap.put(easternAustralia, australia);
-        territoryContinentMap.put(indonesia, australia);
-        territoryContinentMap.put(newGuinea, australia);
-        territoryContinentMap.put(westernAustralia, australia);
 
         //set adjacent territories "connections"
         alaska.setAdjacentTerritories(Arrays.asList(alberta,northwestTerritory,kamchatka));
@@ -226,7 +164,7 @@ public class RiskGame implements Observer {
 
         //first fill territories with 1 army until every territory has 1 army on it
         Random ran = new Random();
-        int initialNumArmiesToBePlaced = territories.size();
+        int initialNumArmiesToBePlaced = Territory.numTerritories();
         int playerIndex = 0;
         int randomTerritoryIndex;
         Player tempPlay = players.get(0);
@@ -238,13 +176,13 @@ public class RiskGame implements Observer {
 
             //default 20% random territory option
             do {
-                randomTerritoryIndex = ran.nextInt(territories.size());
-                tempTerr = territories.get(randomTerritoryIndex);
+                randomTerritoryIndex = ran.nextInt(Territory.numTerritories());
+                tempTerr = Territory.getTerritoryFromIndex(randomTerritoryIndex);
             }
             while (tempTerr.getOwner() != null);
 
             if(ran.nextInt(5) != 0) { //80% chance un-owned neighbor territory option
-                Set<Territory> freeNeighborTerritories = new HashSet<Territory>();
+                Set<Territory> freeNeighborTerritories = new HashSet<>();
                 for(Territory t: tempPlay.getTerritories()){
                     for(Territory t2: t.getAdjacentTerritories()){
                         if(t2.getOwner() == null){
@@ -272,7 +210,7 @@ public class RiskGame implements Observer {
 
             //give player the territory
             tempTerr.setOwner(tempPlay);
-            tempPlay.addTerritory(tempTerr, territoryContinentMap.get(tempTerr));
+            tempPlay.addTerritory(tempTerr, Continent.getContinentFromTerritory(tempTerr));
             tempPlay.setArmiesToPlace(tempPlay.getArmiesToPlace() - 1);
             tempTerr.addArmies(1);
 
@@ -303,10 +241,10 @@ public class RiskGame implements Observer {
 
     private void printMapState(){
         //todo, make output prettier
-        for(Continent c: territoryContinentMap.values()){
-            System.out.println("=========== " + c.getName() + " =========== ");
-            for(Territory t: c.getTerritories()){
-                System.out.println(t.getName() + ": Owner: " + t.getOwner().getName() + " Armies: " + t.getArmies());
+        for(Player p : players){
+            System.out.println("=========== " + p.getName() + " =========== ");
+            for(Territory t: p.getTerritories()){
+                System.out.println(t.getName() + ": Continent: " + Continent.getContinentFromTerritory(t) + " Armies: " + t.getArmies());
             }
             System.out.println("");
         }
@@ -316,20 +254,21 @@ public class RiskGame implements Observer {
     }
 
     private void battle(Player player){
-        String territoryList = "";
+        //TODO: condense below 2 sections into a method accepting a List<Territory> param
+        String territoryString = "";
         for (Territory territory : player.getAttackableTerritories()) {
-            territoryList += territory.toString() + " ";
+            territoryString += territory.toString() + " ";
         }
-        System.out.println("Territories to attack from: " + territoryList + "\n" +
+        System.out.println("Territories to attack from: " + territoryString + "\n" +
                 "Enter the name of the territory you wish to attack from.");
-        Territory attackingTerritory = parser.getTerritory(); //TODO: ensure input is valid choice
+        Territory attackingTerritory = parser.getTerritory(player.getAttackableTerritories());
 
-        territoryList = "";
+        territoryString = "";
         for (Territory territory : attackingTerritory.getAdjacentEnemyTerritories()) {
-            territoryList += territory.toString() + " ";
+            territoryString += territory.toString() + " ";
         }
-        System.out.println("Choose a territory to attack: " + territoryList);
-        Territory defendingTerritory = parser.getTerritory(); //TODO: ensure input is valid choice
+        System.out.println("Choose a territory to attack: " + territoryString);
+        Territory defendingTerritory = parser.getTerritory(attackingTerritory.getAdjacentEnemyTerritories());
 
         int attackingArmy = attackingTerritory.getArmies();
         int maxAttackDice = Math.min(attackingArmy - 1, 3); //TODO: define constants instead of using 3
@@ -338,7 +277,7 @@ public class RiskGame implements Observer {
             diceList += i + " ";
         }
         System.out.println("Choose the number of dice to throw from: " + diceList);
-        int attackDiceNum = parser.getInt();  //TODO: ensure input is valid choice
+        int attackDiceNum = parser.getInt(attackingArmy - 1, 3);
 
         //defender will throw max dice possible (instead of letting them choose)
         int defendDiceNum = Math.min(defendingTerritory.getArmies(), 2); //TODO: define constants instead of using 2
@@ -374,7 +313,7 @@ public class RiskGame implements Observer {
         }
         else {
             defendingTerritory.setOwner(player);
-            Continent continent = territoryContinentMap.get(defendingTerritory);
+            Continent continent = Continent.getContinentFromTerritory(defendingTerritory);
 
             for (Player p : players) {
                 p.handleBattle(new BattleEvent(this, player, defendingTerritory.getOwner(), defendingTerritory, continent));
@@ -386,7 +325,7 @@ public class RiskGame implements Observer {
             }
             else {
                 System.out.println("Choose the number of Army units to move to " + defendingTerritory.getName() + ": 3 to " + (attackingTerritory.getArmies() - 1));
-                int armyToMove = parser.getInt(); //TODO: ensure this is within bounds
+                int armyToMove = parser.getInt(attackingTerritory.getArmies() - 1, 3); //TODO: ensure this is within bounds
                 defendingTerritory.setArmies(armyToMove);
                 attackingTerritory.subtractArmies(armyToMove);
             }
@@ -421,7 +360,5 @@ public class RiskGame implements Observer {
     public static void main(String[] args){
         RiskGame game = new RiskGame();
     }
-
-
 
 }
