@@ -15,6 +15,14 @@ public class RiskGame implements Observer {
     private boolean gameInProgress;
     private InputParser parser;
     private int numPlayers;
+    public static final int MIN_ARMY_ATTACK = 2;
+    public static final int MIN_PLAYERS = 2;
+    public static final int MAX_PLAYERS = 6;
+    public static final int MAX_ATTACK_DICE = 3;
+    public static final int MAX_DEFEND_DICE = 2;
+    public static final int MIN_DICE_ROLL = 1;
+    public static final int MAX_DICE_ROLL = 6;
+    public static final int MIN_ARMY_TO_MOVE_FROM_ATTACK = 5;
 
     /**
      * Constructor of the RiskGame class. It initializes the field values, sets up the initial game state
@@ -46,7 +54,7 @@ public class RiskGame implements Observer {
 
         //prompt user for the number of players playing
         System.out.print("How many players will be playing? (2-6) :");
-        numPlayers = parser.getInt(2, 6); //TODO: define constants for player bounds
+        numPlayers = parser.getInt(MIN_PLAYERS, MAX_PLAYERS);
 
         //instantiate Player objects
         for(int i = 1; i <= numPlayers; i++){
@@ -350,7 +358,6 @@ public class RiskGame implements Observer {
      * @param player The player that starts the attack.
      */
     private void battle(Player player){
-        //TODO: condense below 2 sections into a method accepting a List<Territory> param
         String territoryString = "";
         for (Territory territory : player.getAttackableTerritories()) {
             territoryString += territory.toString() + ", ";
@@ -369,7 +376,7 @@ public class RiskGame implements Observer {
         Territory defendingTerritory = parser.getTerritory(attackingTerritory.getAdjacentEnemyTerritories());
 
         int attackingArmy = attackingTerritory.getArmies();
-        int maxAttackDice = Math.min(attackingArmy - 1, 3); //TODO: define constants instead of using 3
+        int maxAttackDice = Math.min(attackingArmy - 1, MAX_ATTACK_DICE);
         String diceList = "";
         for (int i = 1; i <= maxAttackDice; i++) {
             diceList += i + " ";
@@ -378,18 +385,18 @@ public class RiskGame implements Observer {
         int attackDiceNum = parser.getInt(1, attackingArmy - 1);
 
         //defender will throw max dice possible (instead of letting them choose)
-        int defendDiceNum = Math.min(defendingTerritory.getArmies(), 2); //TODO: define constants instead of using 2
+        int defendDiceNum = Math.min(defendingTerritory.getArmies(), MAX_DEFEND_DICE);
         Random rand = new Random();
 
         ArrayList<Integer> attackDice = new ArrayList<>();
         for (int i = 0; i < attackDiceNum; i++) {
-            attackDice.add(rand.nextInt(6) + 1); //TODO: define constants instead of using 1 and 6
+            attackDice.add(rand.nextInt(MAX_DICE_ROLL) + MIN_DICE_ROLL);
         }
         Collections.sort(attackDice, Collections.reverseOrder());
 
         ArrayList<Integer> defendDice = new ArrayList<>();
         for (int i = 0; i < defendDiceNum; i++) {
-            defendDice.add(rand.nextInt(6) + 1); //TODO: define constants instead of using 1 and 6
+            defendDice.add(rand.nextInt(MAX_DICE_ROLL) + MIN_DICE_ROLL);
         }
         Collections.sort(defendDice, Collections.reverseOrder());
 
@@ -432,13 +439,13 @@ public class RiskGame implements Observer {
             defendingTerritory.getOwner().removeTerritory(defendingTerritory);
             player.addTerritory(defendingTerritory);
 
-            if (attackingTerritory.getArmies() <= 4) { //TODO: define constants (need 5 or more army to choose a number to move)
+            if (attackingTerritory.getArmies() < MIN_ARMY_TO_MOVE_FROM_ATTACK) {
                 defendingTerritory.setArmies(attackingTerritory.getArmies() - 1);
                 attackingTerritory.setArmies(1);
             }
             else {
                 System.out.println("Choose the number of Army units to move to " + defendingTerritory.getName() + ": 3 to " + (attackingTerritory.getArmies() - 1));
-                int armyToMove = parser.getInt(attackingTerritory.getArmies() - 1, 3); //TODO: ensure this is within bounds
+                int armyToMove = parser.getInt(3, attackingTerritory.getArmies() - 1);
                 defendingTerritory.setArmies(armyToMove);
                 attackingTerritory.subtractArmies(armyToMove);
             }

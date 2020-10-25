@@ -66,7 +66,7 @@ public class Player extends Observable {
     public List<Territory> getAttackableTerritories(){
         List<Territory> attackableTerritories = new ArrayList<>();
         for (Territory ownedTerritory : ownedTerritories){
-            if (ownedTerritory.getArmies() > 2 && !ownedTerritory.getAdjacentEnemyTerritories().isEmpty()) //TODO: define constant instead of using 2
+            if (ownedTerritory.getArmies() >= RiskGame.MIN_ARMY_ATTACK && !ownedTerritory.getAdjacentEnemyTerritories().isEmpty())
                 attackableTerritories.add(ownedTerritory);
         }
         return attackableTerritories;
