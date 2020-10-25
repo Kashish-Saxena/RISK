@@ -17,6 +17,7 @@ public class Player extends Observable {
         this.name = name;
         this.ownedTerritories = new ArrayList<Territory>();
         this.ownedContinents = new ArrayList<Continent>();
+        this.gameStanding = 0;
     }
 
     public String getName(){

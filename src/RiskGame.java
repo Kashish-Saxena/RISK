@@ -5,6 +5,7 @@ public class RiskGame implements Observer {
     private List<Player> players;
     private boolean gameInProgress;
     private InputParser parser;
+    private int numPlayers;
 
     //Constructor
     public RiskGame(){
@@ -14,6 +15,7 @@ public class RiskGame implements Observer {
         parser = new InputParser();
 
         setupOptions();
+        autoPlaceArmies();
     }
 
     //todo, add javadoc comments
@@ -36,7 +38,7 @@ public class RiskGame implements Observer {
             String playerName = parser.getString();
 
             //create Player object and add it to players
-            Player player = new Player(playerName);
+            Player player = new Player(parser.getName());
             players.add(player);
         }
 
@@ -149,10 +151,13 @@ public class RiskGame implements Observer {
         indonesia.setAdjacentTerritories(Arrays.asList(siam,newGuinea,westernAustralia));
         newGuinea.setAdjacentTerritories(Arrays.asList(easternAustralia,indonesia));
         westernAustralia.setAdjacentTerritories(Arrays.asList(indonesia,easternAustralia));
+    }
 
-        //auto unit placement algorithm
-        //the following algorithm will dynamically set Territory ownership and army numbers for all players
-        //note that instead of placing them randomly, this algorithm places Player armies in a few grouped clusters
+    //todo, descriptive javadoc
+    //auto unit placement algorithm
+    //the following algorithm will dynamically set Territory ownership and army numbers for all players
+    //note that instead of placing them randomly, this algorithm places Player armies in a few grouped clusters
+    private void autoPlaceArmies() {
 
         //first calculate the number of armies they have to place
         int numArmiesToPlace;
@@ -239,20 +244,43 @@ public class RiskGame implements Observer {
         printMapState();
     }
 
+    //todo, make prettier
     private void printMapState(){
-        //todo, make output prettier
-        for(Player p : players){
-            System.out.println("=========== " + p.getName() + " =========== ");
-            for(Territory t: p.getTerritories()){
-                System.out.println(t.getName() + ": Continent: " + Continent.getContinentFromTerritory(t) + " Armies: " + t.getArmies());
+        for(Player p: players){
+            System.out.println("======= "+ p.getName() +" =======");
+
+            if(p.getGameStanding() == 0) {//if they aren't dead
+
+                //print owned continents
+                System.out.println("owned continents: ");
+                if (p.getContinents().size() == 0) {
+                    System.out.print("none");
+                } else {
+                    for (Continent c : p.getContinents()) {
+
+                        System.out.println(c.getName());
+                    }
+                }
+                System.out.println("");
+
+                //print owned territories
+                System.out.println("owned territories: ");
+                for (Territory t : p.getTerritories()) {
+                    System.out.println(t.getName() + ":" + t.getArmies());
+                }
+                System.out.println("");
             }
-            System.out.println("");
+            else{
+                System.out.println("dead");
+                System.out.println("");
+            }
         }
     }
 
     private void processCommand(Player player, CommandWord command){
-    }
 
+    }
+  
     private void battle(Player player){
         //TODO: condense below 2 sections into a method accepting a List<Territory> param
         String territoryString = "";
