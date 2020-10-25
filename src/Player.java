@@ -46,21 +46,23 @@ public class Player extends Observable {
         return attackableTerritories;
     }
 
-    public void addTerritory(Territory territory, Continent parentContinent){
+    public void addTerritory(Territory territory){
+        Continent parentContinent = Continent.getContinentFromTerritory(territory);
         this.ownedTerritories.add(territory);
+        territory.setOwner(this);
+
         if (this.ownedTerritories.containsAll(parentContinent.getTerritories())) {
             this.addContinent(parentContinent);
         }
     }
 
-    public void removeTerritory(Territory territory, Continent parentContinent){
-        if (ownedTerritories.size() == 1){
-            ownedTerritories.remove(territory);
+    public void removeTerritory(Territory territory){
+        ownedTerritories.remove(territory);
+
+        if (ownedTerritories.isEmpty())
             notifyObservers();
-        }
 
-
-        this.removeContinent(parentContinent);
+        this.removeContinent(Continent.getContinentFromTerritory(territory));
     }
 
     public List<Continent> getContinents(){
@@ -97,11 +99,10 @@ public class Player extends Observable {
 
     public void handleBattle(BattleEvent battle){
         if (this == battle.getDefender()) {
-            System.out.println("removing" + this.getName());
-            this.removeTerritory(battle.getTerritory(), battle.getContinent());
+            this.removeTerritory(battle.getTerritory());
         }
         else if (this == battle.getAttacker()) {
-            this.addTerritory(battle.getTerritory(), battle.getContinent());
+            this.addTerritory(battle.getTerritory());
         }
     }
 
