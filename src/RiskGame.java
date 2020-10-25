@@ -256,19 +256,18 @@ public class RiskGame implements Observer {
             p.setArmiesToPlace(0);
         }
 
-        //todo, remove this later on (im just using for debugging)
+        //print the map state after initial auto army placement
         printMapState();
     }
 
-    //todo, make prettier
     /**
      * printMapState prints the current map state of the game.
      */
     private void printMapState(){
+        System.out.println();
+        System.out.println("================ MAP STATE ================");
         for(Player p: players){
-            System.out.println();
-            System.out.println("======= "+ p.getName() +" =======");
-
+            System.out.println("========== "+ p.getName() +" ==========");
             if (p.getGameStanding() == 0) {//if they aren't dead
 
                 //print owned continents
@@ -277,7 +276,6 @@ public class RiskGame implements Observer {
                     System.out.print("none");
                 } else {
                     for (Continent c : p.getContinents()) {
-
                         System.out.println(c);
                     }
                 }
@@ -288,12 +286,47 @@ public class RiskGame implements Observer {
                 for (Territory t : p.getTerritories()) {
                     System.out.println(t.getName() + ":" + t.getArmies());
                 }
+                System.out.println();
             }
             else{
                 System.out.println("dead");
+                System.out.println();
             }
         }
     }
+
+    /**
+     * printWinner prints the winner of the game and all the other player standings
+     */
+    private void printWinner(){
+        System.out.println("");
+        System.out.println("================ GAME OVER ================");
+        for(int i = 0; i <= players.size()-1; i++){
+            for(Player p : players){
+                if(p.getGameStanding() == i){
+                    if(i == 0){
+                        System.out.println(p.getName() + " wins!");
+                    }
+                    else{
+                        System.out.println(p.getName() + " had a standing of " + (i+1));
+                    }
+
+                }
+            }
+
+        }
+    }
+
+    /**
+     * printStalemate prints a stalemate game ending
+     */
+    private void printStalemate(){
+        System.out.println("");
+        System.out.println("=============== STALEMATE =================");
+        System.out.println("all remaining player don't have enough troops to mount an attack");
+    }
+
+
 
     /**
      * processCommand executes a command once given an input.
@@ -458,38 +491,63 @@ public class RiskGame implements Observer {
 
     public static void main(String[] args){
         RiskGame game = new RiskGame();
-        List<CommandWord> validCommands = new ArrayList<>();
+
         //for now, there are no commands that can only happen at specific times, so all commands are always available
+        List<CommandWord> validCommands = new ArrayList<>();
         validCommands.add(CommandWord.STATUS);
         validCommands.add(CommandWord.ATTACK);
         validCommands.add(CommandWord.PASS);
 
+        boolean stalemateOccured = false;
 
         //main game loop
-        int i = 0;
-
         while (game.gameInProgress) {
-            Player currPlayer = game.players.get(i);
-            if (currPlayer.getGameStanding() == 0) {
+
+            int playersWhoPassed = 0;
+            int playersleft = 0;
+
+            //calculate amount of players left (used in stalemate check)
+            for (Player p : game.players){
+                if (p.getGameStanding() == 0)
+                    playersleft++;
+            }
+
+            for (int i = 0; i < game.players.size(); i++)
+            {
                 System.out.println("");
                 System.out.println("===========================================");
-                System.out.println(currPlayer.getName() + "'s turn");
-                currPlayer.setTurnPhase(TurnPhase.ATTACK);
+                Player currPlayer = game.players.get(i);
+                if (currPlayer.getGameStanding() == 0) {
+                    System.out.println(currPlayer.getName() + "'s turn");
+                    currPlayer.setTurnPhase(TurnPhase.ATTACK);
 
-                while(currPlayer.getTurnPhase() == TurnPhase.ATTACK && game.gameInProgress){
-                    CommandWord command = game.parser.getCommand(validCommands);
-                    game.processCommand(currPlayer, command);
+                    while(currPlayer.getTurnPhase() == TurnPhase.ATTACK && game.gameInProgress){
+
+                        if(currPlayer.canAttack()){
+                            CommandWord command = game.parser.getCommand(validCommands);
+                            game.processCommand(currPlayer, command);
+                        }
+                        //if the player couldn't attack, force pass their turn
+                        else{
+                            System.out.println("passing " + currPlayer.getName() + "'s turn since none of their territories have enough armies to attack");
+                            currPlayer.setTurnPhase(TurnPhase.END);
+                            playersWhoPassed ++;
+                        }
+                    }
                 }
             }
-            i = (i+1) % game.numPlayers;
+
+            //check stalemate
+            if(playersleft == playersWhoPassed){
+                game.printStalemate();
+                stalemateOccured = true;
+                break;
+            }
         }
 
-        for (Player currPlayer : game.players) {
-            if (currPlayer.getGameStanding() == 0) {
-                System.out.println(currPlayer.getName() + " won!");
-            } else {
-                System.out.println(currPlayer.getName() + " finished in " + (game.numPlayers - currPlayer.getGameStanding() + 1) + "th place.");
-            }
+        //if game ended without a stalemate
+        if(!stalemateOccured){
+            game.printWinner();
         }
     }
 
