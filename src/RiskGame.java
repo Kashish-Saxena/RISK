@@ -191,7 +191,7 @@ public class RiskGame implements Observer {
         Player tempPlay = players.get(0);
         Territory tempTerr;
 
-        while(initialNumArmiesToBePlaced > 0){
+        while(initialNumArmiesToBePlaced >= 0){
             //point tempTerr towards a territory to add army
             //(20% to be a random un-owned territory, 80% to be an un-owned neighbor territory)
 
@@ -266,6 +266,7 @@ public class RiskGame implements Observer {
      */
     private void printMapState(){
         for(Player p: players){
+            System.out.println();
             System.out.println("======= "+ p.getName() +" =======");
 
             if (p.getGameStanding() == 0) {//if they aren't dead
@@ -285,11 +286,11 @@ public class RiskGame implements Observer {
                 //print owned territories
                 System.out.println("owned territories: ");
                 for (Territory t : p.getTerritories()) {
-                    System.out.println(t.getName() + ":" + t.getArmies() + "\n");
+                    System.out.println(t.getName() + ":" + t.getArmies());
                 }
             }
             else{
-                System.out.println("dead\n");
+                System.out.println("dead");
             }
         }
     }
@@ -470,6 +471,8 @@ public class RiskGame implements Observer {
         while (game.gameInProgress) {
             Player currPlayer = game.players.get(i);
             if (currPlayer.getGameStanding() == 0) {
+                System.out.println("");
+                System.out.println("===========================================");
                 System.out.println(currPlayer.getName() + "'s turn");
                 currPlayer.setTurnPhase(TurnPhase.ATTACK);
 
