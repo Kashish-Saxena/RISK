@@ -4,8 +4,8 @@ public class RiskGame implements Observer {
 
     private List<Player> players;
     private boolean gameInProgress;
-    private List<Continent> continents;
     private List<Territory> territories;
+    private Map<Territory, Continent> territoryContinentMap;
     private Scanner scanner;
     private InputParser parser;
 
@@ -14,8 +14,8 @@ public class RiskGame implements Observer {
         //initialize field values
         players = new ArrayList<Player>();
         gameInProgress = true;
-        continents = new ArrayList<Continent>();
         territories = new ArrayList<Territory>();
+        territoryContinentMap = new HashMap<>();
         scanner = new Scanner(System.in);
 
         setupOptions();
@@ -32,13 +32,13 @@ public class RiskGame implements Observer {
         System.out.println("===========================================");
 
         //prompt user for the number of players playing
-        System.out.print("How many players will be playing? (2-6) :");
+        System.out.print("How many players will be playing? (2-6) :"); //TODO: change this to use parser.getInt()
         int numPlayers = Integer.parseInt(scanner.nextLine());
 
         //instantiate Player objects
         for(int i = 1; i <= numPlayers; i++){
             System.out.print("Player " + i + " what is your name? :");
-            String playerName = scanner.nextLine();
+            String playerName = scanner.nextLine(); //TODO: change this to use parser.getString()
 
             //create Player object and add it to players
             Player player = new Player(playerName);
@@ -46,6 +46,7 @@ public class RiskGame implements Observer {
         }
 
         //instantiate all Territory objects
+        //northAmerica
         Territory alaska = new Territory("Alaska");
         Territory alberta = new Territory("Alberta");
         Territory centralAmerica = new Territory("Central America");
@@ -56,11 +57,13 @@ public class RiskGame implements Observer {
         Territory quebec = new Territory("Quebec");
         Territory westernUnitedStates = new Territory("Western United States");
 
+        //southAmerica
         Territory argentina = new Territory("Argentina");
         Territory brazil = new Territory("Brazil");
         Territory peru = new Territory("Peru");
         Territory venezuela = new Territory("Venezuela");
 
+        //europe
         Territory greatBritain = new Territory("Great Britain");
         Territory iceland = new Territory("Iceland");
         Territory northernEurope = new Territory("Northern Europe");
@@ -69,6 +72,7 @@ public class RiskGame implements Observer {
         Territory ukraine = new Territory("Ukraine");
         Territory westernEurope = new Territory("Western Europe");
 
+        //africa
         Territory congo = new Territory("Congo");
         Territory eastAfrica = new Territory("East Africa");
         Territory egypt = new Territory("Egypt");
@@ -76,6 +80,7 @@ public class RiskGame implements Observer {
         Territory northAfrica = new Territory("North Africa");
         Territory southAfrica = new Territory("South Africa");
 
+        //asia
         Territory afghanistan = new Territory("Afghanistan");
         Territory china = new Territory("China");
         Territory india = new Territory("India");
@@ -89,6 +94,7 @@ public class RiskGame implements Observer {
         Territory ural = new Territory("Ural");
         Territory yakutsk = new Territory("Yakutsk");
 
+        //australia
         Territory easternAustralia = new Territory("Eastern Australia");
         Territory indonesia = new Territory("Indonesia");
         Territory newGuinea = new Territory("New Guinea");
@@ -113,13 +119,54 @@ public class RiskGame implements Observer {
                 mongolia,siam,siberia,ural,yakutsk));
         Continent australia = new Continent("Australia", Arrays.asList(easternAustralia,indonesia,newGuinea,westernAustralia));
 
-        //add continent objects to continents List
-        continents.add(northAmerica);
-        continents.add(southAmerica);
-        continents.add(europe);
-        continents.add(africa);
-        continents.add(asia);
-        continents.add(australia);
+        //add continent objects to map
+        territoryContinentMap.put(alaska, northAmerica);
+        territoryContinentMap.put(alberta, northAmerica);
+        territoryContinentMap.put(centralAmerica, northAmerica);
+        territoryContinentMap.put(easternUnitedStates, northAmerica);
+        territoryContinentMap.put(greenland, northAmerica);
+        territoryContinentMap.put(northwestTerritory, northAmerica);
+        territoryContinentMap.put(ontario, northAmerica);
+        territoryContinentMap.put(quebec, northAmerica);
+        territoryContinentMap.put(westernUnitedStates, northAmerica);
+
+        territoryContinentMap.put(argentina, southAmerica);
+        territoryContinentMap.put(brazil, southAmerica);
+        territoryContinentMap.put(peru, southAmerica);
+        territoryContinentMap.put(venezuela, southAmerica);
+
+        territoryContinentMap.put(greatBritain, europe);
+        territoryContinentMap.put(iceland, europe);
+        territoryContinentMap.put(northernEurope, europe);
+        territoryContinentMap.put(scandinavia, europe);
+        territoryContinentMap.put(southernEurope, europe);
+        territoryContinentMap.put(ukraine, europe);
+        territoryContinentMap.put(westernEurope, europe);
+
+        territoryContinentMap.put(congo, africa);
+        territoryContinentMap.put(eastAfrica, africa);
+        territoryContinentMap.put(egypt, africa);
+        territoryContinentMap.put(madagascar, africa);
+        territoryContinentMap.put(northAfrica, africa);
+        territoryContinentMap.put(southAfrica, africa);
+
+        territoryContinentMap.put(afghanistan, asia);
+        territoryContinentMap.put(china, asia);
+        territoryContinentMap.put(india, asia);
+        territoryContinentMap.put(irkutsk, asia);
+        territoryContinentMap.put(japan, asia);
+        territoryContinentMap.put(kamchatka, asia);
+        territoryContinentMap.put(middleEast, asia);
+        territoryContinentMap.put(mongolia, asia);
+        territoryContinentMap.put(siam, asia);
+        territoryContinentMap.put(siberia, asia);
+        territoryContinentMap.put(ural, asia);
+        territoryContinentMap.put(yakutsk, asia);
+
+        territoryContinentMap.put(easternAustralia, australia);
+        territoryContinentMap.put(indonesia, australia);
+        territoryContinentMap.put(newGuinea, australia);
+        territoryContinentMap.put(westernAustralia, australia);
 
         //set adjacent territories "connections"
         alaska.setAdjacentTerritories(Arrays.asList(alberta,northwestTerritory,kamchatka));
@@ -225,7 +272,7 @@ public class RiskGame implements Observer {
 
             //give player the territory
             tempTerr.setOwner(tempPlay);
-            tempPlay.addTerritory(tempTerr);
+            tempPlay.addTerritory(tempTerr, territoryContinentMap.get(tempTerr));
             tempPlay.setArmiesToPlace(tempPlay.getArmiesToPlace() - 1);
             tempTerr.addArmies(1);
 
@@ -256,7 +303,7 @@ public class RiskGame implements Observer {
 
     private void printMapState(){
         //todo, make output prettier
-        for(Continent c: continents){
+        for(Continent c: territoryContinentMap.values()){
             System.out.println("=========== " + c.getName() + " =========== ");
             for(Territory t: c.getTerritories()){
                 System.out.println(t.getName() + ": Owner: " + t.getOwner().getName() + " Armies: " + t.getArmies());
@@ -266,7 +313,6 @@ public class RiskGame implements Observer {
     }
 
     private void processCommand(Player player, CommandWord command){
-
     }
 
     private void battle(Player player){
