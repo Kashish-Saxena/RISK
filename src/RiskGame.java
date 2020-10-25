@@ -6,8 +6,8 @@ public class RiskGame implements Observer {
     private boolean gameInProgress;
     private List<Territory> territories;
     private Map<Territory, Continent> territoryContinentMap;
-    private Scanner scanner;
     private InputParser parser;
+    private int numPlayers;
 
     //Constructor
     public RiskGame(){
@@ -16,9 +16,10 @@ public class RiskGame implements Observer {
         gameInProgress = true;
         territories = new ArrayList<Territory>();
         territoryContinentMap = new HashMap<>();
-        scanner = new Scanner(System.in);
+        parser = new InputParser();
 
         setupOptions();
+        autoPlaceArmies();
     }
 
     //todo, add javadoc comments
@@ -32,16 +33,15 @@ public class RiskGame implements Observer {
         System.out.println("===========================================");
 
         //prompt user for the number of players playing
-        System.out.print("How many players will be playing? (2-6) :"); //TODO: change this to use parser.getInt()
-        int numPlayers = Integer.parseInt(scanner.nextLine());
+        System.out.print("How many players will be playing? (2-6) ");
+        numPlayers = parser.getInt();
 
         //instantiate Player objects
         for(int i = 1; i <= numPlayers; i++){
-            System.out.print("Player " + i + " what is your name? :");
-            String playerName = scanner.nextLine(); //TODO: change this to use parser.getString()
+            System.out.print("Player " + i + " what is your name? ");
 
             //create Player object and add it to players
-            Player player = new Player(playerName);
+            Player player = new Player(parser.getName());
             players.add(player);
         }
 
@@ -211,10 +211,13 @@ public class RiskGame implements Observer {
         indonesia.setAdjacentTerritories(Arrays.asList(siam,newGuinea,westernAustralia));
         newGuinea.setAdjacentTerritories(Arrays.asList(easternAustralia,indonesia));
         westernAustralia.setAdjacentTerritories(Arrays.asList(indonesia,easternAustralia));
+    }
 
-        //auto unit placement algorithm
-        //the following algorithm will dynamically set Territory ownership and army numbers for all players
-        //note that instead of placing them randomly, this algorithm places Player armies in a few grouped clusters
+    //todo, descriptive javadoc
+    //auto unit placement algorithm
+    //the following algorithm will dynamically set Territory ownership and army numbers for all players
+    //note that instead of placing them randomly, this algorithm places Player armies in a few grouped clusters
+    private void autoPlaceArmies() {
 
         //first calculate the number of armies they have to place
         int numArmiesToPlace;
@@ -301,14 +304,36 @@ public class RiskGame implements Observer {
         printMapState();
     }
 
+    //todo, make prettier
     private void printMapState(){
-        //todo, make output prettier
-        for(Continent c: territoryContinentMap.values()){
-            System.out.println("=========== " + c.getName() + " =========== ");
-            for(Territory t: c.getTerritories()){
-                System.out.println(t.getName() + ": Owner: " + t.getOwner().getName() + " Armies: " + t.getArmies());
+        for(Player p: players){
+            System.out.println("======= "+ p.getName() +" =======");
+
+            if(p.getGameStanding() == 0) {//if they aren't dead
+
+                //print owned continents
+                System.out.println("owned continents: ");
+                if (p.getContinents().size() == 0) {
+                    System.out.print("none");
+                } else {
+                    for (Continent c : p.getContinents()) {
+
+                        System.out.println(c.getName());
+                    }
+                }
+                System.out.println("");
+
+                //print owned territories
+                System.out.println("owned territories: ");
+                for (Territory t : p.getTerritories()) {
+                    System.out.println(t.getName() + ":" + t.getArmies());
+                }
+                System.out.println("");
             }
-            System.out.println("");
+            else{
+                System.out.println("dead");
+                System.out.println("");
+            }
         }
     }
 
@@ -316,81 +341,81 @@ public class RiskGame implements Observer {
     }
 
     private void battle(Player player){
-        String territoryList = "";
-        for (Territory territory : player.getAttackableTerritories()) {
-            territoryList += territory.toString() + " ";
-        }
-        System.out.println("Territories to attack from: " + territoryList + "\n" +
-                "Enter the name of the territory you wish to attack from.");
-        Territory attackingTerritory = parser.getTerritory(); //TODO: ensure input is valid choice
-
-        territoryList = "";
-        for (Territory territory : attackingTerritory.getAdjacentEnemyTerritories()) {
-            territoryList += territory.toString() + " ";
-        }
-        System.out.println("Choose a territory to attack: " + territoryList);
-        Territory defendingTerritory = parser.getTerritory(); //TODO: ensure input is valid choice
-
-        int attackingArmy = attackingTerritory.getArmies();
-        int maxAttackDice = Math.min(attackingArmy - 1, 3); //TODO: define constants instead of using 3
-        String diceList = "";
-        for (int i = 1; i <= maxAttackDice; i++) {
-            diceList += i + " ";
-        }
-        System.out.println("Choose the number of dice to throw from: " + diceList);
-        int attackDiceNum = parser.getInt();  //TODO: ensure input is valid choice
-
-        //defender will throw max dice possible (instead of letting them choose)
-        int defendDiceNum = Math.min(defendingTerritory.getArmies(), 2); //TODO: define constants instead of using 2
-        Random rand = new Random();
-
-        ArrayList<Integer> attackDice = new ArrayList<>();
-        for (int i = 0; i < attackDiceNum; i++) {
-            attackDice.add(rand.nextInt(6) + 1); //TODO: define constants instead of using 1 and 6
-        }
-        Collections.sort(attackDice, Collections.reverseOrder());
-
-        ArrayList<Integer> defendDice = new ArrayList<>();
-        for (int i = 0; i < defendDiceNum; i++) {
-            defendDice.add(rand.nextInt(6) + 1); //TODO: define constants instead of using 1 and 6
-        }
-        Collections.sort(defendDice, Collections.reverseOrder());
-
-        int attackArmyLoss = 0;
-        int defendArmyLoss = 0;
-
-        for (int i = 0; i < defendDiceNum; i++) {
-            if (attackDice.get(i) < defendDice.get(i)) {
-                attackArmyLoss++;
-            }
-            else {
-                defendArmyLoss++;
-            }
-        }
-
-        attackingTerritory.subtractArmies(attackArmyLoss);
-        if (defendingTerritory.getArmies() > defendArmyLoss) {
-            defendingTerritory.subtractArmies(defendArmyLoss);
-        }
-        else {
-            defendingTerritory.setOwner(player);
-            Continent continent = territoryContinentMap.get(defendingTerritory);
-
-            for (Player p : players) {
-                p.handleBattle(new BattleEvent(this, player, defendingTerritory.getOwner(), defendingTerritory, continent));
-            }
-
-            if (attackingTerritory.getArmies() <= 4) { //TODO: define constants (need 5 or more army to choose a number to move)
-                defendingTerritory.setArmies(attackingTerritory.getArmies() - 1);
-                attackingTerritory.setArmies(1);
-            }
-            else {
-                System.out.println("Choose the number of Army units to move to " + defendingTerritory.getName() + ": 3 to " + (attackingTerritory.getArmies() - 1));
-                int armyToMove = parser.getInt(); //TODO: ensure this is within bounds
-                defendingTerritory.setArmies(armyToMove);
-                attackingTerritory.subtractArmies(armyToMove);
-            }
-        }
+//        String territoryList = "";
+//        for (Territory territory : player.getAttackableTerritories()) {
+//            territoryList += territory.toString() + " ";
+//        }
+//        System.out.println("Territories to attack from: " + territoryList + "\n" +
+//                "Enter the name of the territory you wish to attack from.");
+//        Territory attackingTerritory = parser.getTerritory(); //TODO: ensure input is valid choice
+//
+//        territoryList = "";
+//        for (Territory territory : attackingTerritory.getAdjacentEnemyTerritories()) {
+//            territoryList += territory.toString() + " ";
+//        }
+//        System.out.println("Choose a territory to attack: " + territoryList);
+//        Territory defendingTerritory = parser.getTerritory(); //TODO: ensure input is valid choice
+//
+//        int attackingArmy = attackingTerritory.getArmies();
+//        int maxAttackDice = Math.min(attackingArmy - 1, 3); //TODO: define constants instead of using 3
+//        String diceList = "";
+//        for (int i = 1; i <= maxAttackDice; i++) {
+//            diceList += i + " ";
+//        }
+//        System.out.println("Choose the number of dice to throw from: " + diceList);
+//        int attackDiceNum = parser.getInt();  //TODO: ensure input is valid choice
+//
+//        //defender will throw max dice possible (instead of letting them choose)
+//        int defendDiceNum = Math.min(defendingTerritory.getArmies(), 2); //TODO: define constants instead of using 2
+//        Random rand = new Random();
+//
+//        ArrayList<Integer> attackDice = new ArrayList<>();
+//        for (int i = 0; i < attackDiceNum; i++) {
+//            attackDice.add(rand.nextInt(6) + 1); //TODO: define constants instead of using 1 and 6
+//        }
+//        Collections.sort(attackDice, Collections.reverseOrder());
+//
+//        ArrayList<Integer> defendDice = new ArrayList<>();
+//        for (int i = 0; i < defendDiceNum; i++) {
+//            defendDice.add(rand.nextInt(6) + 1); //TODO: define constants instead of using 1 and 6
+//        }
+//        Collections.sort(defendDice, Collections.reverseOrder());
+//
+//        int attackArmyLoss = 0;
+//        int defendArmyLoss = 0;
+//
+//        for (int i = 0; i < defendDiceNum; i++) {
+//            if (attackDice.get(i) < defendDice.get(i)) {
+//                attackArmyLoss++;
+//            }
+//            else {
+//                defendArmyLoss++;
+//            }
+//        }
+//
+//        attackingTerritory.subtractArmies(attackArmyLoss);
+//        if (defendingTerritory.getArmies() > defendArmyLoss) {
+//            defendingTerritory.subtractArmies(defendArmyLoss);
+//        }
+//        else {
+//            defendingTerritory.setOwner(player);
+//            Continent continent = territoryContinentMap.get(defendingTerritory);
+//
+//            for (Player p : players) {
+//                p.handleBattle(new BattleEvent(this, player, defendingTerritory.getOwner(), defendingTerritory, continent));
+//            }
+//
+//            if (attackingTerritory.getArmies() <= 4) { //TODO: define constants (need 5 or more army to choose a number to move)
+//                defendingTerritory.setArmies(attackingTerritory.getArmies() - 1);
+//                attackingTerritory.setArmies(1);
+//            }
+//            else {
+//                System.out.println("Choose the number of Army units to move to " + defendingTerritory.getName() + ": 3 to " + (attackingTerritory.getArmies() - 1));
+//                int armyToMove = parser.getInt(); //TODO: ensure this is within bounds
+//                defendingTerritory.setArmies(armyToMove);
+//                attackingTerritory.subtractArmies(armyToMove);
+//            }
+//        }
 
     }
 

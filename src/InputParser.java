@@ -40,4 +40,20 @@ public class InputParser {
         }
         return Integer.parseInt(sb.toString());
     }
+
+    public String getName() {
+        String inputLine;
+        String word = null;
+
+        System.out.print("> ");
+
+        inputLine = reader.nextLine();
+
+        // Finding the word on the line.
+        Scanner tokenizer = new Scanner(inputLine);
+        if (tokenizer.hasNext()) {
+            word = tokenizer.next();
+        }
+        return word;
+    }
 }
