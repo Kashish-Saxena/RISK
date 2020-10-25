@@ -22,11 +22,13 @@ public class Player extends Observable {
     /**
      * Constructor of the Player class. It initializes all the field values.
      */
-    public Player(String name){
+    public Player(String name, RiskGame game){
         this.name = name;
         this.ownedTerritories = new ArrayList<Territory>();
         this.ownedContinents = new ArrayList<Continent>();
         this.gameStanding = 0;
+
+        this.addObserver(game);
     }
 
     /**
@@ -56,8 +58,6 @@ public class Player extends Observable {
     public List<Territory> getTerritories(){
         return this.ownedTerritories;
     }
-
-    //todo, maybe rename to getNeighbor territories
 
     /**
      * Returns a list of territories that can be attacked by the players.
@@ -95,7 +95,9 @@ public class Player extends Observable {
     public void removeTerritory(Territory territory){
         ownedTerritories.remove(territory);
 
+        //if this Player just died, notify Game to trigger its update() method
         if (ownedTerritories.isEmpty())
+            setChanged();
             notifyObservers();
 
         this.removeContinent(Continent.getContinentFromTerritory(territory));
