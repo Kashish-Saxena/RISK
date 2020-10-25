@@ -429,10 +429,8 @@ public class RiskGame implements Observer {
         else {
             System.out.println(player.getName() + " took over " + defendingTerritory.getOwner().getName() + "'s " + defendingTerritory.getName());
 
-            BattleEvent be = new BattleEvent(this, player, defendingTerritory.getOwner(), defendingTerritory);
-            for (Player p : players) {
-                p.handleBattle(be);
-            }
+            defendingTerritory.getOwner().removeTerritory(defendingTerritory);
+            player.addTerritory(defendingTerritory);
 
             if (attackingTerritory.getArmies() <= 4) { //TODO: define constants (need 5 or more army to choose a number to move)
                 defendingTerritory.setArmies(attackingTerritory.getArmies() - 1);

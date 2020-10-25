@@ -168,19 +168,6 @@ public class Player extends Observable {
     }
 
     /**
-     * Handles the battle of the game.
-     * @param battle A battleEvent object.
-     */
-    public void handleBattle(BattleEvent battle){
-        if (this == battle.getDefender()) {
-            this.removeTerritory(battle.getTerritory());
-        }
-        else if (this == battle.getAttacker()) {
-            this.addTerritory(battle.getTerritory());
-        }
-    }
-
-    /**
      * Updates the number of armies left to place.
      * @param num The updated number of armies left to place.
      */
