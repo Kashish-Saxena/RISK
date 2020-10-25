@@ -258,7 +258,7 @@ public class RiskGame implements Observer {
                 } else {
                     for (Continent c : p.getContinents()) {
 
-                        System.out.println(c.getName());
+                        System.out.println(c);
                     }
                 }
                 System.out.println("");
@@ -285,16 +285,18 @@ public class RiskGame implements Observer {
         //TODO: condense below 2 sections into a method accepting a List<Territory> param
         String territoryString = "";
         for (Territory territory : player.getAttackableTerritories()) {
-            territoryString += territory.toString() + " ";
+            territoryString += territory.toString() + ", ";
         }
+        territoryString.substring(0, territoryString.length() - 2);
         System.out.println("Territories to attack from: " + territoryString + "\n" +
                 "Enter the name of the territory you wish to attack from.");
         Territory attackingTerritory = parser.getTerritory(player.getAttackableTerritories());
 
         territoryString = "";
         for (Territory territory : attackingTerritory.getAdjacentEnemyTerritories()) {
-            territoryString += territory.toString() + " ";
+            territoryString += territory.toString() + ", ";
         }
+        territoryString.substring(0, territoryString.length() - 2);
         System.out.println("Choose a territory to attack: " + territoryString);
         Territory defendingTerritory = parser.getTerritory(attackingTerritory.getAdjacentEnemyTerritories());
 
@@ -305,7 +307,7 @@ public class RiskGame implements Observer {
             diceList += i + " ";
         }
         System.out.println("Choose the number of dice to throw from: " + diceList);
-        int attackDiceNum = parser.getInt(attackingArmy - 1, 3);
+        int attackDiceNum = parser.getInt(1, attackingArmy - 1);
 
         //defender will throw max dice possible (instead of letting them choose)
         int defendDiceNum = Math.min(defendingTerritory.getArmies(), 2); //TODO: define constants instead of using 2
@@ -323,11 +325,26 @@ public class RiskGame implements Observer {
         }
         Collections.sort(defendDice, Collections.reverseOrder());
 
+        String diceRolls = "";
+        for (Integer i : attackDice) {
+            diceRolls += i + ", ";
+        }
+        diceRolls = diceRolls.substring(0, diceRolls.length() - 2);
+        System.out.println("Attacker rolls: " + diceRolls);
+
+        diceRolls = "";
+        for (Integer i : defendDice) {
+            diceRolls += i + ", ";
+        }
+        diceRolls = diceRolls.substring(0, diceRolls.length() - 2);
+        System.out.println("Defender rolls: " + diceRolls);
+
         int attackArmyLoss = 0;
         int defendArmyLoss = 0;
 
-        for (int i = 0; i < defendDiceNum; i++) {
-            if (attackDice.get(i) < defendDice.get(i)) {
+        int maxDiceNum = attackDiceNum < defendDiceNum? attackDiceNum : defendDiceNum;
+        for (int i = 0; i < maxDiceNum; i++) {
+            if (attackDice.get(i) <= defendDice.get(i)) {
                 attackArmyLoss++;
             }
             else {
@@ -336,11 +353,13 @@ public class RiskGame implements Observer {
         }
 
         attackingTerritory.subtractArmies(attackArmyLoss);
+        System.out.println("Attackers (" + attackingTerritory.getName() + ") lost " + attackArmyLoss + " armies.");
         if (defendingTerritory.getArmies() > defendArmyLoss) {
             defendingTerritory.subtractArmies(defendArmyLoss);
+            System.out.println("Defenders (" + defendingTerritory.getName() + ") lost " + defendArmyLoss + " armies.");
         }
         else {
-            defendingTerritory.setOwner(player);
+            System.out.println(player.getName() + " took over " + defendingTerritory.getOwner().getName() + "'s " + defendingTerritory.getName());
             Continent continent = Continent.getContinentFromTerritory(defendingTerritory);
 
             for (Player p : players) {
@@ -387,6 +406,36 @@ public class RiskGame implements Observer {
     //main
     public static void main(String[] args){
         RiskGame game = new RiskGame();
+
+        while (game.gameInProgress) {
+            for (int i = 0; i < game.players.size(); i++)
+            {
+                Player p = game.players.get(i);
+                if (p.getGameStanding() == 0) {
+                    System.out.println(p.getName() + " starts their attack!");
+                    game.battle(p);
+                }
+            }
+        }
+
+        /*Player p1 = new Player("Bob");
+        Player p2 = new Player("nob");
+
+        Territory t1 = new Territory("t1");
+        Territory t2 = new Territory("t2");
+        ArrayList<Territory> adj = new ArrayList<Territory>();
+        adj.add(t2);
+        t1.setAdjacentTerritories(adj);
+        adj.remove(t2);
+        adj.add(t1);
+        t2.setAdjacentTerritories(adj);
+
+        t1.setOwner(p1);
+        t1.setArmies(4);
+        t2.setOwner(p2);
+        t2.setArmies(2);
+
+        game.battle(p1);*/
     }
 
 }
