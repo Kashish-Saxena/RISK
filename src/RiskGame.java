@@ -464,7 +464,7 @@ public class RiskGame implements Observer {
         validCommands.add(CommandWord.PASS);
 
 
-        //main game loop
+        //Main game loop
         int i = 0;
 
         while (game.gameInProgress) {
