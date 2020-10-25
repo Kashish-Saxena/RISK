@@ -17,15 +17,17 @@ public class RiskGame implements Observer {
     private int numPlayers;
 
     /**
-     * Constructor of the RiskGame class. It initializes the field values, sets up the initial game state and has the main
-     * game loop
+     * Constructor of the RiskGame class. It initializes the field values, sets up the initial game state
      */
     public RiskGame(){
         players = new ArrayList<>();
         gameInProgress = true;
         parser = new InputParser();
 
+        //create all Players, Territories and Continents
         setupOptions();
+
+        //auto assign starting player armies to territories
         autoPlaceArmies();
     }
 
@@ -166,16 +168,13 @@ public class RiskGame implements Observer {
         westernAustralia.setAdjacentTerritories(Arrays.asList(indonesia,easternAustralia));
     }
 
-    //auto unit placement algorithm
-    //the following algorithm will dynamically set Territory ownership and army numbers for all players
-    //note that instead of placing them randomly, this algorithm places Player armies in a few grouped clusters
     /**
      * autoPlaceArmies is the auto unit placement algorithm. it dynamically sets Territory Ownership and army numbers
      * for all players in a few grouped clusters.
      */
     private void autoPlaceArmies() {
 
-        //first calculate the number of armies they have to place
+        //calculate the number of armies each player has to place
         int numArmiesToPlace;
         if(numPlayers == 2){ numArmiesToPlace = 50; }
         else{numArmiesToPlace = 50 - (5 * numPlayers); }
@@ -249,7 +248,7 @@ public class RiskGame implements Observer {
         Territory randTerr;
         for(Player p: players){
             for(int i = p.getArmiesToPlace(); i > 0; i--){
-                randTerrIndex = ran.nextInt(p.getTerritories().size()-1);
+                randTerrIndex = ran.nextInt(p.getTerritories().size());
                 randTerr = p.getTerritories().get(randTerrIndex);
                 randTerr.addArmies(1);
             }
@@ -264,12 +263,13 @@ public class RiskGame implements Observer {
      * printMapState prints the current map state of the game.
      */
     private void printMapState(){
+
         System.out.println();
         System.out.println("================ MAP STATE ================");
         for(Player p: players){
             System.out.println("========== "+ p.getName() +" ==========");
             if (p.getGameStanding() == 0) {//if they aren't dead
-
+              
                 //print owned continents
                 System.out.println("owned continents: ");
                 if (p.getContinents().size() == 0) {
@@ -310,7 +310,6 @@ public class RiskGame implements Observer {
                     else{
                         System.out.println(p.getName() + " had a standing of " + (i+1));
                     }
-
                 }
             }
 
@@ -325,8 +324,6 @@ public class RiskGame implements Observer {
         System.out.println("=============== STALEMATE =================");
         System.out.println("all remaining player don't have enough troops to mount an attack");
     }
-
-
 
     /**
      * processCommand executes a command once given an input.
@@ -343,7 +340,6 @@ public class RiskGame implements Observer {
         else if(command == CommandWord.PASS){
             player.setTurnPhase(TurnPhase.END);
         }
-
     }
 
     /**
@@ -545,7 +541,7 @@ public class RiskGame implements Observer {
             }
         }
 
-        //if game ended without a stalemate
+        //if game ended without a stalemate print winner
         if(!stalemateOccured){
             game.printWinner();
         }
