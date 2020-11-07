@@ -1,11 +1,11 @@
 import java.util.*;
 
-public class Map {
+public class RiskMap {
 
     private static java.util.Map<String, Territory> territoryMap;
     private static java.util.Map<Territory, Continent> territoryContinentMap;
 
-    public Map() {
+    public RiskMap() {
         territoryMap = new HashMap<>();
         territoryContinentMap = new HashMap<>();
     }
