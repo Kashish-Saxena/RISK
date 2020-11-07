@@ -18,17 +18,21 @@ public class Territory {
     private Player owner;
     private int numArmies;
     private List<Territory> adjacentTerritories;
-    private static Map<String, Territory> territoryMap = new HashMap<>();
+    //private static Map<String, Territory> territoryMap = new HashMap<>();
+    private int xPos;
+    private int yPos;
 
     /**
      * Constructor of the Territory class. It initializes the field values and adds
      * the territory to the territory map.
      */
-    public Territory(String name){
+    public Territory(String name, int xPos, int yPos){
         this.name = name;
         this.numArmies = 0;
         this.adjacentTerritories = new ArrayList<>();
-        territoryMap.put(name.toLowerCase(), this);
+        this.xPos = xPos;
+        this.yPos = yPos;
+        //territoryMap.put(name.toLowerCase(), this);
     }
 
     /**
@@ -47,6 +51,14 @@ public class Territory {
     public String toString(){
         //does not include Player or Continent so we can choose which to group Territories by
         return name + ": " + numArmies + " armies";
+    }
+
+    public int getXPos(){
+        return this.xPos;
+    }
+
+    public int getYPos(){
+        return this.yPos;
     }
 
     /**
@@ -132,31 +144,31 @@ public class Territory {
         this.adjacentTerritories = adjacentTerritories;
     }
 
-    /**
-     * Returns a territory from an input string representation of a territory.
-     * @param input A string representation of a territory.
-     * @return A territory associated with the input territory.
-     */
-    public static Territory getTerritoryFromString(String input) {
-        return territoryMap.get(input);
-    }
-
-    /**
-     *  Returns a territory from the territory map given an index.
-     * @param index The input index required to get a territory from the territory map.
-     * @return A territory from the territory map.
-     */
-    public static Territory getTerritoryFromIndex(int index) {
-        ArrayList<String> keys = new ArrayList<>();
-        keys.addAll(territoryMap.keySet());
-        return territoryMap.get(keys.get(index));
-    }
-
-    /**
-     * Returns the number of territories in the territory map.
-     * @return The size of the territory map.
-     */
-    public static int numTerritories() {
-        return territoryMap.size();
-    }
+//    /**
+//     * Returns a territory from an input string representation of a territory.
+//     * @param input A string representation of a territory.
+//     * @return A territory associated with the input territory.
+//     */
+//    public static Territory getTerritoryFromString(String input) {
+//        return territoryMap.get(input);
+//    }
+//
+//    /**
+//     *  Returns a territory from the territory map given an index.
+//     * @param index The input index required to get a territory from the territory map.
+//     * @return A territory from the territory map.
+//     */
+//    public static Territory getTerritoryFromIndex(int index) {
+//        ArrayList<String> keys = new ArrayList<>();
+//        keys.addAll(territoryMap.keySet());
+//        return territoryMap.get(keys.get(index));
+//    }
+//
+//    /**
+//     * Returns the number of territories in the territory map.
+//     * @return The size of the territory map.
+//     */
+//    public static int numTerritories() {
+//        return territoryMap.size();
+//    }
 }
