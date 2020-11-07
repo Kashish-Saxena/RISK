@@ -14,7 +14,7 @@ public class RiskMap {
         territoryMap = new HashMap<>();
         territoryContinentMap = new HashMap<>();
 
-        createMap();
+        //createMap();
     }
 
     /**
