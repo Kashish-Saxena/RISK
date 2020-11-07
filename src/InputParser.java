@@ -13,12 +13,14 @@ import java.util.Scanner;
 public class InputParser {
 
     private Scanner reader;
+    private RiskMap riskMap;
 
     /**
      * Constructor of the InputParser class. It creates the parser that reads from the terminal window.
      */
-    public InputParser() {
+    public InputParser(RiskMap riskMap) {
         reader = new Scanner(System.in);
+        this.riskMap = riskMap;
     }
 
     /**
@@ -120,7 +122,7 @@ public class InputParser {
                 System.out.println(invalidWarning);
         } while (!validInputs.contains(word));
 
-        return Territory.getTerritoryFromString(word);
+        return riskMap.getTerritoryFromString(word);
     }
 
     /**
