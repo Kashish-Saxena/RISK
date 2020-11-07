@@ -1,6 +1,5 @@
 import java.util.*;
 
-
 //Map class does 2 things
 //1. it deals with the initial Territory/Continent instanitation with the createMap() and autoPlaceArmies() methods
 //2. it holds the state of all the Territories and continents, more specifically it holds them in 2 hash maps:
@@ -13,7 +12,6 @@ public class RiskMap {
     public RiskMap() {
         territoryMap = new HashMap<>();
         territoryContinentMap = new HashMap<>();
-
         //createMap();
     }
 
@@ -24,6 +22,7 @@ public class RiskMap {
 
         //instantiate all Territory objects
         //northAmerica
+
         Territory alaska = new Territory("Alaska",100,100);
         Territory alberta = new Territory("Alberta", 300, 300);
 //        Territory centralAmerica = new Territory("Central America");
@@ -134,7 +133,6 @@ public class RiskMap {
 //        indonesia.setAdjacentTerritories(Arrays.asList(siam,newGuinea,westernAustralia));
 //        newGuinea.setAdjacentTerritories(Arrays.asList(easternAustralia,indonesia));
 //        westernAustralia.setAdjacentTerritories(Arrays.asList(indonesia,easternAustralia));
-
 
     }
 
