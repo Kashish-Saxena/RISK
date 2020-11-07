@@ -2,11 +2,12 @@ import java.util.*;
 
 public class Map {
 
-    private static java.util.Map<String, Territory> territoryMap = new HashMap<>();
-    private static java.util.Map<Territory, Continent> territoryContinentMap = new HashMap<>();
+    private static java.util.Map<String, Territory> territoryMap;
+    private static java.util.Map<Territory, Continent> territoryContinentMap;
 
     public Map() {
-
+        territoryMap = new HashMap<>();
+        territoryContinentMap = new HashMap<>();
     }
 
     /**
