@@ -63,6 +63,7 @@ public class RiskGame implements Observer {
         System.out.println("==         Kashish Saxena 101107204      ==");
         System.out.println("===========================================");
 
+        //Prompting for player information
         String str = JOptionPane.showInputDialog("Enter Number of Players (2-6):");
         int numPlayers = 0;
         try

@@ -66,7 +66,6 @@ public class RiskFrame extends JFrame implements RiskView {
         JPanel turnpanel = new JPanel();
         JLabel turn = new JLabel("Player's turn");
         turnpanel.add(turn);
-
         JPanel buttonpanel = new JPanel();
         JButton attack = new JButton("ATTACK");
         JButton pass = new JButton("PASS");
