@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.*;
 
 
@@ -62,17 +63,24 @@ public class RiskGame implements Observer {
         System.out.println("==         Kashish Saxena 101107204      ==");
         System.out.println("===========================================");
 
-        //prompt user for the number of players playing
-        System.out.print("How many players will be playing? (2-6) :");
-        numPlayers = parser.getInt(MIN_PLAYERS, MAX_PLAYERS);
-
-        //instantiate Player objects
-        for(int i = 1; i <= numPlayers; i++){
-            System.out.print("Player " + i + " what is your name? :");
-
-            //create Player object and add it to players
-            // note this is passed so that Player can add itself as an observer to the RiskGame instance
-            Player player = new Player(parser.getString(), this);
+        //Prompting for player information
+        String str = JOptionPane.showInputDialog("Enter Number of Players (2-6):");
+        int numPlayers = 0;
+        try
+        {
+            if(str != null)
+                numPlayers = Integer.parseInt(str);
+        }
+        catch (NumberFormatException e)
+        {
+            numPlayers = 0;
+        }
+        while (!(numPlayers >= 2 && numPlayers < 7)) {
+            numPlayers = Integer.parseInt(JOptionPane.showInputDialog("Invalid. Please enter number of players between 2-6:"));
+        }
+        for (int i = 0; i < numPlayers; i++) {
+            String name = JOptionPane.showInputDialog("Enter Player " + (i + 1) + "'s name:");
+            Player player = new Player(name,this);
             players.add(player);
         }
     }

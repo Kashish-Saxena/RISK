@@ -15,7 +15,6 @@ public class RiskFrame extends JFrame implements RiskView, MouseListener {
 
     //RiskFrame has a reference to map so that it can fetch all the Territory names and x,y coordinates
     private RiskMap riskMap;
-
     private MapDrawerJPanel mapPanel;
     private BufferedImage image;
 
@@ -108,16 +107,31 @@ public class RiskFrame extends JFrame implements RiskView, MouseListener {
     public RiskFrame(RiskMap riskMap) {
         super("RISK");
         this.riskMap = riskMap;
-        this.setSize(1300, 900);
+
+        this.setSize(1200, 800);
+
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
+        this.setLayout(new BorderLayout());
 
         territoryCircles = new ArrayList<Shape>();
         mapPanel = new MapDrawerJPanel();
+      
+        //mapPanel.repaint();
         this.add(mapPanel);
 
-        //add mouse mouse listener to frame to listen for mouse clicks
-        addMouseListener(this);
+        JPanel turnpanel = new JPanel();
+        JLabel turn = new JLabel("Player's turn");
+        turnpanel.add(turn);
+        JPanel buttonpanel = new JPanel();
+        JButton attack = new JButton("ATTACK");
+        JButton pass = new JButton("PASS");
+        buttonpanel.add(attack);
+        buttonpanel.add(pass);
+        this.add(turnpanel);
+        this.add(buttonpanel,BorderLayout.SOUTH);
+        this.setResizable(false);
+
     }
 
     //whenever a change to the model is made, the model will notify all Classes that implement the RiskView Interface
@@ -165,4 +179,11 @@ public class RiskFrame extends JFrame implements RiskView, MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) { }
+  
+    //main
+    public static void main(String[] args) {
+        RiskMap riskMap = new RiskMap();
+        RiskFrame rf = new RiskFrame(riskMap);
+    }
+
 }
