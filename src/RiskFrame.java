@@ -11,8 +11,6 @@ public class RiskFrame extends JFrame implements RiskView {
 
     //RiskFrame has a reference to map so that it can fetch all the Territory names and x,y coordinates
     private RiskMap riskMap;
-
-    private ArrayList<String> players;
     private MapDrawerJPanel mapPanel;
     private BufferedImage image;
 
@@ -77,28 +75,6 @@ public class RiskFrame extends JFrame implements RiskView {
         this.add(turnpanel);
         this.add(buttonpanel,BorderLayout.SOUTH);
         this.setResizable(false);
-
-        players = new ArrayList<>();
-
-        String str = JOptionPane.showInputDialog("Enter Number of Players (2-6):");
-        int numPlayers = 0;
-        try
-        {
-            if(str != null)
-                numPlayers = Integer.parseInt(str);
-        }
-        catch (NumberFormatException e)
-        {
-            numPlayers = 0;
-        }
-        while (!(numPlayers >= 2 && numPlayers < 7)) {
-            numPlayers = Integer.parseInt(JOptionPane.showInputDialog("Invalid. Please enter number of players between 2-6:"));
-        }
-        for (int i = 0; i < numPlayers; i++) {
-            String name = JOptionPane.showInputDialog("Enter Player " + (i + 1) + "'s name:");
-            players.add(name);
-        }
-        turn.setText(players.get(0)+"'s turn");
     }
 
     @Override
