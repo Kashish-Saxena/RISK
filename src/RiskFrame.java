@@ -12,6 +12,7 @@ public class RiskFrame extends JFrame implements RiskView {
     //RiskFrame has a reference to map so that it can fetch all the Territory names and x,y coordinates
     private RiskMap riskMap;
 
+    private ArrayList<String> players;
     private MapDrawerJPanel mapPanel;
     private BufferedImage image;
 
@@ -55,18 +56,58 @@ public class RiskFrame extends JFrame implements RiskView {
     public RiskFrame(RiskMap riskMap) {
         super("RISK");
         this.riskMap = riskMap;
-        this.setSize(1200, 900);
+        this.setSize(1200, 800);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
+        this.setLayout(new BorderLayout());
 
         mapPanel = new MapDrawerJPanel();
         //mapPanel.repaint();
-
         this.add(mapPanel);
+
+        JPanel turnpanel = new JPanel();
+        JLabel turn = new JLabel("Player's turn");
+        turnpanel.add(turn);
+
+        JPanel buttonpanel = new JPanel();
+        JButton attack = new JButton("ATTACK");
+        JButton pass = new JButton("PASS");
+        buttonpanel.add(attack);
+        buttonpanel.add(pass);
+        this.add(turnpanel);
+        this.add(buttonpanel,BorderLayout.SOUTH);
+        this.setResizable(false);
+
+        players = new ArrayList<>();
+
+        String str = JOptionPane.showInputDialog("Enter Number of Players (2-6):");
+        int numPlayers = 0;
+        try
+        {
+            if(str != null)
+                numPlayers = Integer.parseInt(str);
+        }
+        catch (NumberFormatException e)
+        {
+            numPlayers = 0;
+        }
+        while (!(numPlayers >= 2 && numPlayers < 7)) {
+            numPlayers = Integer.parseInt(JOptionPane.showInputDialog("Invalid. Please enter number of players between 2-6:"));
+        }
+        for (int i = 0; i < numPlayers; i++) {
+            String name = JOptionPane.showInputDialog("Enter Player " + (i + 1) + "'s name:");
+            players.add(name);
+        }
+        turn.setText(players.get(0)+"'s turn");
     }
 
     @Override
     public void handleRiskUpdate(RiskEvent e) {
         mapPanel.repaint();
+    }
+
+    public static void main(String[] args) {
+        RiskMap riskMap = new RiskMap();
+        RiskFrame rf = new RiskFrame(riskMap);
     }
 }
