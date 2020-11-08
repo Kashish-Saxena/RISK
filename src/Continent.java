@@ -13,7 +13,7 @@ public class Continent {
 
     private String name;
     private List<Territory> territories;
-    private static Map<Territory, Continent> territoryContinentMap = new HashMap<>();
+    //private static Map<Territory, Continent> territoryContinentMap = new HashMap<>();
 
     /**
      * Constructor of the Continent class. It initializes the field values and maps
@@ -24,9 +24,9 @@ public class Continent {
     public Continent(String name, List<Territory> territories){
         this.name = name;
         this.territories = territories;
-        for (Territory t : territories) {
-            territoryContinentMap.put(t, this);
-        }
+//        for (Territory t : territories) {
+//            territoryContinentMap.put(t, this);
+//        }
     }
 
     /**
@@ -45,12 +45,12 @@ public class Continent {
         return this.territories;
     }
 
-    /**
-     * Returns a continent from the territory-continent map given an input territory.
-     * @param childTerritory The input territory to get the associated continent.
-     * @return The continent associated with the input territory.
-     */
-    public static Continent getContinentFromTerritory(Territory childTerritory) {
-        return territoryContinentMap.get(childTerritory);
-    }
+//    /**
+//     * Returns a continent from the territory-continent map given an input territory.
+//     * @param childTerritory The input territory to get the associated continent.
+//     * @return The continent associated with the input territory.
+//     */
+//    public static Continent getContinentFromTerritory(Territory childTerritory) {
+//        return territoryContinentMap.get(childTerritory);
+//    }
 }
