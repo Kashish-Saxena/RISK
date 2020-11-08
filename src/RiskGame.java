@@ -39,7 +39,7 @@ public class RiskGame implements Observer {
         parser = new InputParser(riskMap);
 
         //create all Players, Territories and Continents
-        setupOptions();
+        //setupOptions();
 
         //auto assign starting player armies to territories
         //autoPlaceArmies();
@@ -245,8 +245,6 @@ public class RiskGame implements Observer {
             battle(player);
 
             //todo, for every class that implements the view interface, tell them to handle the change in map state
-
-
         }
         else if(command == CommandWord.STATUS){
             printMapState();
