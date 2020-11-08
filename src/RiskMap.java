@@ -196,7 +196,7 @@ public class RiskMap {
      * @return A territory associated with the input territory.
      */
     public static Territory getTerritoryFromString(String input) {
-        return territoryMap.get(input);
+        return territoryMap.get(input.toLowerCase());
     }
 
     /**

@@ -4,18 +4,23 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.List;
 
-public class RiskMapPanel extends JPanel {
+public class RiskMapPanel extends JPanel implements RiskView {
     private RiskMap riskMap;
     private BufferedImage image;
+    private List<JButton> territoryButtons;
+    private List<JLabel> ownerLabels;
 
-    public RiskMapPanel(RiskMap riskMap) {
+    public RiskMapPanel(RiskMap riskMap, RiskGame rg) {
         this.riskMap = riskMap;
-
+        territoryButtons = new ArrayList<>();
+        ownerLabels = new ArrayList<>();
+        RiskMapController rmc = new RiskMapController(rg);
         //then for each Territory in territoryMap hash map, draw a circle at the Territory's x,y coordinates and draw the Territory name
-        //g2.setColor(Color.red);
         this.setLayout(null);
         Iterator hmIterator = riskMap.getTerritoryMap().entrySet().iterator(); //reset iterator
         while (hmIterator.hasNext()) {
@@ -31,15 +36,21 @@ public class RiskMapPanel extends JPanel {
             buttonTerritory.setFont(new Font("Arial", Font.BOLD, 14));
             buttonTerritory.setMargin(new Insets(0, 0, 0, 0));
             buttonTerritory.setOpaque(true);
+            buttonTerritory.addActionListener(rmc);
+            buttonTerritory.setActionCommand(tempTerritory.getName());
+            territoryButtons.add(buttonTerritory);
             this.add(buttonTerritory);
 
             //draw Territory name and owner
+            //TODO: refactor into a multiline text box
             JLabel labelTerritoryName = new JLabel(tempTerritory.getName());
             labelTerritoryName.setBounds(tempTerritory.getXPos()+19, tempTerritory.getYPos()-28, 80, 40);
             this.add(labelTerritoryName);
 
             JLabel labelTerritoryOwner = new JLabel(tempTerritory.getOwner().getName());
             labelTerritoryOwner.setBounds(tempTerritory.getXPos()+19, tempTerritory.getYPos()-14, 80, 40);
+            labelTerritoryOwner.setName(tempTerritory.getName());
+            ownerLabels.add(labelTerritoryOwner);
             this.add(labelTerritoryOwner);
         }
     }
@@ -90,6 +101,23 @@ public class RiskMapPanel extends JPanel {
             g2.drawRect(tempTerritory.getXPos(), tempTerritory.getYPos()-14, 90,26);
             g2.setColor(Color.cyan);
             g2.fillRect(tempTerritory.getXPos(), tempTerritory.getYPos()-14, 90,26);
+        }
+    }
+
+    @Override
+    public void handleRiskUpdate(RiskEvent e) {
+        for (JButton buttonTerritory : territoryButtons) {
+            if (buttonTerritory.getActionCommand().equals(e.getTerritoryFrom().getName())) {
+                buttonTerritory.setText("" + e.getTerritoryFrom().getArmies());
+            }
+            else if (buttonTerritory.getActionCommand().equals(e.getTerritoryTo().getName())) {
+                buttonTerritory.setText("" + e.getTerritoryTo().getArmies());
+            }
+        }
+        for (JLabel labelOwner : ownerLabels) {
+            if (labelOwner.getName().equals(e.getTerritoryTo().getName()) && !labelOwner.getName().equals(e.getTerritoryTo().getOwner().getName())) {
+                labelOwner.setText(e.getTerritoryTo().getOwner().getName());
+            }
         }
     }
 }
