@@ -26,7 +26,7 @@ public class RiskGame implements Observer {
     public static final int MAX_DICE_ROLL = 6;
     public static final int MIN_ARMY_TO_MOVE_FROM_ATTACK = 5;
 
-    private RiskMap riskMap;
+    //private RiskMap riskMap;
     private RiskFrame riskFrame;
 
     /**
@@ -35,19 +35,13 @@ public class RiskGame implements Observer {
     public RiskGame(){
         players = new ArrayList<>();
         gameInProgress = true;
-        riskMap = new RiskMap();
-        riskMap.createMap();//tell riskMap to instantiate all Territories/Continents
-        parser = new InputParser(riskMap);
+        //parser = new InputParser(riskMap);
 
         //create all Players, Territories and Continents
-        //setupOptions();
+        setupOptions();
 
         //auto assign starting player armies to territories
-        //autoPlaceArmies();
-
-        //create RiskFrame
-        riskFrame = new RiskFrame(riskMap);
-
+        autoPlaceArmies();
     }
 
     /**
@@ -101,7 +95,7 @@ public class RiskGame implements Observer {
 
         //first fill territories with 1 army until every territory has 1 army on it
         Random ran = new Random();
-        int initialNumArmiesToBePlaced = riskMap.numTerritories();
+        int initialNumArmiesToBePlaced = RiskMap.numTerritories()-1;
         int playerIndex = 0;
         int randomTerritoryIndex;
 
@@ -109,14 +103,20 @@ public class RiskGame implements Observer {
 
         Territory tempTerr;
 
+        for(Territory t: RiskMap.getTerritoryMap().values()){
+            System.out.println(t.getName() + ": " + t.getArmies());
+        }
+
+
         while(initialNumArmiesToBePlaced >= 0){
+
             //point tempTerr towards a territory to add army
             //(20% to be a random un-owned territory, 80% to be an un-owned neighbor territory)
 
             //default 20% random territory option
             do {
-                randomTerritoryIndex = ran.nextInt(riskMap.numTerritories());
-                tempTerr = riskMap.getTerritoryFromIndex(randomTerritoryIndex);
+                randomTerritoryIndex = ran.nextInt(RiskMap.numTerritories());
+                tempTerr = RiskMap.getTerritoryFromIndex(randomTerritoryIndex);
             }
             while (tempTerr.getOwner() != null);
 
@@ -147,6 +147,7 @@ public class RiskGame implements Observer {
                 }
             }
 
+
             //give player the territory
             tempTerr.setOwner(tempPlay);
             tempPlay.addTerritory(tempTerr);
@@ -158,6 +159,7 @@ public class RiskGame implements Observer {
             else{playerIndex += 1; }
             tempPlay = players.get(playerIndex);
 
+            System.out.println(initialNumArmiesToBePlaced);
             initialNumArmiesToBePlaced -= 1;
         }
 
@@ -175,7 +177,7 @@ public class RiskGame implements Observer {
         }
 
         //print the map state after initial auto army placement
-        printMapState();
+        //printMapState();
     }
 
     /**
@@ -403,79 +405,79 @@ public class RiskGame implements Observer {
     }
 
 
-    public static void main(String[] args){
-        RiskGame game = new RiskGame();
-
-        //for now, there are no commands that can only happen at specific times, so all commands are always available
-        List<CommandWord> validCommands = new ArrayList<>();
-        validCommands.add(CommandWord.STATUS);
-        validCommands.add(CommandWord.ATTACK);
-        validCommands.add(CommandWord.PASS);
-
-        //various variables used to detect stalemate
-        boolean stalemateOccuredFlag = false;
-        int playersWhoWereForcePassed = 0;
-
-        //main game loop
-        int currPlayerIndex = 0;
-        while (game.gameInProgress) {
-
-            //calculate amount of players left (used in stalemate check)
-            int playersleft = 0;
-            for (Player p : game.players){
-                if (p.getGameStanding() == 0)
-                    playersleft++;
-            }
-
-            System.out.println("");
-            System.out.println("===========================================");
-
-            Player currPlayer = game.players.get(currPlayerIndex);
-
-            //only do player's turn if they are still alive
-            if (currPlayer.getGameStanding() == 0) {
-                System.out.println(currPlayer.getName() + "'s turn");
-                currPlayer.setTurnPhase(TurnPhase.ATTACK);
-
-                while(currPlayer.getTurnPhase() == TurnPhase.ATTACK && game.gameInProgress){
-
-                    //check if the player is actually able to attack (since at this point there is no move or deploy phase)
-                    if(currPlayer.canAttack()){
-                        CommandWord command = game.parser.getCommand(validCommands);
-                        game.processCommand(currPlayer, command);
-                    }
-                    //if the player couldn't attack, force pass their turn and increment playersWhoWereForcePassed (used to check stalemate)
-                    else{
-                        System.out.println("passing " + currPlayer.getName() + "'s turn since none of their territories have enough armies to attack");
-                        currPlayer.setTurnPhase(TurnPhase.END);
-                        playersWhoWereForcePassed ++;
-                    }
-                }
-            }
-
-            //if last while loop iteration before currPlayerIndex reset, check stalemate
-            //(executes once per cycle after each player has taken their turn)
-            if((currPlayerIndex + 1) % game.numPlayers == 0){
-                if(playersleft == playersWhoWereForcePassed){
-                    stalemateOccuredFlag = true;
-                    break;
-                }
-                //also reset playersWhoWereForcePassed for next cycle
-                playersWhoWereForcePassed = 0;
-            }
-
-            //increment currPlayerIndex to be index of Player who goes next
-            currPlayerIndex = (currPlayerIndex + 1) % game.numPlayers;
-        }
-
-        //if game ended naturally without a stalemate print winner
-        if(!stalemateOccuredFlag){
-            game.printWinner();
-        }
-        //else print stalemate
-        else{
-            game.printStalemate();
-        }
-    }
+//    public static void main(String[] args){
+//        RiskGame game = new RiskGame();
+//
+//        //for now, there are no commands that can only happen at specific times, so all commands are always available
+//        List<CommandWord> validCommands = new ArrayList<>();
+//        validCommands.add(CommandWord.STATUS);
+//        validCommands.add(CommandWord.ATTACK);
+//        validCommands.add(CommandWord.PASS);
+//
+//        //various variables used to detect stalemate
+//        boolean stalemateOccuredFlag = false;
+//        int playersWhoWereForcePassed = 0;
+//
+//        //main game loop
+//        int currPlayerIndex = 0;
+//        while (game.gameInProgress) {
+//
+//            //calculate amount of players left (used in stalemate check)
+//            int playersleft = 0;
+//            for (Player p : game.players){
+//                if (p.getGameStanding() == 0)
+//                    playersleft++;
+//            }
+//
+//            System.out.println("");
+//            System.out.println("===========================================");
+//
+//            Player currPlayer = game.players.get(currPlayerIndex);
+//
+//            //only do player's turn if they are still alive
+//            if (currPlayer.getGameStanding() == 0) {
+//                System.out.println(currPlayer.getName() + "'s turn");
+//                currPlayer.setTurnPhase(TurnPhase.ATTACK);
+//
+//                while(currPlayer.getTurnPhase() == TurnPhase.ATTACK && game.gameInProgress){
+//
+//                    //check if the player is actually able to attack (since at this point there is no move or deploy phase)
+//                    if(currPlayer.canAttack()){
+//                        CommandWord command = game.parser.getCommand(validCommands);
+//                        game.processCommand(currPlayer, command);
+//                    }
+//                    //if the player couldn't attack, force pass their turn and increment playersWhoWereForcePassed (used to check stalemate)
+//                    else{
+//                        System.out.println("passing " + currPlayer.getName() + "'s turn since none of their territories have enough armies to attack");
+//                        currPlayer.setTurnPhase(TurnPhase.END);
+//                        playersWhoWereForcePassed ++;
+//                    }
+//                }
+//            }
+//
+//            //if last while loop iteration before currPlayerIndex reset, check stalemate
+//            //(executes once per cycle after each player has taken their turn)
+//            if((currPlayerIndex + 1) % game.numPlayers == 0){
+//                if(playersleft == playersWhoWereForcePassed){
+//                    stalemateOccuredFlag = true;
+//                    break;
+//                }
+//                //also reset playersWhoWereForcePassed for next cycle
+//                playersWhoWereForcePassed = 0;
+//            }
+//
+//            //increment currPlayerIndex to be index of Player who goes next
+//            currPlayerIndex = (currPlayerIndex + 1) % game.numPlayers;
+//        }
+//
+//        //if game ended naturally without a stalemate print winner
+//        if(!stalemateOccuredFlag){
+//            game.printWinner();
+//        }
+//        //else print stalemate
+//        else{
+//            game.printStalemate();
+//        }
+//    }
 
 }

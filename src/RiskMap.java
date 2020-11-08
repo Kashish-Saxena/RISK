@@ -14,7 +14,7 @@ public class RiskMap {
         territoryMap = new HashMap<>();
         territoryContinentMap = new HashMap<>();
 
-        //createMap();
+        createMap();
     }
 
     /**
@@ -136,6 +136,14 @@ public class RiskMap {
         Continent asia = new Continent("Asia", Arrays.asList(afghanistan,china,india,irkutsk,japan,kamchatka,middleEast,
                 mongolia,siam,siberia,ural,yakutsk));
         Continent australia = new Continent("Australia", Arrays.asList(easternAustralia,indonesia,newGuinea,westernAustralia));
+
+        //add all continents to territoryContinentMap hash map
+        for(Territory t: northAmerica.getTerritories()){ territoryContinentMap.put(t, northAmerica); }
+        for(Territory t: southAmerica.getTerritories()){ territoryContinentMap.put(t, southAmerica); }
+        for(Territory t: europe.getTerritories()){ territoryContinentMap.put(t, europe); }
+        for(Territory t: africa.getTerritories()){ territoryContinentMap.put(t, africa); }
+        for(Territory t: asia.getTerritories()){ territoryContinentMap.put(t, asia); }
+        for(Territory t: australia.getTerritories()){ territoryContinentMap.put(t, australia); }
 
         //set adjacent territories "connections"
         alaska.setAdjacentTerritories(Arrays.asList(alberta,northwestTerritory,kamchatka));

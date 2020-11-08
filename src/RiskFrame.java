@@ -1,5 +1,6 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -21,7 +22,6 @@ public class RiskFrame extends JFrame implements RiskView, MouseListener {
     ArrayList<Shape> territoryCircles; // Create an ArrayList object
 
     //todo, move hardcoded values into finals here
-
     //todo, clean up the wording of comments once done everything
 
     //nested MapDrawer class extends a JPanel and is the JPanel that holds the board
@@ -82,10 +82,7 @@ public class RiskFrame extends JFrame implements RiskView, MouseListener {
                 //draw Territory name and owner
                 g2.setColor(Color.black);
                 g2.drawString(tempTerritory.getName(), tempTerritory.getXPos()+19, tempTerritory.getYPos()+2);
-                //todo, print actual name once initial setup is implemented
-                //g2.drawString(tempTerritory.getOwner().getName(), tempTerritory.getXPos()+19, tempTerritory.getYPos()+14);
-                //for now Jeff Bezos owns the world
-                g2.drawString("Jeff Bezos", tempTerritory.getXPos()+18, tempTerritory.getYPos()+14);
+                g2.drawString(tempTerritory.getOwner().getName(), tempTerritory.getXPos()+19, tempTerritory.getYPos()+14);
 
                 //draw Territory black circle outline
                 g2.setColor(Color.black);
@@ -107,19 +104,19 @@ public class RiskFrame extends JFrame implements RiskView, MouseListener {
     public RiskFrame(RiskMap riskMap) {
         super("RISK");
         this.riskMap = riskMap;
-
-        this.setSize(1200, 800);
-
+        this.setSize(1250, 700);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setResizable(false);
         this.setVisible(true);
         this.setLayout(new BorderLayout());
 
         territoryCircles = new ArrayList<Shape>();
         mapPanel = new MapDrawerJPanel();
-      
-        //mapPanel.repaint();
-        this.add(mapPanel);
 
+        //add mouse mouse listener to frame to listen for mouse clicks
+        addMouseListener(this);
+
+        JPanel playerInputPanel = new JPanel();
         JPanel turnpanel = new JPanel();
         JLabel turn = new JLabel("Player's turn");
         turnpanel.add(turn);
@@ -128,18 +125,22 @@ public class RiskFrame extends JFrame implements RiskView, MouseListener {
         JButton pass = new JButton("PASS");
         buttonpanel.add(attack);
         buttonpanel.add(pass);
-        this.add(turnpanel);
-        this.add(buttonpanel,BorderLayout.SOUTH);
-        this.setResizable(false);
+        playerInputPanel.add(turnpanel);
+        playerInputPanel.add(buttonpanel);
 
+        this.add(mapPanel,BorderLayout.CENTER);
+        this.add(playerInputPanel, BorderLayout.SOUTH);
     }
 
     //whenever a change to the model is made, the model will notify all Classes that implement the RiskView Interface
     //by invoking their handleRiskUpdate method, for RiskFrame, the handleRiskUpdate method redraws the updated map
     //by triggering the paint method of mapPanel
     @Override
-    public void handleRiskUpdate(RiskEvent e) {
+    //public void handleRiskUpdate(RiskEvent e) {
+    public void handleRiskUpdate() {
+        System.out.println("repainting");
         mapPanel.repaint();
+        this.repaint();
     }
 
     public void mouseClicked(MouseEvent e) {
@@ -183,6 +184,7 @@ public class RiskFrame extends JFrame implements RiskView, MouseListener {
     //main
     public static void main(String[] args) {
         RiskMap riskMap = new RiskMap();
+        RiskGame rg = new RiskGame();
         RiskFrame rf = new RiskFrame(riskMap);
     }
 
