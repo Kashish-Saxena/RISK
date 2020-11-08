@@ -26,6 +26,8 @@ public class RiskGame implements Observer {
     public static final int MAX_DICE_ROLL = 6;
     public static final int MIN_ARMY_TO_MOVE_FROM_ATTACK = 5;
 
+    private ArrayList<RiskView> views;
+
     //private RiskMap riskMap;
     private RiskFrame riskFrame;
 
@@ -35,6 +37,7 @@ public class RiskGame implements Observer {
     public RiskGame(){
         players = new ArrayList<>();
         gameInProgress = true;
+        views = new ArrayList<>();
         //parser = new InputParser(riskMap);
 
         //create all Players, Territories and Continents
@@ -402,6 +405,83 @@ public class RiskGame implements Observer {
         }
         player.setGameStanding(maxStanding + 1);
         System.out.println(player.getName() + " was eliminated at " + (numPlayers - player.getGameStanding() + 1) + "th place.");
+    }
+
+    public void addRiskView (RiskView rview) {views.add(rview);}
+    private void removeRiskView (RiskView rview){views.remove(rview);}
+
+    public void play(){
+
+        // variables used to detect stalemate
+        boolean stalemateOccuredFlag = false;
+        int playersWhoWereForcePassed = 0;
+
+        //main game loop
+        int currPlayerIndex = 0;
+        while (this.gameInProgress) {
+
+            //calculate amount of players left (used in stalemate check)
+            int playersleft = 0;
+            for (Player p : this.players){
+                if (p.getGameStanding() == 0)
+                    playersleft++;
+            }
+
+            System.out.println("");
+            System.out.println("===========================================");
+
+            Player currPlayer = this.players.get(currPlayerIndex);
+
+            //only do player's turn if they are still alive
+            if (currPlayer.getGameStanding() == 0) {
+                System.out.println(currPlayer.getName() + "'s turn");
+                currPlayer.setTurnPhase(TurnPhase.ATTACK);
+
+                while(currPlayer.getTurnPhase() == TurnPhase.ATTACK && this.gameInProgress){
+
+                    //check if the player is actually able to attack (since at this point there is no move or deploy phase)
+                    if(currPlayer.canAttack()){
+                        //CommandWord command = this.parser.getCommand(validCommands); //commented for now, uses parser
+                        //this.processCommand(currPlayer, command);
+                        battle(currPlayer);
+                    }
+                    //if the player couldn't attack, force pass their turn and increment playersWhoWereForcePassed (used to check stalemate)
+                    else{
+                        System.out.println("passing " + currPlayer.getName() + "'s turn since none of their territories have enough armies to attack");
+                        currPlayer.setTurnPhase(TurnPhase.END);
+                        playersWhoWereForcePassed ++;
+                    }
+                }
+            }
+
+            // todo, finish this after battle() is split into 2 methods one where it takes a territory to attack from another where it takes a territory to attack
+            /*for (RiskView v: views){
+                v.handleRiskUpdate(new RiskEvent(this,  ));
+            }*/
+
+            //if last while loop iteration before currPlayerIndex reset, check stalemate
+            //(executes once per cycle after each player has taken their turn)
+            if((currPlayerIndex + 1) % this.numPlayers == 0){
+                if(playersleft == playersWhoWereForcePassed){
+                    stalemateOccuredFlag = true;
+                    break;
+                }
+                //also reset playersWhoWereForcePassed for next cycle
+                playersWhoWereForcePassed = 0;
+            }
+
+            //increment currPlayerIndex to be index of Player who goes next
+            currPlayerIndex = (currPlayerIndex + 1) % this.numPlayers;
+        }
+
+        //if game ended naturally without a stalemate print winner
+        if(!stalemateOccuredFlag){
+            this.printWinner();
+        }
+        //else print stalemate
+        else{
+            this.printStalemate();
+        }
     }
 
 
