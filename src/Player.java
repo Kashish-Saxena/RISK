@@ -27,7 +27,6 @@ public class Player extends Observable {
         this.ownedTerritories = new ArrayList<Territory>();
         this.ownedContinents = new ArrayList<Continent>();
         this.gameStanding = 0;
-
         this.addObserver(game);
     }
 
@@ -78,7 +77,7 @@ public class Player extends Observable {
      * @param territory The territory to be added to the list of owned territories.
      */
     public void addTerritory(Territory territory){
-        Continent parentContinent = Continent.getContinentFromTerritory(territory);
+        Continent parentContinent = RiskMap.getContinentFromTerritory(territory);
         this.ownedTerritories.add(territory);
         territory.setOwner(this);
 
@@ -100,7 +99,7 @@ public class Player extends Observable {
             setChanged();
             notifyObservers();
 
-        this.removeContinent(Continent.getContinentFromTerritory(territory));
+        this.removeContinent(RiskMap.getContinentFromTerritory(territory));
     }
 
     /**
