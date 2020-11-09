@@ -147,16 +147,37 @@ public class RiskMapPanel extends JPanel implements RiskView {
     @Override
     public void handleRiskUpdate(RiskEvent e) {
         for (JButton buttonTerritory : territoryButtons) {
-            if (buttonTerritory.getActionCommand().equals(e.getTerritoryFrom().getName())) {
-                buttonTerritory.setText("" + e.getTerritoryFrom().getArmies());
+            if (e instanceof RiskEventTerritories) {
+                RiskEventTerritories territoryEvent = (RiskEventTerritories)e;
+
+                if (buttonTerritory.getActionCommand().equals(territoryEvent.getTerritoryFrom().getName())) {
+                    buttonTerritory.setText("" + territoryEvent.getTerritoryFrom().getArmies());
+                }
+                else if (buttonTerritory.getActionCommand().equals(territoryEvent.getTerritoryTo().getName())) {
+                    buttonTerritory.setText("" + territoryEvent.getTerritoryTo().getArmies());
+                }
             }
-            else if (buttonTerritory.getActionCommand().equals(e.getTerritoryTo().getName())) {
-                buttonTerritory.setText("" + e.getTerritoryTo().getArmies());
+            else if (e instanceof RiskEventChooseTerritory) {
+                RiskEventChooseTerritory chooseTerritoryEvent = (RiskEventChooseTerritory)e;
+                if (chooseTerritoryEvent.getEnabledTerritories().contains(RiskMap.getTerritoryFromString(buttonTerritory.getActionCommand()))) {
+                    buttonTerritory.setEnabled(true);
+                }
+                else {
+                    buttonTerritory.setEnabled(false);
+                }
+            }
+            else if (e instanceof RiskEventEnd) {
+                buttonTerritory.setEnabled(false);
             }
         }
-        for (JLabel labelOwner : territoryOwnerLabels) {
-            if (labelOwner.getName().equals(e.getTerritoryTo().getName()) && !labelOwner.getName().equals(e.getTerritoryTo().getOwner().getName())) {
-                labelOwner.setText(e.getTerritoryTo().getOwner().getName());
+
+        if (e instanceof RiskEventTerritories) {
+            RiskEventTerritories territoryEvent = (RiskEventTerritories)e;
+            for (JLabel labelOwner : ownerLabels) {
+                if (labelOwner.getName().equals(territoryEvent.getTerritoryTo().getName()) && !labelOwner.getName().equals(territoryEvent.getTerritoryTo().getOwner().getName())) {
+                    labelOwner.setText(territoryEvent.getTerritoryTo().getOwner().getName());
+                }
+
             }
         }
 

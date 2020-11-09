@@ -1,9 +1,9 @@
 import java.util.EventObject;
 
 public class RiskEvent extends EventObject {
+    private TurnPhase phase;
+    private Player currentPlayer;
 
-    private Territory territoryFrom;
-    private Territory territoryTo;
     /**
      * Constructs a prototypical Event.
      *
@@ -11,17 +11,17 @@ public class RiskEvent extends EventObject {
      * @throws IllegalArgumentException if source is null.
      */
 
-    public RiskEvent(RiskGame rg, Territory territoryFrom, Territory territoryTo) {
+    public RiskEvent(RiskGame rg, TurnPhase phase, Player currentPlayer) {
         super(rg);
-        this.territoryFrom = territoryFrom;
-        this.territoryTo = territoryTo;
+        this.phase = phase;
+        this.currentPlayer = currentPlayer;
     }
 
-    public Territory getTerritoryFrom() {
-        return territoryFrom;
+    public TurnPhase getPhase() {
+        return phase;
     }
 
-    public Territory getTerritoryTo() {
-        return territoryTo;
+    public Player getCurrentPlayer() {
+        return currentPlayer;
     }
 }

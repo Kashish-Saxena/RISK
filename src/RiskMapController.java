@@ -12,6 +12,6 @@ public class RiskMapController implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         Territory territory = RiskMap.getTerritoryFromString(e.getActionCommand());
-        //give territory to model
+        rg.processTerritory(territory);
     }
 }

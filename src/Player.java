@@ -17,15 +17,14 @@ public class Player extends Observable {
     private List<Continent> ownedContinents;
     private int gameStanding;
     private int armiesToPlace;
-    private TurnPhase turnPhase;
 
     /**
      * Constructor of the Player class. It initializes all the field values.
      */
     public Player(String name, RiskGame game){
         this.name = name;
-        this.ownedTerritories = new ArrayList<Territory>();
-        this.ownedContinents = new ArrayList<Continent>();
+        this.ownedTerritories = new ArrayList<>();
+        this.ownedContinents = new ArrayList<>();
         this.gameStanding = 0;
         this.addObserver(game);
     }
@@ -140,22 +139,6 @@ public class Player extends Observable {
      */
     public int getGameStanding(){
         return this.gameStanding;
-    }
-
-    /**
-     * Sets the turn phase of the player.
-     * @param phase The new turn phase.
-     */
-    public void setTurnPhase(TurnPhase phase){
-        this.turnPhase = phase;
-    }
-
-    /**
-     * Return the turn phase of the player.
-     * @return The turn phase of the player.
-     */
-    public TurnPhase getTurnPhase(){
-        return this.turnPhase;
     }
 
     /**
