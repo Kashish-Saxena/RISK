@@ -310,24 +310,14 @@ public class RiskGame implements Observer {
         battle();
     }
 
-    private void battle() {
-        Random rand = new Random();
-        ArrayList<Integer> attackDice = new ArrayList<>();
-        for (int i = 0; i < attackDiceNum; i++) {
-            attackDice.add(rand.nextInt(MAX_DICE_ROLL) + MIN_DICE_ROLL);
-        }
+    public int[] simulateBattleFromDiceLists(List<Integer> attackDice, List<Integer> defendDice) {
         Collections.sort(attackDice, Collections.reverseOrder());
-
-        ArrayList<Integer> defendDice = new ArrayList<>();
-        for (int i = 0; i < defendDiceNum; i++) {
-            defendDice.add(rand.nextInt(MAX_DICE_ROLL) + MIN_DICE_ROLL);
-        }
         Collections.sort(defendDice, Collections.reverseOrder());
 
         int attackArmyLoss = 0;
         int defendArmyLoss = 0;
 
-        int maxDiceNum = Math.min(attackDiceNum, defendDiceNum);
+        int maxDiceNum = Math.min(attackDice.size(), defendDice.size());
         for (int i = 0; i < maxDiceNum; i++) {
             if (attackDice.get(i) <= defendDice.get(i)) {
                 attackArmyLoss++;
@@ -336,6 +326,30 @@ public class RiskGame implements Observer {
                 defendArmyLoss++;
             }
         }
+
+        int[] losses = new int[2];
+        losses[0] = attackArmyLoss;
+        losses[1] = defendArmyLoss;
+        return losses;
+    }
+
+    private void battle() {
+        Random rand = new Random();
+        //this creates a list of results from rolling the number of dice that the attacker requested
+        ArrayList<Integer> attackDice = new ArrayList<>();
+        for (int i = 0; i < attackDiceNum; i++) {
+            attackDice.add(rand.nextInt(MAX_DICE_ROLL) + MIN_DICE_ROLL);
+        }
+
+        //this creates a list of results from rolling the number of dice that the defender requested
+        ArrayList<Integer> defendDice = new ArrayList<>();
+        for (int i = 0; i < defendDiceNum; i++) {
+            defendDice.add(rand.nextInt(MAX_DICE_ROLL) + MIN_DICE_ROLL);
+        }
+
+        int[] battleResults = simulateBattleFromDiceLists(attackDice, defendDice);
+        int attackArmyLoss = battleResults[0];
+        int defendArmyLoss = battleResults[1];
 
         fromTerritory.subtractArmies(attackArmyLoss);
         Player defender = toTerritory.getOwner();
@@ -447,6 +461,7 @@ public class RiskGame implements Observer {
         return numPlayers;
     }
 
+    //below methods are for testing only
     public void addPlayer(Player player) {
         if (testing) {
             numPlayers++;

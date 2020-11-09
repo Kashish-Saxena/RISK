@@ -229,6 +229,74 @@ public class RiskGameTest implements RiskView {
         rg.setAttackDice(1);
     }
 
+    @Test
+    public void testSimulateBattleResultsFromDiceLists() {
+        rg = new RiskGame(true);
+        List<Integer> attackDice = new ArrayList<>();
+        List<Integer> defendDice = new ArrayList<>();
+
+        attackDice.add(1);
+        defendDice.add(1);
+        assertArrayEquals(new int[] {1, 0}, rg.simulateBattleFromDiceLists(attackDice, defendDice));
+
+        attackDice.clear();
+        defendDice.clear();
+        attackDice.add(2);
+        defendDice.add(1);
+        assertArrayEquals(new int[] {0, 1}, rg.simulateBattleFromDiceLists(attackDice, defendDice));
+
+        attackDice.clear();
+        defendDice.clear();
+        attackDice.add(6);
+        defendDice.add(6);
+        assertArrayEquals(new int[] {1, 0}, rg.simulateBattleFromDiceLists(attackDice, defendDice));
+
+        attackDice.clear();
+        defendDice.clear();
+        attackDice.add(6);
+        attackDice.add(6);
+        defendDice.add(6);
+        assertArrayEquals(new int[] {1, 0}, rg.simulateBattleFromDiceLists(attackDice, defendDice));
+
+        attackDice.clear();
+        defendDice.clear();
+        attackDice.add(4);
+        attackDice.add(6);
+        defendDice.add(5);
+        assertArrayEquals(new int[] {0, 1}, rg.simulateBattleFromDiceLists(attackDice, defendDice));
+
+        attackDice.clear();
+        defendDice.clear();
+        attackDice.add(4);
+        attackDice.add(6);
+        defendDice.add(5);
+        defendDice.add(5);
+        assertArrayEquals(new int[] {1, 1}, rg.simulateBattleFromDiceLists(attackDice, defendDice));
+
+        attackDice.clear();
+        defendDice.clear();
+        attackDice.add(6);
+        attackDice.add(6);
+        defendDice.add(5);
+        defendDice.add(5);
+        assertArrayEquals(new int[] {0, 2}, rg.simulateBattleFromDiceLists(attackDice, defendDice));
+
+        attackDice.clear();
+        defendDice.clear();
+        attackDice.add(1);
+        attackDice.add(1);
+        attackDice.add(1);
+        defendDice.add(6);
+        assertArrayEquals(new int[] {1, 0}, rg.simulateBattleFromDiceLists(attackDice, defendDice));
+
+        attackDice.clear();
+        defendDice.clear();
+        attackDice.add(1);
+        defendDice.add(6);
+        defendDice.add(6);
+        assertArrayEquals(new int[] {1, 0}, rg.simulateBattleFromDiceLists(attackDice, defendDice));
+    }
+
     @Override
     public void handleRiskUpdate(RiskEvent e) {
         if (test == TEST_PROCESS_TERRITORY_CHOOSE_ATTACKER) {
