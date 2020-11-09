@@ -371,7 +371,7 @@ public class RiskGame implements Observer {
                 toTerritory.setArmies(0);
                 phase = TurnPhase.ATTACK_CHOOSE_MOVE;
                 riskFrame.handleRiskUpdate(new RiskEventDiceResults(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), fromTerritory, toTerritory, attackDice, defendDice, attackArmyLoss, -1, defender));
-                riskFrame.handleRiskUpdate(new RiskEventBounds(this, TurnPhase.ATTACK_CHOOSE_MOVE, getCurrentPlayer(), MIN_ARMY_TO_MOVE_FROM_ATTACK - 2, fromTerritory.getArmies() - 1));
+                riskFrame.handleRiskUpdate(new RiskEventBounds(this, TurnPhase.ATTACK_CHOOSE_MOVE, getCurrentPlayer(), attackDiceNum, fromTerritory.getArmies() - 1));
             }
         }
     }
