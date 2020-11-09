@@ -10,7 +10,7 @@ public class RiskFrame extends JFrame implements RiskView {
     private RiskMap riskMap;
     private RiskMapPanel mapPanel;
 
-    private ArrayList<Shape> territoryCircles; // Create an ArrayList object
+    private ArrayList<Shape> territoryCircles;
 
     //todo, move hardcoded values into finals here
     //todo, clean up the wording of comments once done everything
@@ -20,16 +20,13 @@ public class RiskFrame extends JFrame implements RiskView {
     //in the Map, fetches their X, Y coordinates and draws them out as circles
     //paintComponent also draws all the "connections" between the Territories
 
-
     public RiskFrame(RiskMap riskMap) {
         super("RISK");
         RiskGame rg = new RiskGame();
         this.riskMap = riskMap;
-
         this.setLayout(new BorderLayout());
 
-        RiskGame game = new RiskGame();
-        game.addRiskView(this); //Registering this frame as a View in the model
+        rg.addRiskView(this); //Registering this frame as a View in the model
         territoryCircles = new ArrayList<Shape>();
         mapPanel = new RiskMapPanel(riskMap, rg);
 
@@ -45,7 +42,6 @@ public class RiskFrame extends JFrame implements RiskView {
         playerInputPanel.add(turnpanel);
         playerInputPanel.add(buttonpanel);
 
-        //this.add(mapPanel);
         this.add(mapPanel,BorderLayout.CENTER);
         this.add(playerInputPanel, BorderLayout.SOUTH);
 

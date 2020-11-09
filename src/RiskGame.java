@@ -407,6 +407,10 @@ public class RiskGame implements Observer {
         System.out.println(player.getName() + " was eliminated at " + (numPlayers - player.getGameStanding() + 1) + "th place.");
     }
 
+    public List<Player> getPlayers(){
+        return this.players;
+    }
+
     public void addRiskView (RiskView rview) {views.add(rview);}
     private void removeRiskView (RiskView rview){views.remove(rview);}
 
