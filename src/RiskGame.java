@@ -37,19 +37,29 @@ public class RiskGame implements Observer {
 
     private RiskView riskFrame;
 
+    private boolean testing;
+
     /**
      * Constructor of the RiskGame class. It initializes the field values, sets up the initial game state
      */
-    public RiskGame(){
+    public RiskGame(boolean testing){
+        this.testing = testing;
         players = new ArrayList<>();
         gameInProgress = true;
 
         //create all Players, Territories and Continents
-        setupOptions();
+        if (!testing) {
+            setupOptions();
+        }
+        else {
+            numPlayers = 0;
+        }
         currentPlayerIndex = 0;
 
-        //auto assign starting player armies to territories
-        autoPlaceArmies();
+        if (!testing) {
+            //auto assign starting player armies to territories
+            autoPlaceArmies();
+        }
 
         attackDiceNum = 0;
         defendDiceNum = 0;
@@ -394,7 +404,7 @@ public class RiskGame implements Observer {
     public void update(Observable o, Object arg) {
         updatePlayerGameStanding((Player) o);
         updateGameInProgress();
-        if (!gameInProgress) {
+        if (!gameInProgress && !testing) {
             riskFrame.handleRiskUpdate(new RiskEventEnd(this, TurnPhase.END, getCurrentPlayer(), players));
         }
     }
@@ -424,7 +434,9 @@ public class RiskGame implements Observer {
                 maxStanding = players.get(i).getGameStanding();
         }
         player.setGameStanding(maxStanding + 1);
-        riskFrame.handleRiskUpdate(new RiskEventPlayer(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), player));
+        if (!testing) {
+            riskFrame.handleRiskUpdate(new RiskEventPlayer(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), player));
+        }
     }
 
     public List<Player> getPlayers(){
@@ -433,5 +445,30 @@ public class RiskGame implements Observer {
 
     public int getNumPlayers() {
         return numPlayers;
+    }
+
+    public void addPlayer(Player player) {
+        if (testing) {
+            numPlayers++;
+            players.add(player);
+        }
+    }
+
+    public TurnPhase getPhase() {
+        //if (testing) { //this shouldn't be used, use the RiskEvent
+            return phase;
+        //}
+    }
+
+    public void setPhase(TurnPhase phase) {
+        if (testing) { //this shouldn't be used, use the RiskEvent
+            this.phase = phase;
+        }
+    }
+
+    public int getAttackDiceNum() {
+        //if (testing) { //this shouldn't be used outside of testing
+            return attackDiceNum;
+        //}
     }
 }
