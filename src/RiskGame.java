@@ -118,13 +118,7 @@ public class RiskGame implements Observer {
         int randomTerritoryIndex;
 
         Player tempPlay = players.get(0);
-
         Territory tempTerr;
-
-        for(Territory t: RiskMap.getTerritoryMap().values()){
-            System.out.println(t.getName() + ": " + t.getArmies());
-        }
-
 
         while(initialNumArmiesToBePlaced >= 0){
 
@@ -176,8 +170,6 @@ public class RiskGame implements Observer {
             if(playerIndex == players.size()-1){ playerIndex = 0; }
             else{playerIndex += 1; }
             tempPlay = players.get(playerIndex);
-
-            System.out.println(initialNumArmiesToBePlaced);
             initialNumArmiesToBePlaced -= 1;
         }
 
@@ -353,6 +345,9 @@ public class RiskGame implements Observer {
         else {
             defender.removeTerritory(toTerritory);
             getCurrentPlayer().addTerritory(toTerritory);
+            System.out.println("triggering cont event");
+            System.out.println("CURRENT PHASE " + phase);
+            riskFrame.handleRiskUpdate(new RiskEventContinent(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), RiskMap.getContinentFromTerritory(toTerritory)));
 
             if (fromTerritory.getArmies() < MIN_ARMY_TO_MOVE_FROM_ATTACK) {
                 toTerritory.setArmies(fromTerritory.getArmies() - 1);

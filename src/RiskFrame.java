@@ -157,6 +157,10 @@ public class RiskFrame extends JFrame implements RiskView {
                 RiskEventPlayer playerEvent = (RiskEventPlayer)e;
                 JOptionPane.showMessageDialog(this, playerEvent.getPlayer().getName() + " was eliminated at " + (rg.getNumPlayers() - playerEvent.getPlayer().getGameStanding() + 1) + "th place.");
             }
+            else if (e instanceof RiskEventContinent){
+                //do nothing since mapPanel.handleRiskUpdate(e); handles ev
+                //do nothing
+            }
         }
         else if (e.getPhase() == TurnPhase.END) {
             RiskEventEnd endEvent = (RiskEventEnd)e;

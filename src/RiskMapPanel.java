@@ -70,15 +70,14 @@ public class RiskMapPanel extends JPanel implements RiskView {
 
             JLabel labelContinentOwner = new JLabel(tempContinent.toString());
             labelContinentOwner.setBounds(tempContinent.getXPos()+9, tempContinent.getYPos()-14, 80, 40);
+            labelContinentOwner.setName(tempContinent.toString());
 
 
             if(ownerOfFirst.getContinents().contains(tempContinent)){
                 labelContinentOwner.setText(ownerOfFirst.getName());
-                labelContinentOwner.setName(ownerOfFirst.getName());
             }
             else{
                 labelContinentOwner.setText("unowned");
-                labelContinentOwner.setName("unowned");
             }
 
             continentOwnerLabels.add(labelContinentOwner);
@@ -116,6 +115,7 @@ public class RiskMapPanel extends JPanel implements RiskView {
 
             //for each of the adjacent Territories of tempTerritory, draw the connection
             for(Territory t: tempTerritory.getAdjacentTerritories()){
+                //special case, don't draw the connection between Alaska and Kamchatka
                 if(t.getName() != "Alaska" && t.getName() != "Kamchatka"){
                     g2.drawLine(tempTerritory.getXPos(),tempTerritory.getYPos(),t.getXPos(),t.getYPos());
                 }
@@ -180,16 +180,21 @@ public class RiskMapPanel extends JPanel implements RiskView {
             }
         }
 
-        //todo, if e is and instance of RiskEventContinent check if continent label should be changed
-//        for (JLabel labelOwner : continentOwnerLabels) {
-//            for (Player p : ((RiskGame) e.getSource()).getPlayers()) {
-//                for (Continent c : p.getContinents()) {
-//                    if (! c.toString().equals( labelOwner.getName())){
-//                        labelOwner.setText(p.getName());
-//                    }
-//                }
-//            }
-//        }
+        if(e instanceof RiskEventContinent) {
+            Continent c = ((RiskEventContinent) e).getContinentTo();
 
+            //update the owner label of the continent that just got attacked
+            for (JLabel labelOwner : continentOwnerLabels) {
+                if(c.toString().equals( labelOwner.getName())){
+                    Player ownerOfFirst = c.getTerritories().get(0).getOwner();
+                    if(ownerOfFirst.getContinents().contains(c)){
+                        labelOwner.setText(ownerOfFirst.getName());
+                    }
+                    else{
+                        labelOwner.setText("unowned");
+                    }
+                }
+            }
+        }
     }
 }
