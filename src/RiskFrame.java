@@ -87,8 +87,6 @@ public class RiskFrame extends JFrame implements RiskView {
                 diceNum = 0;
             }
             while (((diceNum > ((RiskEventBounds)e).getMaxChoice()) || (diceNum < ((RiskEventBounds)e).getMinChoice()))) {
-                System.out.println(diceNum);
-                System.out.println((!(diceNum > ((RiskEventBounds)e).getMaxChoice()) || !(diceNum < ((RiskEventBounds)e).getMinChoice())));
                 diceNum = Integer.parseInt(JOptionPane.showInputDialog("Invalid. Please enter number of dice between (1 - " + ((RiskEventBounds)e).getMaxChoice() + ")"));
             }
             rg.setAttackDice(diceNum); //note! some controller logic in here
@@ -107,31 +105,27 @@ public class RiskFrame extends JFrame implements RiskView {
                 diceNum = 0;
             }
             while (((diceNum > ((RiskEventBounds)e).getMaxChoice()) || (diceNum < ((RiskEventBounds)e).getMinChoice()))) {
-                System.out.println(diceNum);
-                System.out.println((!(diceNum > ((RiskEventBounds)e).getMaxChoice()) || !(diceNum < ((RiskEventBounds)e).getMinChoice())));
                 diceNum = Integer.parseInt(JOptionPane.showInputDialog("Invalid. Please enter number of dice between (1 - " + ((RiskEventBounds)e).getMaxChoice() + ")"));
             }
             rg.setDefendDice(diceNum); //note! some controller logic in here
         }
         else if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_MOVE) {
             //TODO: wrap JOptionPane in the try catch, or implement a spinner
-            String str = JOptionPane.showInputDialog("Choose a number of dice to defend with (1 - " + ((RiskEventBounds)e).getMaxChoice() + ")"); //list options
-            int diceNum = 0;
+            String str = JOptionPane.showInputDialog("Choose a number of army to move ("+ ((RiskEventBounds)e).getMinChoice() + " - " + ((RiskEventBounds)e).getMaxChoice() + ")"); //list options
+            int armyNum = 0;
             try
             {
                 if(str != null)
-                    diceNum = Integer.parseInt(str);
+                    armyNum = Integer.parseInt(str);
             }
             catch (NumberFormatException excp)
             {
-                diceNum = 0;
+                armyNum = 0;
             }
-            while (((diceNum > ((RiskEventBounds)e).getMaxChoice()) || (diceNum < ((RiskEventBounds)e).getMinChoice()))) {
-                System.out.println(diceNum);
-                System.out.println((!(diceNum > ((RiskEventBounds)e).getMaxChoice()) || !(diceNum < ((RiskEventBounds)e).getMinChoice())));
-                diceNum = Integer.parseInt(JOptionPane.showInputDialog("Invalid. Please enter number of armies between (" + ((RiskEventBounds)e).getMinChoice() + " - " + ((RiskEventBounds)e).getMaxChoice() + ")"));
+            while (((armyNum > ((RiskEventBounds)e).getMaxChoice()) || (armyNum < ((RiskEventBounds)e).getMinChoice()))) {
+                armyNum = Integer.parseInt(JOptionPane.showInputDialog("Invalid. Please enter number of armies between (" + ((RiskEventBounds)e).getMinChoice() + " - " + ((RiskEventBounds)e).getMaxChoice() + ")"));
             }
-            rg.move(diceNum); //note! some controller logic in here
+            rg.move(armyNum); //note! some controller logic in here
         }
         else if (e.getPhase() == TurnPhase.ATTACK_RESULT) {
             if (e instanceof RiskEventDiceResults) {
