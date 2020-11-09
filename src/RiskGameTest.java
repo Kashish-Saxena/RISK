@@ -16,7 +16,9 @@ public class RiskGameTest implements RiskView {
     private final int TEST_PROCESS_TERRITORY_CHOOSE_ENEMY3 = 4;
     private final int TEST_PROCESS_TERRITORY_CHOOSE_ENEMY4 = 5;
     private final int TEST_PASS_TURN = 6;
-    private final int TEST_SET_ATTACK_DICE = 7;
+    private final int TEST_SET_ATTACK_DICE1 = 7;
+    private final int TEST_SET_ATTACK_DICE2 = 8;
+    private final int TEST_SET_ATTACK_DICE3 = 9;
 
     private List<Territory> territoryList;
     private Player player;
@@ -207,14 +209,23 @@ public class RiskGameTest implements RiskView {
         RiskMap rm = new RiskMap(true);
         Player player1 = new Player("Player1", rg);
         Territory territory1 = new Territory("Territory1", 0, 0);
-        territory1.setArmies(2);
+        territory1.setArmies(1);
         rg.addPlayer(player1);
+        rg.addView(this);
 
-        rg.setPhase(TurnPhase.ATTACK_CHOOSE_ENEMY);
+        rg.processTerritory(territory1);
         rg.processTerritory(territory1);
 
-        test = TEST_SET_ATTACK_DICE;
+        test = TEST_SET_ATTACK_DICE1;
         player = player1;
+        rg.setAttackDice(1);
+
+        test = TEST_SET_ATTACK_DICE2;
+        territory1.setArmies(2);
+        rg.setAttackDice(1);
+
+        test = TEST_SET_ATTACK_DICE3;
+        territory1.setArmies(3);
         rg.setAttackDice(1);
     }
 
@@ -261,12 +272,32 @@ public class RiskGameTest implements RiskView {
             assertEquals(player, chooseTerritoryEvent.getCurrentPlayer());
             assertEquals(territoryList, chooseTerritoryEvent.getEnabledTerritories());
         }
-        else if (test == TEST_SET_ATTACK_DICE) {
+        else if (test == TEST_SET_ATTACK_DICE1) {
             assertEquals(1, rg.getAttackDiceNum());
             assertEquals(TurnPhase.DEFEND_CHOOSE_DICE, rg.getPhase());
             assertEquals(TurnPhase.DEFEND_CHOOSE_DICE, e.getPhase());
+            RiskEventBounds chooseBoundsEvent = (RiskEventBounds)e;
             assertEquals(player, e.getCurrentPlayer());
-            //todo
+            assertEquals(1, chooseBoundsEvent.getMinChoice());
+            assertEquals(1, chooseBoundsEvent.getMaxChoice());
+        }
+        else if (test == TEST_SET_ATTACK_DICE2) {
+            assertEquals(1, rg.getAttackDiceNum());
+            assertEquals(TurnPhase.DEFEND_CHOOSE_DICE, rg.getPhase());
+            assertEquals(TurnPhase.DEFEND_CHOOSE_DICE, e.getPhase());
+            RiskEventBounds chooseBoundsEvent = (RiskEventBounds)e;
+            assertEquals(player, e.getCurrentPlayer());
+            assertEquals(1, chooseBoundsEvent.getMinChoice());
+            assertEquals(2, chooseBoundsEvent.getMaxChoice());
+        }
+        else if (test == TEST_SET_ATTACK_DICE3) {
+            assertEquals(1, rg.getAttackDiceNum());
+            assertEquals(TurnPhase.DEFEND_CHOOSE_DICE, rg.getPhase());
+            assertEquals(TurnPhase.DEFEND_CHOOSE_DICE, e.getPhase());
+            RiskEventBounds chooseBoundsEvent = (RiskEventBounds)e;
+            assertEquals(player, e.getCurrentPlayer());
+            assertEquals(1, chooseBoundsEvent.getMinChoice());
+            assertEquals(2, chooseBoundsEvent.getMaxChoice());
         }
     }
 }
