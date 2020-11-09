@@ -1,5 +1,4 @@
 import java.util.EventObject;
-import java.util.List;
 
 public class RiskEvent extends EventObject {
     private TurnPhase phase;
