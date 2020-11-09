@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 //RiskFrame is the JFrame that holds all the GUI, it implements RiskView and whenever a change is made
 //to the model, this class handles that change with the handleRiskUpdate method which re-draws everything
@@ -138,32 +139,51 @@ public class RiskFrame extends JFrame implements RiskView {
             rg.move(diceNum); //note! some controller logic in here
         }
         else if (e.getPhase() == TurnPhase.ATTACK_RESULT) {
-            RiskEventDiceResults diceResults = (RiskEventDiceResults)e;
+            if (e instanceof RiskEventDiceResults) {
+                RiskEventDiceResults diceResults = (RiskEventDiceResults) e;
 
-            String message = "";
-            for (Integer i : diceResults.getAttackDice()) {
-                message += i + ", ";
-            }
-            message = "Attacker rolls: " + message.substring(0, message.length() - 2) + "\n";
+                String message = "";
+                for (Integer i : diceResults.getAttackDice()) {
+                    message += i + ", ";
+                }
+                message = "Attacker rolls: " + message.substring(0, message.length() - 2) + "\n";
 
-            String diceRolls = "";
-            for (Integer i : diceResults.getDefendDice()) {
-                diceRolls += i + ", ";
-            }
-            diceRolls = diceRolls.substring(0, diceRolls.length() - 2);
-            message += "Defender rolls: " + diceRolls + "\n"
-                + "Attackers (" + diceResults.getTerritoryFrom().getName() + ") lost " + diceResults.getAttackLoss() + " armies.\n";
+                String diceRolls = "";
+                for (Integer i : diceResults.getDefendDice()) {
+                    diceRolls += i + ", ";
+                }
+                diceRolls = diceRolls.substring(0, diceRolls.length() - 2);
+                message += "Defender rolls: " + diceRolls + "\n"
+                        + "Attackers (" + diceResults.getTerritoryFrom().getName() + ") lost " + diceResults.getAttackLoss() + " armies.\n";
 
-            if (diceResults.getDefendLoss() != -1) {
-                message += "Defenders (" + diceResults.getTerritoryTo().getName() + ") lost " + diceResults.getDefendLoss() + " armies.";
+                if (diceResults.getDefendLoss() != -1) {
+                    message += "Defenders (" + diceResults.getTerritoryTo().getName() + ") lost " + diceResults.getDefendLoss() + " armies.";
+                } else {
+                    message += diceResults.getCurrentPlayer().getName() + " took over " + diceResults.getDefender().getName() + "'s " + diceResults.getTerritoryTo().getName();
+                }
+                JOptionPane.showMessageDialog(this, message);
             }
-            else {
-                message += diceResults.getCurrentPlayer().getName() + " took over " + diceResults.getDefender().getName() + "'s " + diceResults.getTerritoryTo().getName();
+            else if (e instanceof RiskEventPlayer) {
+                RiskEventPlayer playerEvent = (RiskEventPlayer)e;
+                JOptionPane.showMessageDialog(this, playerEvent.getPlayer().getName() + " was eliminated at " + (rg.getNumPlayers() - playerEvent.getPlayer().getGameStanding() + 1) + "th place.");
             }
-            JOptionPane.showMessageDialog(this, message);
         }
         else if (e.getPhase() == TurnPhase.END) {
-            JOptionPane.showMessageDialog(this, "game over man");
+            RiskEventEnd endEvent = (RiskEventEnd)e;
+            List<Player> players = endEvent.getPlayers();
+            String message = "================ GAME OVER ================\n";
+            for(int i = 0; i <= players.size()-1; i++){
+                Player p = players.get(i);
+                if(p.getGameStanding() == 0){
+                    if(i == 0){
+                        message += p.getName() + " wins!\n";
+                    }
+                    else{
+                        message += p.getName() + " had a standing of " + (rg.getNumPlayers() - p.getGameStanding() + 1) + "th place\n";
+                    }
+                }
+            }
+            JOptionPane.showMessageDialog(this, message);
         }
 
     }

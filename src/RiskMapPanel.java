@@ -126,6 +126,9 @@ public class RiskMapPanel extends JPanel implements RiskView {
                     buttonTerritory.setEnabled(false);
                 }
             }
+            else if (e instanceof RiskEventEnd) {
+                buttonTerritory.setEnabled(false);
+            }
         }
         if (e instanceof RiskEventTerritories) {
             RiskEventTerritories territoryEvent = (RiskEventTerritories)e;

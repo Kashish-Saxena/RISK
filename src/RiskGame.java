@@ -400,8 +400,7 @@ public class RiskGame implements Observer {
         updatePlayerGameStanding((Player) o);
         updateGameInProgress();
         if (!gameInProgress) {
-            //TELL THE VIEW THE GAME IS OVER
-            riskFrame.handleRiskUpdate(new RiskEventMessage(this, TurnPhase.END, getCurrentPlayer(), "over")); //give game standings
+            riskFrame.handleRiskUpdate(new RiskEventEnd(this, TurnPhase.END, getCurrentPlayer(), players));
         }
     }
 
@@ -416,7 +415,6 @@ public class RiskGame implements Observer {
             if (p.getGameStanding() == 0)
                 playersLeft++;
         }
-        System.out.println("PLAYERS LEFT" + playersLeft);
         gameInProgress = (playersLeft >= 2);
     }
 
@@ -431,6 +429,10 @@ public class RiskGame implements Observer {
                 maxStanding = players.get(i).getGameStanding();
         }
         player.setGameStanding(maxStanding + 1);
-        System.out.println(player.getName() + " was eliminated at " + (numPlayers - player.getGameStanding() + 1) + "th place.");
+        riskFrame.handleRiskUpdate(new RiskEventPlayer(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), player));
+    }
+
+    public int getNumPlayers() {
+        return numPlayers;
     }
 }
