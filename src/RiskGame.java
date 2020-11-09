@@ -13,10 +13,19 @@ import java.util.*;
  */
 public class RiskGame implements Observer {
 
+
     private List<Player> players;
+    private int currentPlayerIndex;
+    private TurnPhase phase;
     private boolean gameInProgress;
     private InputParser parser;
     private int numPlayers;
+
+    private Territory fromTerritory;
+    private Territory toTerritory;
+    private int attackDiceNum;
+    private int defendDiceNum;
+
     public static final int MIN_ARMY_ATTACK = 2;
     public static final int MIN_PLAYERS = 2;
     public static final int MAX_PLAYERS = 6;
@@ -26,10 +35,7 @@ public class RiskGame implements Observer {
     public static final int MAX_DICE_ROLL = 6;
     public static final int MIN_ARMY_TO_MOVE_FROM_ATTACK = 5;
 
-    private ArrayList<RiskView> views;
-
-    //private RiskMap riskMap;
-    private RiskFrame riskFrame;
+    private RiskView riskFrame;
 
     /**
      * Constructor of the RiskGame class. It initializes the field values, sets up the initial game state
@@ -37,14 +43,23 @@ public class RiskGame implements Observer {
     public RiskGame(){
         players = new ArrayList<>();
         gameInProgress = true;
-        views = new ArrayList<>();
-        //parser = new InputParser(riskMap);
 
         //create all Players, Territories and Continents
         setupOptions();
+        currentPlayerIndex = 0;
 
         //auto assign starting player armies to territories
         autoPlaceArmies();
+
+        attackDiceNum = 0;
+        defendDiceNum = 0;
+
+        phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
+    }
+
+    public void addView(RiskView view) {
+        riskFrame = view;
+        riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
     }
 
     /**
@@ -62,7 +77,7 @@ public class RiskGame implements Observer {
 
         //Prompting for player information
         String str = JOptionPane.showInputDialog("Enter Number of Players (2-6):");
-        int numPlayers = 0;
+        numPlayers = 0;
         try
         {
             if(str != null)
@@ -72,7 +87,7 @@ public class RiskGame implements Observer {
         {
             numPlayers = 0;
         }
-        while (!(numPlayers >= 2 && numPlayers < 7)) {
+        while (!(numPlayers >= MIN_PLAYERS && numPlayers <= MAX_PLAYERS)) {
             numPlayers = Integer.parseInt(JOptionPane.showInputDialog("Invalid. Please enter number of players between 2-6:"));
         }
         for (int i = 0; i < numPlayers; i++) {
@@ -217,7 +232,7 @@ public class RiskGame implements Observer {
                 System.out.println();
             }
         }
-    }
+    } //deprecate this
 
     /**
      * printWinner prints the winner of the game and all the other player standings
@@ -237,7 +252,7 @@ public class RiskGame implements Observer {
                 }
             }
         }
-    }
+    } //deprecate this
 
     /**
      * printStalemate prints a stalemate game ending
@@ -246,63 +261,55 @@ public class RiskGame implements Observer {
         System.out.println("");
         System.out.println("=============== STALEMATE =================");
         System.out.println("all remaining player don't have enough troops to mount an attack");
+    } //deprecate this
+
+    private Player getCurrentPlayer() {
+        return players.get(currentPlayerIndex);
     }
 
-    /**
-     * processCommand executes a command once given an input.
-     * @param player An input player object used by the methods.
-     * @param command The command to be processed.
-     */
-    private void processCommand(Player player, CommandWord command){
-        if(command == CommandWord.ATTACK){
-            battle(player);
-
-            //todo, for every class that implements the view interface, tell them to handle the change in map state
+    public void processTerritory(Territory territory) {
+        if (phase == TurnPhase.ATTACK_CHOOSE_ATTACKERS) {
+            fromTerritory = territory;
+            phase = TurnPhase.ATTACK_CHOOSE_ENEMY;
+            riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ENEMY, getCurrentPlayer(), territory.getAdjacentEnemyTerritories()));
         }
-        else if(command == CommandWord.STATUS){
-            printMapState();
+        else if (phase == TurnPhase.ATTACK_CHOOSE_ENEMY) {
+            toTerritory = territory;
+            phase = TurnPhase.ATTACK_CHOOSE_DICE;
+            riskFrame.handleRiskUpdate(new RiskEventBounds(this, TurnPhase.ATTACK_CHOOSE_DICE, getCurrentPlayer(), 1, Math.min(fromTerritory.getArmies() - 1, MAX_ATTACK_DICE)));
         }
-        else if(command == CommandWord.PASS){
-            player.setTurnPhase(TurnPhase.END);
-        }
+        //eventually, move
     }
 
-    /**
-     * battle determines the territories a player attacks and attacks from as well as the outcomes of a battle and their
-     * placement in the game
-     * @param player The player that starts the attack.
-     */
-    private void battle(Player player){
-        String territoryString = "";
-        for (Territory territory : player.getAttackableTerritories()) {
-            territoryString += territory.toString() + ", ";
-        }
-        territoryString = territoryString.substring(0, territoryString.length() - 2);
-        System.out.println("Territories to attack from: " + territoryString + "\n" +
-                "Enter the name of the territory you wish to attack from.");
-        Territory attackingTerritory = parser.getTerritory(player.getAttackableTerritories());
+    public void passTurn() {
+        do {
+            currentPlayerIndex++;
+            if (currentPlayerIndex >= numPlayers) {
+                currentPlayerIndex = 0;
+            }
+        } while (players.get(currentPlayerIndex).getGameStanding() != 0 );
 
-        territoryString = "";
-        for (Territory territory : attackingTerritory.getAdjacentEnemyTerritories()) {
-            territoryString += territory.toString() + ", ";
-        }
-        territoryString = territoryString.substring(0, territoryString.length() - 2);
-        System.out.println("Choose a territory to attack: " + territoryString);
-        Territory defendingTerritory = parser.getTerritory(attackingTerritory.getAdjacentEnemyTerritories());
+        attackDiceNum = 0;
+        defendDiceNum = 0;
+        phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
+        riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
+    }
 
-        int attackingArmy = attackingTerritory.getArmies();
-        int maxAttackDice = Math.min(attackingArmy - 1, MAX_ATTACK_DICE);
-        String diceList = "";
-        for (int i = 1; i <= maxAttackDice; i++) {
-            diceList += i + " ";
-        }
-        System.out.println("Choose the number of dice to throw from: " + diceList);
-        int attackDiceNum = parser.getInt(1, attackingArmy - 1);
+    public void setAttackDice(int num) {
+        //should check bounds again
+        attackDiceNum = num;
+        phase = TurnPhase.DEFEND_CHOOSE_DICE;
+        riskFrame.handleRiskUpdate(new RiskEventBounds(this, TurnPhase.DEFEND_CHOOSE_DICE, getCurrentPlayer(), 1, Math.min(toTerritory.getArmies(), MAX_DEFEND_DICE)));
+    }
 
-        //defender will throw max dice possible (instead of letting them choose)
-        int defendDiceNum = Math.min(defendingTerritory.getArmies(), MAX_DEFEND_DICE);
+    public void setDefendDice(int num) {
+        //should check bounds again
+        defendDiceNum = num;
+        battle();
+    }
+
+    private void battle() {
         Random rand = new Random();
-
         ArrayList<Integer> attackDice = new ArrayList<>();
         for (int i = 0; i < attackDiceNum; i++) {
             attackDice.add(rand.nextInt(MAX_DICE_ROLL) + MIN_DICE_ROLL);
@@ -314,20 +321,6 @@ public class RiskGame implements Observer {
             defendDice.add(rand.nextInt(MAX_DICE_ROLL) + MIN_DICE_ROLL);
         }
         Collections.sort(defendDice, Collections.reverseOrder());
-
-        String diceRolls = "";
-        for (Integer i : attackDice) {
-            diceRolls += i + ", ";
-        }
-        diceRolls = diceRolls.substring(0, diceRolls.length() - 2);
-        System.out.println("Attacker rolls: " + diceRolls);
-
-        diceRolls = "";
-        for (Integer i : defendDice) {
-            diceRolls += i + ", ";
-        }
-        diceRolls = diceRolls.substring(0, diceRolls.length() - 2);
-        System.out.println("Defender rolls: " + diceRolls);
 
         int attackArmyLoss = 0;
         int defendArmyLoss = 0;
@@ -342,28 +335,58 @@ public class RiskGame implements Observer {
             }
         }
 
-        attackingTerritory.subtractArmies(attackArmyLoss);
-        System.out.println("Attackers (" + attackingTerritory.getName() + ") lost " + attackArmyLoss + " armies.");
-        if (defendingTerritory.getArmies() > defendArmyLoss) {
-            defendingTerritory.subtractArmies(defendArmyLoss);
-            System.out.println("Defenders (" + defendingTerritory.getName() + ") lost " + defendArmyLoss + " armies.");
-        }
-        else {
-            System.out.println(player.getName() + " took over " + defendingTerritory.getOwner().getName() + "'s " + defendingTerritory.getName());
+        fromTerritory.subtractArmies(attackArmyLoss);
+        Player defender = toTerritory.getOwner();
 
-            defendingTerritory.getOwner().removeTerritory(defendingTerritory);
-            player.addTerritory(defendingTerritory);
+        if (toTerritory.getArmies() > defendArmyLoss) {
+            toTerritory.subtractArmies(defendArmyLoss);
 
-            if (attackingTerritory.getArmies() < MIN_ARMY_TO_MOVE_FROM_ATTACK) {
-                defendingTerritory.setArmies(attackingTerritory.getArmies() - 1);
-                attackingTerritory.setArmies(1);
+            riskFrame.handleRiskUpdate(new RiskEventDiceResults(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), fromTerritory, toTerritory, attackDice, defendDice, attackArmyLoss, defendArmyLoss, defender));
+            if (getCurrentPlayer().canAttack()) {
+                phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
+                riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
             }
             else {
-                System.out.println("Choose the number of Army units to move to " + defendingTerritory.getName() + ": 3 to " + (attackingTerritory.getArmies() - 1));
-                int armyToMove = parser.getInt(3, attackingTerritory.getArmies() - 1);
-                defendingTerritory.setArmies(armyToMove);
-                attackingTerritory.subtractArmies(armyToMove);
+                passTurn();
             }
+        }
+        else {
+            defender.removeTerritory(toTerritory);
+            getCurrentPlayer().addTerritory(toTerritory);
+
+            if (fromTerritory.getArmies() < MIN_ARMY_TO_MOVE_FROM_ATTACK) {
+                toTerritory.setArmies(fromTerritory.getArmies() - 1);
+                fromTerritory.setArmies(1);
+
+                riskFrame.handleRiskUpdate(new RiskEventDiceResults(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), fromTerritory, toTerritory, attackDice, defendDice, attackArmyLoss, -1, defender));
+                if (getCurrentPlayer().canAttack()) {
+                    phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
+                    riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
+                }
+                else {
+                    passTurn();
+                }
+            }
+            else {
+                toTerritory.setArmies(0);
+                phase = TurnPhase.ATTACK_CHOOSE_MOVE;
+                riskFrame.handleRiskUpdate(new RiskEventDiceResults(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), fromTerritory, toTerritory, attackDice, defendDice, attackArmyLoss, -1, defender));
+                riskFrame.handleRiskUpdate(new RiskEventBounds(this, TurnPhase.ATTACK_CHOOSE_MOVE, getCurrentPlayer(), MIN_ARMY_TO_MOVE_FROM_ATTACK - 1, fromTerritory.getArmies() - 1));
+            }
+        }
+    }
+
+    public void move(int num) {
+        //should check bounds again
+        toTerritory.addArmies(num);
+        fromTerritory.subtractArmies(num);
+
+        if (getCurrentPlayer().canAttack()) {
+            phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
+            riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
+        }
+        else {
+            passTurn();
         }
     }
 
@@ -376,6 +399,9 @@ public class RiskGame implements Observer {
     public void update(Observable o, Object arg) {
         updatePlayerGameStanding((Player) o);
         updateGameInProgress();
+        if (!gameInProgress) {
+            riskFrame.handleRiskUpdate(new RiskEventEnd(this, TurnPhase.END, getCurrentPlayer(), players));
+        }
     }
 
     /**
@@ -389,7 +415,6 @@ public class RiskGame implements Observer {
             if (p.getGameStanding() == 0)
                 playersLeft++;
         }
-        System.out.println("PLAYERS LEFT" + playersLeft);
         gameInProgress = (playersLeft >= 2);
     }
 
@@ -404,160 +429,10 @@ public class RiskGame implements Observer {
                 maxStanding = players.get(i).getGameStanding();
         }
         player.setGameStanding(maxStanding + 1);
-        System.out.println(player.getName() + " was eliminated at " + (numPlayers - player.getGameStanding() + 1) + "th place.");
+        riskFrame.handleRiskUpdate(new RiskEventPlayer(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), player));
     }
 
-    public void addRiskView (RiskView rview) {views.add(rview);}
-    private void removeRiskView (RiskView rview){views.remove(rview);}
-
-    public void play(){
-
-        // variables used to detect stalemate
-        boolean stalemateOccuredFlag = false;
-        int playersWhoWereForcePassed = 0;
-
-        //main game loop
-        int currPlayerIndex = 0;
-        while (this.gameInProgress) {
-
-            //calculate amount of players left (used in stalemate check)
-            int playersleft = 0;
-            for (Player p : this.players){
-                if (p.getGameStanding() == 0)
-                    playersleft++;
-            }
-
-            System.out.println("");
-            System.out.println("===========================================");
-
-            Player currPlayer = this.players.get(currPlayerIndex);
-
-            //only do player's turn if they are still alive
-            if (currPlayer.getGameStanding() == 0) {
-                System.out.println(currPlayer.getName() + "'s turn");
-                currPlayer.setTurnPhase(TurnPhase.ATTACK);
-
-                while(currPlayer.getTurnPhase() == TurnPhase.ATTACK && this.gameInProgress){
-
-                    //check if the player is actually able to attack (since at this point there is no move or deploy phase)
-                    if(currPlayer.canAttack()){
-                        //CommandWord command = this.parser.getCommand(validCommands); //commented for now, uses parser
-                        //this.processCommand(currPlayer, command);
-                        battle(currPlayer);
-                    }
-                    //if the player couldn't attack, force pass their turn and increment playersWhoWereForcePassed (used to check stalemate)
-                    else{
-                        System.out.println("passing " + currPlayer.getName() + "'s turn since none of their territories have enough armies to attack");
-                        currPlayer.setTurnPhase(TurnPhase.END);
-                        playersWhoWereForcePassed ++;
-                    }
-                }
-            }
-
-            // todo, finish this after battle() is split into 2 methods one where it takes a territory to attack from another where it takes a territory to attack
-            /*for (RiskView v: views){
-                v.handleRiskUpdate(new RiskEvent(this,  ));
-            }*/
-
-            //if last while loop iteration before currPlayerIndex reset, check stalemate
-            //(executes once per cycle after each player has taken their turn)
-            if((currPlayerIndex + 1) % this.numPlayers == 0){
-                if(playersleft == playersWhoWereForcePassed){
-                    stalemateOccuredFlag = true;
-                    break;
-                }
-                //also reset playersWhoWereForcePassed for next cycle
-                playersWhoWereForcePassed = 0;
-            }
-
-            //increment currPlayerIndex to be index of Player who goes next
-            currPlayerIndex = (currPlayerIndex + 1) % this.numPlayers;
-        }
-
-        //if game ended naturally without a stalemate print winner
-        if(!stalemateOccuredFlag){
-            this.printWinner();
-        }
-        //else print stalemate
-        else{
-            this.printStalemate();
-        }
+    public int getNumPlayers() {
+        return numPlayers;
     }
-
-
-//    public static void main(String[] args){
-//        RiskGame game = new RiskGame();
-//
-//        //for now, there are no commands that can only happen at specific times, so all commands are always available
-//        List<CommandWord> validCommands = new ArrayList<>();
-//        validCommands.add(CommandWord.STATUS);
-//        validCommands.add(CommandWord.ATTACK);
-//        validCommands.add(CommandWord.PASS);
-//
-//        //various variables used to detect stalemate
-//        boolean stalemateOccuredFlag = false;
-//        int playersWhoWereForcePassed = 0;
-//
-//        //main game loop
-//        int currPlayerIndex = 0;
-//        while (game.gameInProgress) {
-//
-//            //calculate amount of players left (used in stalemate check)
-//            int playersleft = 0;
-//            for (Player p : game.players){
-//                if (p.getGameStanding() == 0)
-//                    playersleft++;
-//            }
-//
-//            System.out.println("");
-//            System.out.println("===========================================");
-//
-//            Player currPlayer = game.players.get(currPlayerIndex);
-//
-//            //only do player's turn if they are still alive
-//            if (currPlayer.getGameStanding() == 0) {
-//                System.out.println(currPlayer.getName() + "'s turn");
-//                currPlayer.setTurnPhase(TurnPhase.ATTACK);
-//
-//                while(currPlayer.getTurnPhase() == TurnPhase.ATTACK && game.gameInProgress){
-//
-//                    //check if the player is actually able to attack (since at this point there is no move or deploy phase)
-//                    if(currPlayer.canAttack()){
-//                        CommandWord command = game.parser.getCommand(validCommands);
-//                        game.processCommand(currPlayer, command);
-//                    }
-//                    //if the player couldn't attack, force pass their turn and increment playersWhoWereForcePassed (used to check stalemate)
-//                    else{
-//                        System.out.println("passing " + currPlayer.getName() + "'s turn since none of their territories have enough armies to attack");
-//                        currPlayer.setTurnPhase(TurnPhase.END);
-//                        playersWhoWereForcePassed ++;
-//                    }
-//                }
-//            }
-//
-//            //if last while loop iteration before currPlayerIndex reset, check stalemate
-//            //(executes once per cycle after each player has taken their turn)
-//            if((currPlayerIndex + 1) % game.numPlayers == 0){
-//                if(playersleft == playersWhoWereForcePassed){
-//                    stalemateOccuredFlag = true;
-//                    break;
-//                }
-//                //also reset playersWhoWereForcePassed for next cycle
-//                playersWhoWereForcePassed = 0;
-//            }
-//
-//            //increment currPlayerIndex to be index of Player who goes next
-//            currPlayerIndex = (currPlayerIndex + 1) % game.numPlayers;
-//        }
-//
-//        //if game ended naturally without a stalemate print winner
-//        if(!stalemateOccuredFlag){
-//            game.printWinner();
-//        }
-//        //else print stalemate
-//        else{
-//            game.printStalemate();
-//        }
-//    }
-
 }
