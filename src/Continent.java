@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,9 @@ public class Continent {
 
     private String name;
     private List<Territory> territories;
+    private int xPos;
+    private int yPos;
+    private Color color;
     //private static Map<Territory, Continent> territoryContinentMap = new HashMap<>();
 
     /**
@@ -21,9 +25,12 @@ public class Continent {
      * @param name Name of the continent.
      * @param territories A list of territories associated with the continent.
      */
-    public Continent(String name, List<Territory> territories){
+    public Continent(String name, List<Territory> territories, int xPos, int yPos, Color color){
         this.name = name;
         this.territories = territories;
+        this.xPos = xPos;
+        this.yPos = yPos;
+        this.color = color;
 //        for (Territory t : territories) {
 //            territoryContinentMap.put(t, this);
 //        }
@@ -43,6 +50,18 @@ public class Continent {
      */
     public List<Territory> getTerritories(){
         return this.territories;
+    }
+
+    public int getXPos(){
+        return this.xPos;
+    }
+
+    public int getYPos(){
+        return this.yPos;
+    }
+
+    public Color getColor(){
+        return this.color;
     }
 
 //    /**

@@ -13,13 +13,16 @@ public class RiskMapPanel extends JPanel implements RiskView {
     private RiskMap riskMap;
     private BufferedImage image;
     private List<JButton> territoryButtons;
-    private List<JLabel> ownerLabels;
+    private List<JLabel> territoryOwnerLabels;
+    private List<JLabel> continentOwnerLabels;
 
     public RiskMapPanel(RiskMap riskMap, RiskGame rg) {
         this.riskMap = riskMap;
         territoryButtons = new ArrayList<>();
-        ownerLabels = new ArrayList<>();
+        territoryOwnerLabels = new ArrayList<>();
+        continentOwnerLabels = new ArrayList<>();
         RiskMapController rmc = new RiskMapController(rg);
+
         //then for each Territory in territoryMap hash map, draw a circle at the Territory's x,y coordinates and draw the Territory name
         this.setLayout(null);
         Iterator hmIterator = riskMap.getTerritoryMap().entrySet().iterator(); //reset iterator
@@ -50,8 +53,36 @@ public class RiskMapPanel extends JPanel implements RiskView {
             JLabel labelTerritoryOwner = new JLabel(tempTerritory.getOwner().getName());
             labelTerritoryOwner.setBounds(tempTerritory.getXPos()+19, tempTerritory.getYPos()-14, 80, 40);
             labelTerritoryOwner.setName(tempTerritory.getName());
-            ownerLabels.add(labelTerritoryOwner);
+            territoryOwnerLabels.add(labelTerritoryOwner);
             this.add(labelTerritoryOwner);
+        }
+
+        //also add continent name and owner JLabels to continentOwnerLabels
+        for(Continent tempContinent: RiskMap.getContinentsArrayList()) {
+
+            //add continent name JLabel
+            JLabel labelContinentName = new JLabel(tempContinent.toString());
+            labelContinentName.setBounds(tempContinent.getXPos()+9, tempContinent.getYPos()-28, 80, 40);
+            this.add(labelContinentName);
+
+            //then add owner (just get the owner of the first territory in continent and if check if he owns the continent)
+            Player ownerOfFirst = tempContinent.getTerritories().get(0).getOwner();
+
+            JLabel labelContinentOwner = new JLabel(tempContinent.toString());
+            labelContinentOwner.setBounds(tempContinent.getXPos()+9, tempContinent.getYPos()-14, 80, 40);
+
+
+            if(ownerOfFirst.getContinents().contains(tempContinent)){
+                labelContinentOwner.setText(ownerOfFirst.getName());
+                labelContinentOwner.setName(ownerOfFirst.getName());
+            }
+            else{
+                labelContinentOwner.setText("unowned");
+                labelContinentOwner.setName("unowned");
+            }
+
+            continentOwnerLabels.add(labelContinentOwner);
+            this.add(labelContinentOwner);
         }
     }
 
@@ -75,7 +106,7 @@ public class RiskMapPanel extends JPanel implements RiskView {
         g2.drawLine(80,100,20,100);
         g2.drawLine(1050, 90,1200,90);
 
-        //first draw each of the "connections" between Territories
+        //draw each of the "connections" between Territories
         //todo, right now this approach actually draws each connection twice, is there a better way???
         g2.setColor(Color.black);
         Iterator hmIterator = riskMap.getTerritoryMap().entrySet().iterator();
@@ -101,6 +132,15 @@ public class RiskMapPanel extends JPanel implements RiskView {
             g2.drawRect(tempTerritory.getXPos(), tempTerritory.getYPos()-14, 90,26);
             g2.setColor(Color.cyan);
             g2.fillRect(tempTerritory.getXPos(), tempTerritory.getYPos()-14, 90,26);
+        }
+
+        //draw continent name and ownership boxes
+        for(Continent tempContinent: RiskMap.getContinentsArrayList()){
+            //draw mini background rectangle for Territory name and number of armies
+            g2.setColor(Color.black);
+            g2.drawRect(tempContinent.getXPos(), tempContinent.getYPos()-14, 90,26);
+            g2.setColor(tempContinent.getColor());
+            g2.fillRect(tempContinent.getXPos(), tempContinent.getYPos()-14, 90,26);
         }
     }
 
@@ -130,11 +170,23 @@ public class RiskMapPanel extends JPanel implements RiskView {
                 buttonTerritory.setEnabled(false);
             }
         }
+
         if (e instanceof RiskEventTerritories) {
             RiskEventTerritories territoryEvent = (RiskEventTerritories)e;
             for (JLabel labelOwner : ownerLabels) {
                 if (labelOwner.getName().equals(territoryEvent.getTerritoryTo().getName()) && !labelOwner.getName().equals(territoryEvent.getTerritoryTo().getOwner().getName())) {
                     labelOwner.setText(territoryEvent.getTerritoryTo().getOwner().getName());
+                }
+
+            }
+        }
+
+        for (JLabel labelOwner : continentOwnerLabels) {
+            for (Player p : ((RiskGame) e.getSource()).getPlayers()) {
+                for (Continent c : p.getContinents()) {
+                    if (! c.toString().equals( labelOwner.getName())){
+                        labelOwner.setText(p.getName());
+                    }
                 }
             }
         }
