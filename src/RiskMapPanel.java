@@ -173,22 +173,23 @@ public class RiskMapPanel extends JPanel implements RiskView {
 
         if (e instanceof RiskEventTerritories) {
             RiskEventTerritories territoryEvent = (RiskEventTerritories)e;
-            for (JLabel labelOwner : ownerLabels) {
+            for (JLabel labelOwner : territoryOwnerLabels) {
                 if (labelOwner.getName().equals(territoryEvent.getTerritoryTo().getName()) && !labelOwner.getName().equals(territoryEvent.getTerritoryTo().getOwner().getName())) {
                     labelOwner.setText(territoryEvent.getTerritoryTo().getOwner().getName());
                 }
-
             }
         }
 
-        for (JLabel labelOwner : continentOwnerLabels) {
-            for (Player p : ((RiskGame) e.getSource()).getPlayers()) {
-                for (Continent c : p.getContinents()) {
-                    if (! c.toString().equals( labelOwner.getName())){
-                        labelOwner.setText(p.getName());
-                    }
-                }
-            }
-        }
+        //todo, if e is and instance of RiskEventContinent check if continent label should be changed
+//        for (JLabel labelOwner : continentOwnerLabels) {
+//            for (Player p : ((RiskGame) e.getSource()).getPlayers()) {
+//                for (Continent c : p.getContinents()) {
+//                    if (! c.toString().equals( labelOwner.getName())){
+//                        labelOwner.setText(p.getName());
+//                    }
+//                }
+//            }
+//        }
+
     }
 }

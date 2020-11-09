@@ -26,11 +26,10 @@ public class RiskFrame extends JFrame implements RiskView {
 
     public RiskFrame(RiskMap riskMap) {
         super("RISK");
-        /*RiskGame*/ rg = new RiskGame();
+        rg = new RiskGame();
         this.riskMap = riskMap;
         this.setLayout(new BorderLayout());
 
-        rg.addRiskView(this); //Registering this frame as a View in the model
         territoryCircles = new ArrayList<Shape>();
         mapPanel = new RiskMapPanel(riskMap, rg);
 
