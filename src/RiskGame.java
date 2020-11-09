@@ -432,6 +432,10 @@ public class RiskGame implements Observer {
         riskFrame.handleRiskUpdate(new RiskEventPlayer(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), player));
     }
 
+    public List<Player> getPlayers(){
+        return this.players;
+    }
+
     public int getNumPlayers() {
         return numPlayers;
     }
