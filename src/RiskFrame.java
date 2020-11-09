@@ -14,8 +14,6 @@ public class RiskFrame extends JFrame implements RiskView {
     private JLabel turn;
     private JLabel info;
 
-    private ArrayList<Shape> territoryCircles;
-
     //todo, move hardcoded values into finals here
     //todo, clean up the wording of comments once done everything
 
@@ -30,7 +28,6 @@ public class RiskFrame extends JFrame implements RiskView {
         this.riskMap = riskMap;
         this.setLayout(new BorderLayout());
 
-        territoryCircles = new ArrayList<Shape>();
         mapPanel = new RiskMapPanel(riskMap, rg);
 
         JPanel playerInputPanel = new JPanel();
@@ -40,11 +37,9 @@ public class RiskFrame extends JFrame implements RiskView {
         turnpanel.add(turn);
         turnpanel.add(info);
         JPanel buttonpanel = new JPanel();
-        //JButton attack = new JButton("ATTACK");
         JButton pass = new JButton("PASS");
         pass.setActionCommand("pass");
 
-        //buttonpanel.add(attack);
         buttonpanel.add(pass);
         playerInputPanel.add(turnpanel);
         playerInputPanel.add(buttonpanel);
@@ -64,16 +59,19 @@ public class RiskFrame extends JFrame implements RiskView {
 
     //whenever a change to the model is made, the model will notify all Classes that implement the RiskView Interface
     //by invoking their handleRiskUpdate method, for RiskFrame, the handleRiskUpdate method redraws the updated map
-    //by triggering the paint method of mapPanel
+    //by triggering the handleRiskUpdate method of RiskMapPanel
     @Override
     public void handleRiskUpdate(RiskEvent e) {
         mapPanel.handleRiskUpdate(e);
         turn.setText(e.getCurrentPlayer().getName() + "'s turn"); //include the phase
-
-
-
-        if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_DICE) { //update this to use new phases
-            //info.setText("Choose a number of dice to attack with."); //list options
+        if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_ATTACKERS) {
+            info.setText("Choose a Territory to attack with.");
+        }
+        else if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_ENEMY) {
+            info.setText("Choose a Territory to attack.");
+        }
+        else if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_DICE) { //update this to use new phases
+            info.setText("Choose a number of dice to attack with."); //list options
             //TODO: wrap JOptionPane in the try catch, or implement a spinner
             String str = JOptionPane.showInputDialog("Choose a number of dice to attack with (1 - " + ((RiskEventBounds)e).getMaxChoice() + ")"); //list options
             int diceNum = 0;
@@ -92,6 +90,7 @@ public class RiskFrame extends JFrame implements RiskView {
             rg.setAttackDice(diceNum); //note! some controller logic in here
         }
         else if (e.getPhase() == TurnPhase.DEFEND_CHOOSE_DICE) {
+            info.setText("Choose a number of dice to defend with.");
             //TODO: wrap JOptionPane in the try catch, or implement a spinner
             String str = JOptionPane.showInputDialog("Choose a number of dice to defend with (1 - " + ((RiskEventBounds)e).getMaxChoice() + ")"); //list options
             int diceNum = 0;
@@ -110,6 +109,7 @@ public class RiskFrame extends JFrame implements RiskView {
             rg.setDefendDice(diceNum); //note! some controller logic in here
         }
         else if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_MOVE) {
+            info.setText("Choose a number of army to move.");
             //TODO: wrap JOptionPane in the try catch, or implement a spinner
             String str = JOptionPane.showInputDialog("Choose a number of army to move ("+ ((RiskEventBounds)e).getMinChoice() + " - " + ((RiskEventBounds)e).getMaxChoice() + ")"); //list options
             int armyNum = 0;
@@ -128,6 +128,7 @@ public class RiskFrame extends JFrame implements RiskView {
             rg.move(armyNum); //note! some controller logic in here
         }
         else if (e.getPhase() == TurnPhase.ATTACK_RESULT) {
+            info.setText("Game over!");
             if (e instanceof RiskEventDiceResults) {
                 RiskEventDiceResults diceResults = (RiskEventDiceResults) e;
 
@@ -174,13 +175,10 @@ public class RiskFrame extends JFrame implements RiskView {
             }
             JOptionPane.showMessageDialog(this, message);
         }
-
     }
 
-    //main
     public static void main(String[] args) {
         RiskMap riskMap = new RiskMap();
         RiskFrame rf = new RiskFrame(riskMap);
     }
-
 }
