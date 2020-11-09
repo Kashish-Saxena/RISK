@@ -138,7 +138,8 @@ public class RiskMap {
         Continent africa = new Continent("Africa", Arrays.asList(congo,eastAfrica,egypt,madagascar,northAfrica,southAfrica), 495, 505, new Color(150,100,0));
         Continent asia = new Continent("Asia", Arrays.asList(afghanistan,china,india,irkutsk,japan,kamchatka,middleEast,
                 mongolia,siam,siberia,ural,yakutsk), 1100, 300, new Color(100,250,100));
-        Continent australia = new Continent("Australia", Arrays.asList(easternAustralia,indonesia,newGuinea,westernAustralia), 1100, 385, new Color(150,0,200));
+        Continent australia = new Continent("Australia", Arrays.asList(easternAustralia,indonesia,newGuinea,westernAustralia), 1100, 385, new Color(230
+                ,0,250));
 
         //add all continents to territoryContinentMap hash map
         for(Territory t: northAmerica.getTerritories()){ territoryContinentMap.put(t, northAmerica); }
