@@ -6,7 +6,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class TerritoryTest {
-
+    //TODO use methods in RiskMap
     @Test
     public void testGetName() {
         Territory territory1 = new Territory("Territory1", 0, 0);
@@ -27,7 +27,7 @@ public class TerritoryTest {
 
     @Test
     public void testGetOwner() {
-        RiskGame rg = new RiskGame();
+        RiskGame rg = new RiskGame(true);
         Player player1 = new Player("Player1", rg);
         Territory territory1 = new Territory("Territory1", 0, 0);
         territory1.setOwner(player1);
@@ -36,7 +36,7 @@ public class TerritoryTest {
 
     @Test
     public void testChangeOwner() {
-        RiskGame rg = new RiskGame();
+        RiskGame rg = new RiskGame(true);
         Player player1 = new Player("Player1", rg);
         Player player2 = new Player("Player2", rg);
         Territory territory1 = new Territory("Territory1", 0, 0);
@@ -122,30 +122,28 @@ public class TerritoryTest {
 
     @Test
     public void testGetAdjacentEnemyTerritories() {
-        RiskGame rg = new RiskGame();
+        RiskGame rg = new RiskGame(true);
         Player player1 = new Player("Player1", rg);
         Player player2 = new Player("Player2", rg);
 
         Territory territory1 = new Territory("Territory1", 0, 0);
-        territory1.setOwner(player1);
         Territory territory2 = new Territory("Territory2", 0, 0);
+        territory1.setOwner(player1);
         territory2.setOwner(player1);
 
-        Territory territory3 = new Territory("Territory3", 0, 0);
-        Territory territory4 = new Territory("Territory4", 0, 0);
+        Territory territory3 = new Territory("EnemyTerritory3", 0, 0);
+        Territory territory4 = new Territory("EnemyTerritory4NotAdjacent", 0, 0);
         territory3.setOwner(player2);
         territory4.setOwner(player2);
 
         List<Territory> territoryList = new ArrayList<>();
         territoryList.add(territory2);
         territoryList.add(territory3);
-        territoryList.add(territory4);
         territory1.setAdjacentTerritories(territoryList);
 
         List<Territory> enemyTerritoryList = new ArrayList<>();
-        territoryList.add(territory3);
-        territoryList.add(territory4);
+        enemyTerritoryList.add(territory3);
 
-        assertArrayEquals(enemyTerritoryList.toArray(), territory1.getAdjacentTerritories().toArray());
+        assertArrayEquals(enemyTerritoryList.toArray(), territory1.getAdjacentEnemyTerritories().toArray());
     }
 }

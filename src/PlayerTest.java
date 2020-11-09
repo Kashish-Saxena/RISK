@@ -13,7 +13,8 @@ public class PlayerTest {
 
     @org.junit.Before
     public void setUp() throws Exception {
-        RiskGame rg = new RiskGame();
+        RiskMap rm = new RiskMap(true);
+        rg = new RiskGame(true);
     }
 
     @Test
@@ -52,11 +53,32 @@ public class PlayerTest {
         territory1Adjacent.add(enemyTerritory1);
 
         List<Territory> territory2Adjacent = new ArrayList<Territory>();
-        territory1Adjacent.add(territory1);
-        territory1Adjacent.add(enemyTerritory1);
+        territory2Adjacent.add(territory1);
+        territory2Adjacent.add(enemyTerritory1);
 
         territory1.setAdjacentTerritories(territory1Adjacent);
         territory2.setAdjacentTerritories(territory2Adjacent);
+
+        List<Territory> territoriesInContinent = new ArrayList<Territory>();
+        territoriesInContinent.add(territory1);
+        territoriesInContinent.add(territory2);
+        territoriesInContinent.add(enemyTerritory1);
+        territoriesInContinent.add(enemyTerritory2);
+        Continent continent1 = new Continent("Continent1", territoriesInContinent, 0, 0, Color.BLACK);
+
+        RiskMap.addTerritory(territory1);
+        RiskMap.addTerritory(territory2);
+        RiskMap.addTerritory(enemyTerritory1);
+        RiskMap.addTerritory(enemyTerritory2);
+        RiskMap.addContinent(territory1, continent1);
+        RiskMap.addContinent(territory2, continent1);
+        RiskMap.addContinent(enemyTerritory1, continent1);
+        RiskMap.addContinent(enemyTerritory2, continent1);
+
+        player1.addTerritory(territory1);
+        player1.addTerritory(territory2);
+        player2.addTerritory(enemyTerritory1);
+        player2.addTerritory(enemyTerritory2);
 
         List<Territory> attackableTerritories = new ArrayList<Territory>();
         attackableTerritories.add(territory2);
@@ -74,6 +96,17 @@ public class PlayerTest {
 
         List<Territory> territoryList = new ArrayList<Territory>();
         territoryList.add(territory1);
+
+        List<Territory> territoriesInContinent = new ArrayList<>();
+        territoriesInContinent.add(territory1);
+        territoriesInContinent.add(territory2);
+        Continent continent1 = new Continent("Continent1", territoriesInContinent, 0, 0, Color.BLACK);
+
+        RiskMap.addTerritory(territory1);
+        RiskMap.addTerritory(territory2);
+        RiskMap.addContinent(territory1, continent1);
+        RiskMap.addContinent(territory2, continent1);
+
         player1.addTerritory(territory1);
         assertArrayEquals(territoryList.toArray(), player1.getTerritories().toArray());
 
@@ -88,6 +121,12 @@ public class PlayerTest {
         assertArrayEquals((new ArrayList<Territory>()).toArray(), player1.getTerritories().toArray());
 
         Territory territory1 = new Territory("Territory1", 0, 0);
+        List<Territory> territoryList = new ArrayList<>();
+        territoryList.add(territory1);
+        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK);
+
+        RiskMap.addTerritory(territory1);
+        RiskMap.addContinent(territory1, continent1);
 
         player1.addTerritory(territory1);
         assertEquals(player1, territory1.getOwner());
@@ -99,6 +138,12 @@ public class PlayerTest {
         assertArrayEquals((new ArrayList<Territory>()).toArray(), player1.getTerritories().toArray());
 
         Territory territory1 = new Territory("Territory1", 0, 0);
+        List<Territory> territoryList = new ArrayList<>();
+        territoryList.add(territory1);
+        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK);
+
+        RiskMap.addTerritory(territory1);
+        RiskMap.addContinent(territory1, continent1);
 
         player1.addTerritory(territory1);
         assertEquals(player1, territory1.getOwner());
@@ -122,6 +167,11 @@ public class PlayerTest {
         List<Continent> continentList = new ArrayList<>();
         continentList.add(continent1);
 
+        RiskMap.addTerritory(territory1);
+        RiskMap.addTerritory(territory2);
+        RiskMap.addContinent(territory1, continent1);
+        RiskMap.addContinent(territory2, continent1);
+
         player1.addTerritory(territory1);
         assertArrayEquals((new ArrayList<Territory>()).toArray(), player1.getContinents().toArray());
 
@@ -135,9 +185,14 @@ public class PlayerTest {
         assertArrayEquals((new ArrayList<Territory>()).toArray(), player1.getTerritories().toArray());
 
         Territory territory1 = new Territory("Territory1", 0, 0);
-
         List<Territory> territoryList = new ArrayList<Territory>();
         territoryList.add(territory1);
+        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK);
+
+        RiskMap.addTerritory(territory1);
+        RiskMap.addContinent(territory1, continent1);
+        rg.addPlayer(player1);
+
         player1.addTerritory(territory1);
         assertArrayEquals(territoryList.toArray(), player1.getTerritories().toArray());
 
@@ -158,6 +213,11 @@ public class PlayerTest {
         Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK);
         List<Continent> continentList = new ArrayList<>();
         continentList.add(continent1);
+
+        RiskMap.addTerritory(territory1);
+        RiskMap.addTerritory(territory2);
+        RiskMap.addContinent(territory1, continent1);
+        RiskMap.addContinent(territory2, continent1);
 
         player1.addTerritory(territory1);
         player1.addTerritory(territory2);
@@ -193,10 +253,23 @@ public class PlayerTest {
         territoryList.add(territory2);
         territory1.setAdjacentTerritories(territoryList);
 
+        List<Territory> territoriesInContinent = new ArrayList<Territory>();
+        territoriesInContinent.add(territory1);
+        territoriesInContinent.add(territory2);
+        Continent continent1 = new Continent("Continent1", territoriesInContinent, 0, 0, Color.BLACK);
+
+        RiskMap.addTerritory(territory1);
+        RiskMap.addTerritory(territory2);
+        RiskMap.addContinent(territory1, continent1);
+        RiskMap.addContinent(territory2, continent1);
+
         territory1.setArmies(2);
         territory2.setArmies(1);
         player1.addTerritory(territory1);
         player2.addTerritory(territory2);
+
+        rg.addPlayer(player1);
+        rg.addPlayer(player2);
 
         assertTrue(player1.canAttack());
 

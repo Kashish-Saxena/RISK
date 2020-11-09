@@ -13,11 +13,13 @@ public class RiskMap {
     private static java.util.Map<Territory, Continent> territoryContinentMap;
     private static ArrayList<Continent> continents;
 
-    public RiskMap() {
+    public RiskMap(boolean testing) {
         territoryMap = new HashMap<>();
         territoryContinentMap = new HashMap<>();
         continents = new ArrayList<Continent>();
-        createMap();
+        if (!testing) {
+            createMap();
+        }
     }
 
     /**
@@ -247,6 +249,13 @@ public class RiskMap {
         return continents;
     }
 
+    public static void addTerritory(Territory territory) {
+        territoryMap.put(territory.getName().toLowerCase(), territory);
+    }
 
+    public static void addContinent(Territory territory, Continent continent) {
+        territoryContinentMap.put(territory, continent);
+        continents.add(continent);
+    }
 }
 
