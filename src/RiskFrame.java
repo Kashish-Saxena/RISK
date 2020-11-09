@@ -8,6 +8,7 @@ public class RiskFrame extends JFrame implements RiskView {
 
     //RiskFrame has a reference to map so that it can fetch all the Territory names and x,y coordinates
     private RiskMap riskMap;
+    private RiskGame rg;
     private RiskMapPanel mapPanel;
 
     private ArrayList<Shape> territoryCircles; // Create an ArrayList object
@@ -23,7 +24,7 @@ public class RiskFrame extends JFrame implements RiskView {
 
     public RiskFrame(RiskMap riskMap) {
         super("RISK");
-        RiskGame rg = new RiskGame();
+        /*RiskGame*/ rg = new RiskGame();
         this.riskMap = riskMap;
 
         this.setLayout(new BorderLayout());
@@ -35,22 +36,27 @@ public class RiskFrame extends JFrame implements RiskView {
         JPanel turnpanel = new JPanel();
         JLabel turn = new JLabel("Player's turn");
         turnpanel.add(turn);
+        turnpanel.add(info);
         JPanel buttonpanel = new JPanel();
-        JButton attack = new JButton("ATTACK");
+        //JButton attack = new JButton("ATTACK");
         JButton pass = new JButton("PASS");
         buttonpanel.add(attack);
         buttonpanel.add(pass);
         playerInputPanel.add(turnpanel);
         playerInputPanel.add(buttonpanel);
 
+        RiskFrameController rfc = new RiskFrameController(rg);
+        pass.addActionListener(rfc);
+
         //this.add(mapPanel);
         this.add(mapPanel,BorderLayout.CENTER);
         this.add(playerInputPanel, BorderLayout.SOUTH);
 
-        this.setSize(1250, 700);
+        this.setSize(1200, 700);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
         this.setVisible(true);
+        rg.addView(this);
     }
 
     //whenever a change to the model is made, the model will notify all Classes that implement the RiskView Interface

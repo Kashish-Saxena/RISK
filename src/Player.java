@@ -17,7 +17,7 @@ public class Player extends Observable {
     private List<Continent> ownedContinents;
     private int gameStanding;
     private int armiesToPlace;
-    private TurnPhase turnPhase;
+    private TurnPhase turnPhase; //can probably deprecate this
 
     /**
      * Constructor of the Player class. It initializes all the field values.
@@ -142,6 +142,8 @@ public class Player extends Observable {
         return this.gameStanding;
     }
 
+
+    //can probably deprecate these
     /**
      * Sets the turn phase of the player.
      * @param phase The new turn phase.
@@ -157,6 +159,8 @@ public class Player extends Observable {
     public TurnPhase getTurnPhase(){
         return this.turnPhase;
     }
+
+
 
     /**
      * Determine if the player is allowed to attack.
