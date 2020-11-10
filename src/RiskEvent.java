@@ -1,13 +1,26 @@
 import java.util.EventObject;
 
-public abstract class RiskEvent extends EventObject {
+
+/**
+ * The RiskEvent class is the superclass of other classes such as RiskEventBounds, RiskEventChooseTerritory,
+ * RiskEventEnd, RiskEventTerritories and RiskEventPlayer which are responsible for updating several parts of
+ * the GUI game when the model changes.
+ *
+ * @author David Sciola - 101082459 and Kevin Quach - 101115704
+ * @version November 9, 2020
+ */
+
+public class RiskEvent extends EventObject {
+
     private TurnPhase phase;
     private Player currentPlayer;
 
     /**
-     * Constructs a prototypical Event.
+     * Constructor of the RiskEvent class. It initializes all the field values.
      *
-     * @param rg The object on which the Event initially occurred.
+     * @param rg The RiskGame class.
+     * @param phase The TurnPhase of the player.
+     * @param currentPlayer The current player.
      * @throws IllegalArgumentException if source is null.
      */
 
@@ -17,10 +30,18 @@ public abstract class RiskEvent extends EventObject {
         this.currentPlayer = currentPlayer;
     }
 
+    /**
+     * Returns the TurnPhase of the Player.
+     * @return Returns the TurnPhase of the Player.
+     */
     public TurnPhase getPhase() {
         return phase;
     }
 
+    /**
+     * Returns the current Player.
+     * @return
+     */
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
