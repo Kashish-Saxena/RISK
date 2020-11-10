@@ -27,8 +27,8 @@ public class RiskMapPanel extends JPanel implements RiskView {
     private List<JLabel> continentOwnerLabels;
 
     /**
-     * Constructor of the RiskMap class. It initializes all the field values and then draws a circle at a Territory's X
-     * and Y coordinates along with the Territory's name.
+     * Constructor of the RiskMap class. It initializes all the field values and then creates a Jbutton for each Territory at the Territory's X
+     * and Y coordinates along with the Territory's name and ownership labels.
      * @param riskMap The Risk Map containing territories and continents.
      * @param rg The Risk Game class.
      */
