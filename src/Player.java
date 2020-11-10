@@ -94,9 +94,10 @@ public class Player extends Observable {
         ownedTerritories.remove(territory);
 
         //if this Player just died, notify Game to trigger its update() method
-        if (ownedTerritories.isEmpty())
+        if (ownedTerritories.isEmpty()) {
             setChanged();
             notifyObservers();
+        }
 
         this.removeContinent(RiskMap.getContinentFromTerritory(territory));
     }

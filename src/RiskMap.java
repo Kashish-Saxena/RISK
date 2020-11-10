@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 /**
  *  The RiskMap class does the initial instantiation of territories and continents and

@@ -1,5 +1,6 @@
 import java.util.EventObject;
 
+
 /**
  * The RiskEvent class is the superclass of other classes such as RiskEventBounds, RiskEventChooseTerritory,
  * RiskEventEnd, RiskEventTerritories and RiskEventPlayer which are responsible for updating several parts of
@@ -10,6 +11,7 @@ import java.util.EventObject;
  */
 
 public class RiskEvent extends EventObject {
+
     private TurnPhase phase;
     private Player currentPlayer;
 

@@ -39,7 +39,7 @@ public class RiskMapPanel extends JPanel implements RiskView {
         continentOwnerLabels = new ArrayList<>();
         RiskMapController rmc = new RiskMapController(rg);
 
-        //then for each Territory in territoryMap hash map, draw a circle at the Territory's x,y coordinates and draw the Territory name
+        //for each Territory in territoryMap hash map, create a JButton at the Territory's x,y coordinates and label the Territory name
         this.setLayout(null);
         Iterator hmIterator = riskMap.getTerritoryMap().entrySet().iterator(); //reset iterator
         while (hmIterator.hasNext()) {
