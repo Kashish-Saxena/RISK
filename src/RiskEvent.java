@@ -1,6 +1,6 @@
 import java.util.EventObject;
 
-public class RiskEvent extends EventObject {
+public abstract class RiskEvent extends EventObject {
     private TurnPhase phase;
     private Player currentPlayer;
 

@@ -1,4 +1,4 @@
-public class RiskEventTerritories extends RiskEvent{
+public abstract class RiskEventTerritories extends RiskEvent{
 
     private Territory territoryFrom;
     private Territory territoryTo;

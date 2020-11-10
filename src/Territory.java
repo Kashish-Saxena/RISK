@@ -1,7 +1,5 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The Territory class represents a location in a continent. It includes the
@@ -18,7 +16,7 @@ public class Territory {
     private Player owner;
     private int numArmies;
     private List<Territory> adjacentTerritories;
-    //private static Map<String, Territory> territoryMap = new HashMap<>();
+
     private int xPos;
     private int yPos;
 
@@ -32,7 +30,6 @@ public class Territory {
         this.adjacentTerritories = new ArrayList<>();
         this.xPos = xPos;
         this.yPos = yPos;
-        //territoryMap.put(name.toLowerCase(), this);
     }
 
     /**
@@ -143,32 +140,4 @@ public class Territory {
     public void setAdjacentTerritories(List<Territory> adjacentTerritories) {
         this.adjacentTerritories = adjacentTerritories;
     }
-
-//    /**
-//     * Returns a territory from an input string representation of a territory.
-//     * @param input A string representation of a territory.
-//     * @return A territory associated with the input territory.
-//     */
-//    public static Territory getTerritoryFromString(String input) {
-//        return territoryMap.get(input);
-//    }
-//
-//    /**
-//     *  Returns a territory from the territory map given an index.
-//     * @param index The input index required to get a territory from the territory map.
-//     * @return A territory from the territory map.
-//     */
-//    public static Territory getTerritoryFromIndex(int index) {
-//        ArrayList<String> keys = new ArrayList<>();
-//        keys.addAll(territoryMap.keySet());
-//        return territoryMap.get(keys.get(index));
-//    }
-//
-//    /**
-//     * Returns the number of territories in the territory map.
-//     * @return The size of the territory map.
-//     */
-//    public static int numTerritories() {
-//        return territoryMap.size();
-//    }
 }

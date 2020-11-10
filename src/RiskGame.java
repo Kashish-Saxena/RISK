@@ -18,7 +18,6 @@ public class RiskGame implements Observer {
     private int currentPlayerIndex;
     private TurnPhase phase;
     private boolean gameInProgress;
-    private InputParser parser;
     private int numPlayers;
 
     private Territory fromTerritory;
@@ -201,71 +200,6 @@ public class RiskGame implements Observer {
         //print the map state after initial auto army placement
         //printMapState();
     }
-
-    /**
-     * printMapState prints the current map state of the game.
-     */
-    private void printMapState(){
-
-        System.out.println();
-        System.out.println("================ MAP STATE ================");
-        for(Player p: players){
-            System.out.println("========== "+ p.getName() +" ==========");
-            if (p.getGameStanding() == 0) {//if they aren't dead
-              
-                //print owned continents
-                System.out.println("owned continents: ");
-                if (p.getContinents().size() == 0) {
-                    System.out.print("none");
-                } else {
-                    for (Continent c : p.getContinents()) {
-                        System.out.println(c);
-                    }
-                }
-                System.out.println("");
-
-                //print owned territories
-                System.out.println("owned territories: ");
-                for (Territory t : p.getTerritories()) {
-                    System.out.println(t.getName() + ":" + t.getArmies());
-                }
-                System.out.println();
-            }
-            else{
-                System.out.println("dead");
-                System.out.println();
-            }
-        }
-    } //deprecate this
-
-    /**
-     * printWinner prints the winner of the game and all the other player standings
-     */
-    private void printWinner(){
-        System.out.println("");
-        System.out.println("================ GAME OVER ================");
-        for(int i = 0; i <= players.size()-1; i++){
-            for(Player p : players){
-                if(p.getGameStanding() == i){
-                    if(i == 0){
-                        System.out.println(p.getName() + " wins!");
-                    }
-                    else{
-                        System.out.println(p.getName() + " had a standing of " + (i+1));
-                    }
-                }
-            }
-        }
-    } //deprecate this
-
-    /**
-     * printStalemate prints a stalemate game ending
-     */
-    private void printStalemate(){
-        System.out.println("");
-        System.out.println("=============== STALEMATE =================");
-        System.out.println("all remaining player don't have enough troops to mount an attack");
-    } //deprecate this
 
     public Player getCurrentPlayer() {
         return players.get(currentPlayerIndex);
