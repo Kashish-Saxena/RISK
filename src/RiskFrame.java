@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
 import java.util.List;
 
 //RiskFrame is the JFrame that holds all the GUI, it implements RiskView and whenever a change is made
