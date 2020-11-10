@@ -37,18 +37,20 @@ public class RiskGame implements Observer {
 
     private RiskView riskFrame;
 
-    private boolean testing;
+    private boolean testingMain;
+    private boolean testingGame;
 
     /**
      * Constructor of the RiskGame class. It initializes the field values, sets up the initial game state
      */
-    public RiskGame(boolean testing){
-        this.testing = testing;
+    public RiskGame(boolean testingMain, boolean testingGame){
+        this.testingMain = testingMain;
+        this.testingGame = testingGame;
         players = new ArrayList<>();
         gameInProgress = true;
 
         //create all Players, Territories and Continents
-        if (!testing) {
+        if (!testingMain && !testingGame) {
             setupOptions();
         }
         else {
@@ -56,7 +58,7 @@ public class RiskGame implements Observer {
         }
         currentPlayerIndex = 0;
 
-        if (!testing) {
+        if (!testingMain && !testingGame) {
             //auto assign starting player armies to territories
             autoPlaceArmies();
         }
@@ -265,7 +267,7 @@ public class RiskGame implements Observer {
         System.out.println("all remaining player don't have enough troops to mount an attack");
     } //deprecate this
 
-    private Player getCurrentPlayer() {
+    public Player getCurrentPlayer() {
         return players.get(currentPlayerIndex);
     }
 
@@ -307,7 +309,7 @@ public class RiskGame implements Observer {
     public void setDefendDice(int num) {
         //should check bounds again
         defendDiceNum = num;
-        battle();
+        rollDice();
     }
 
     public int[] simulateBattleFromDiceLists(List<Integer> attackDice, List<Integer> defendDice) {
@@ -333,7 +335,7 @@ public class RiskGame implements Observer {
         return losses;
     }
 
-    private void battle() {
+    private void rollDice() {
         Random rand = new Random();
         //this creates a list of results from rolling the number of dice that the attacker requested
         ArrayList<Integer> attackDice = new ArrayList<>();
@@ -346,17 +348,19 @@ public class RiskGame implements Observer {
         for (int i = 0; i < defendDiceNum; i++) {
             defendDice.add(rand.nextInt(MAX_DICE_ROLL) + MIN_DICE_ROLL);
         }
+        if (!testingMain && !testingGame) {
+            battleResults(simulateBattleFromDiceLists(attackDice, defendDice), attackDice, defendDice);
+        }
+    }
 
-        int[] battleResults = simulateBattleFromDiceLists(attackDice, defendDice);
+    public void battleResults(int[] battleResults, List<Integer> attackDice, List<Integer> defendDice) {
         int attackArmyLoss = battleResults[0];
         int defendArmyLoss = battleResults[1];
 
         fromTerritory.subtractArmies(attackArmyLoss);
         Player defender = toTerritory.getOwner();
-
         if (toTerritory.getArmies() > defendArmyLoss) {
             toTerritory.subtractArmies(defendArmyLoss);
-
             riskFrame.handleRiskUpdate(new RiskEventDiceResults(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), fromTerritory, toTerritory, attackDice, defendDice, attackArmyLoss, defendArmyLoss, defender));
             if (getCurrentPlayer().canAttack()) {
                 phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
@@ -405,7 +409,7 @@ public class RiskGame implements Observer {
             riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
         }
         else {
-            passTurn();
+            passTurn(); //change to fortify when available
         }
     }
 
@@ -418,7 +422,7 @@ public class RiskGame implements Observer {
     public void update(Observable o, Object arg) {
         updatePlayerGameStanding((Player) o);
         updateGameInProgress();
-        if (!gameInProgress && !testing) {
+        if (!gameInProgress && !testingMain) {
             riskFrame.handleRiskUpdate(new RiskEventEnd(this, TurnPhase.END, getCurrentPlayer(), players));
         }
     }
@@ -448,7 +452,7 @@ public class RiskGame implements Observer {
                 maxStanding = players.get(i).getGameStanding();
         }
         player.setGameStanding(maxStanding + 1);
-        if (!testing) {
+        if (!testingMain) {
             riskFrame.handleRiskUpdate(new RiskEventPlayer(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), player));
         }
     }
@@ -463,27 +467,33 @@ public class RiskGame implements Observer {
 
     //below methods are for testing only
     public void addPlayer(Player player) {
-        if (testing) {
-            numPlayers++;
+        if (testingMain || testingGame) {
             players.add(player);
+            numPlayers++;
         }
     }
 
     public TurnPhase getPhase() {
-        //if (testing) { //this shouldn't be used, use the RiskEvent
+        //if (testing || testingGame) { //this shouldn't be used, use the RiskEvent
             return phase;
         //}
     }
 
     public void setPhase(TurnPhase phase) {
-        if (testing) { //this shouldn't be used, use the RiskEvent
+        if (testingMain || testingGame) { //this shouldn't be used, use the RiskEvent
             this.phase = phase;
         }
     }
 
     public int getAttackDiceNum() {
-        //if (testing) { //this shouldn't be used outside of testing
-            return attackDiceNum;
+        //if (testing || testingGame) { //this shouldn't be used outside of testing
+        return attackDiceNum;
+        //}
+    }
+
+    public int getDefendDiceNum() {
+        //if (testing || testingGame) { //this shouldn't be used outside of testing
+        return defendDiceNum;
         //}
     }
 }
