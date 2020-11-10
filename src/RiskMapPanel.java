@@ -9,11 +9,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.List;
 
-/**
- *  The RiskMapPanel class extends a JPanel and is a JPanel that holds the map. It contains a repaint() method
- *  when invoked, the paintComponent() method runs which traverses all territories in the map. It fetches their
- *  X and Y coordinates and draws them out as circles. The paintComponent() method also draws the connections between
- *  territories.
+/** 
+ * RiskMapPanel is a class that extends a JPanel and also implements the RiskView interface and is essentially the main JPanel 
+ * which contains the actual game board GUI. More specifically it contains all the Territory JButtons of the board GUI and all
+ * the code to display everything in a visually appealing manner to provide the best user experience. By implementing RiskView, 
+ * RiskMapPanel also has a handleRiskUpdate() method that handles RiskEvents and changes to the model and reflects any of those 
+ * changes to the state in the various GUI JComponents
  *
  * @author David Sciola - 101082459, Kevin Quach - 101115704
  * @version November 9, 2020
