@@ -24,7 +24,7 @@ public class RiskFrame extends JFrame implements RiskView {
 
     public RiskFrame(RiskMap riskMap) {
         super("RISK");
-        rg = new RiskGame(false);
+        rg = new RiskGame(false, false);
         this.riskMap = riskMap;
         this.setLayout(new BorderLayout());
 
