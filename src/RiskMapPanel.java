@@ -9,6 +9,16 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.List;
 
+/** 
+ * RiskMapPanel is a class that extends a JPanel and also implements the RiskView interface and is essentially the main JPanel 
+ * which contains the actual game board GUI. More specifically it contains all the Territory JButtons of the board GUI and all
+ * the code to display everything in a visually appealing manner to provide the best user experience. By implementing RiskView, 
+ * RiskMapPanel also has a handleRiskUpdate() method that handles RiskEvents and changes to the model and reflects any of those 
+ * changes to the state in the various GUI JComponents
+ *
+ * @author David Sciola - 101082459, Kevin Quach - 101115704
+ * @version November 9, 2020
+ */
 public class RiskMapPanel extends JPanel implements RiskView {
     private RiskMap riskMap;
     private BufferedImage image;
@@ -16,6 +26,12 @@ public class RiskMapPanel extends JPanel implements RiskView {
     private List<JLabel> territoryOwnerLabels;
     private List<JLabel> continentOwnerLabels;
 
+    /**
+     * Constructor of the RiskMap class. It initializes all the field values and then creates a Jbutton for each Territory at the Territory's X
+     * and Y coordinates along with the Territory's name and ownership labels.
+     * @param riskMap The Risk Map containing territories and continents.
+     * @param rg The Risk Game class.
+     */
     public RiskMapPanel(RiskMap riskMap, RiskGame rg) {
         this.riskMap = riskMap;
         territoryButtons = new ArrayList<>();
@@ -23,7 +39,7 @@ public class RiskMapPanel extends JPanel implements RiskView {
         continentOwnerLabels = new ArrayList<>();
         RiskMapController rmc = new RiskMapController(rg);
 
-        //for each Territory in territoryMap hash map, create a JButton at the Territory's x,y coordinates and label the Territory name
+        //then for each Territory in territoryMap hash map, draw a circle at the Territory's x,y coordinates and draw the Territory name
         this.setLayout(null);
         Iterator hmIterator = riskMap.getTerritoryMap().entrySet().iterator(); //reset iterator
         while (hmIterator.hasNext()) {
@@ -85,6 +101,11 @@ public class RiskMapPanel extends JPanel implements RiskView {
         }
     }
 
+    /**
+     *  Draws the Map on the Panel including the background image, territory connections, continents and
+     *  ownership etc.
+     * @param g the Graphics object to protect.
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -144,6 +165,10 @@ public class RiskMapPanel extends JPanel implements RiskView {
         }
     }
 
+    /**
+     * Handles the update of the game depending on the event that occured.
+     * @param e A riskEvent that occurred.
+     */
     @Override
     public void handleRiskUpdate(RiskEvent e) {
         for (JButton buttonTerritory : territoryButtons) {

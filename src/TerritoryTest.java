@@ -27,7 +27,7 @@ public class TerritoryTest {
 
     @Test
     public void testGetOwner() {
-        RiskGame rg = new RiskGame(true, false);
+        RiskGame rg = new RiskGame(true);
         Player player1 = new Player("Player1", rg);
         Territory territory1 = new Territory("Territory1", 0, 0);
         territory1.setOwner(player1);
@@ -36,7 +36,7 @@ public class TerritoryTest {
 
     @Test
     public void testChangeOwner() {
-        RiskGame rg = new RiskGame(true, false);
+        RiskGame rg = new RiskGame(true);
         Player player1 = new Player("Player1", rg);
         Player player2 = new Player("Player2", rg);
         Territory territory1 = new Territory("Territory1", 0, 0);
@@ -122,7 +122,7 @@ public class TerritoryTest {
 
     @Test
     public void testGetAdjacentEnemyTerritories() {
-        RiskGame rg = new RiskGame(true, false);
+        RiskGame rg = new RiskGame(true);
         Player player1 = new Player("Player1", rg);
         Player player2 = new Player("Player2", rg);
 

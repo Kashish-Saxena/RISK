@@ -1,12 +1,14 @@
 import java.awt.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Continent class represents a continent in the world map. It
  * contains a method to get the continent associated with an input territory.
  *
  * @author David Sciola - 101082459 and Kevin Quach - 101115704
- * @version October 25, 2020
+ * @version November 9, 2020
  */
 public class Continent {
 
@@ -15,6 +17,7 @@ public class Continent {
     private int xPos;
     private int yPos;
     private Color color;
+    //private static Map<Territory, Continent> territoryContinentMap = new HashMap<>();
 
     /**
      * Constructor of the Continent class. It initializes the field values and maps
@@ -28,6 +31,9 @@ public class Continent {
         this.xPos = xPos;
         this.yPos = yPos;
         this.color = color;
+//        for (Territory t : territories) {
+//            territoryContinentMap.put(t, this);
+//        }
     }
 
     /**
@@ -46,15 +52,36 @@ public class Continent {
         return this.territories;
     }
 
+    /**
+     * Returns the x coordinate of the Continent.
+     * @return The x coordinate of the Continent.
+     */
     public int getXPos(){
         return this.xPos;
     }
 
+    /**
+     * Returns the y coordinate of the Continent.
+     * @return The y coordinate of the Continent.
+     */
     public int getYPos(){
         return this.yPos;
     }
 
+    /**
+     * Returns the color of the Continent.
+     * @return The color of the Continent.
+     */
     public Color getColor(){
         return this.color;
     }
+
+//    /**
+//     * Returns a continent from the territory-continent map given an input territory.
+//     * @param childTerritory The input territory to get the associated continent.
+//     * @return The continent associated with the input territory.
+//     */
+//    public static Continent getContinentFromTerritory(Territory childTerritory) {
+//        return territoryContinentMap.get(childTerritory);
+//    }
 }
