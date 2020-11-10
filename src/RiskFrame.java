@@ -2,14 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-/**
- * RiskFrame is the JFrame that contains the GUI. This class implements the RiskView interface which contains a method
- * handleRiskUpdate(). This method updates the appropriate components on the map whenever the model changes.
- *
- * @author David Sciola - 101082459, Kevin Quach - 101115704 and Kashish Saxena - 101107204
- * @version November 9, 2020
- */
-
+//RiskFrame is the JFrame that holds all the GUI, it implements RiskView and whenever a change is made
+//to the model, this class handles that change with the handleRiskUpdate method which re-draws everything
 public class RiskFrame extends JFrame implements RiskView {
 
     //RiskFrame has a reference to map so that it can fetch all the Territory names and x,y coordinates

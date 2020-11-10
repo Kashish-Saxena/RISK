@@ -1,28 +1,17 @@
 import java.awt.*;
 import java.util.*;
 
-/**
- *  The RiskMap class does the initial instantiation of territories and continents and
- *  holds the state of all the Territories and continents in two hash maps:
- *  territoryMap (String to Territory) and territoryContinentMap (Territory to Continent). An instance of this
- *  class is created in the first line of the main.
- *
- *  * @author David Sciola - 101082459, Kevin Quach - 101115704 and Kashish Saxena - 101107204
- *  * @version November 9, 2020
- *
- */
 
+//Map class does 2 things
+//1. it deals with the initial Territory/Continent instanitation with the createMap() and autoPlaceArmies() methods
+//2. it holds the state of all the Territories and continents, more specifically it holds them in 2 hash maps:
+// territoryMap (String to Territory) and territoryContinentMap (Territory to Continent)
 public class RiskMap {
 
     private static java.util.Map<String, Territory> territoryMap;
     private static java.util.Map<Territory, Continent> territoryContinentMap;
     private static ArrayList<Continent> continents;
 
-    /**
-     * Constructor of the RiskMap class. It initializes all the field values and invokes the createMap() method that initializes
-     * the Risk Map.
-     * @param testing Boolean that restricts initialization of the normal Risk map when testing, allows otherwise.
-     */
     public RiskMap(boolean testing) {
         territoryMap = new HashMap<>();
         territoryContinentMap = new HashMap<>();
@@ -33,7 +22,7 @@ public class RiskMap {
     }
 
     /**
-     * Instantiates territories and continents and sets adjacent territories connections to create the Risk Game Map.
+     * Instantiates territories, continents and set adjacent territories connections.
      */
     public void createMap(){
 
@@ -251,35 +240,18 @@ public class RiskMap {
         return territoryMap.size();
     }
 
-    /**
-     * Returns the territory Map of the game.
-     * @return The Territory Map.
-     */
     public static java.util.Map<String, Territory> getTerritoryMap(){
         return territoryMap;
     }
 
-    /**
-     * Returns an ArrayList of Continents.
-     * @return An ArrayList of Continents.
-     */
     public static ArrayList<Continent> getContinentsArrayList(){
         return continents;
     }
 
-    /**
-     * Adds the input Territory to the Territory Map.
-     * @param territory The territory to be added to the Territory Map.
-     */
     public static void addTerritory(Territory territory) {
         territoryMap.put(territory.getName().toLowerCase(), territory);
     }
 
-    /**
-     * Adds the input continent and territory to the territoryContinentMap and the continent to the ArrayList of Continents.
-     * @param territory Territory to be associated with the continent.
-     * @param continent Continent to be added to the Map and ArrayLit.
-     */
     public static void addContinent(Territory territory, Continent continent) {
         territoryContinentMap.put(territory, continent);
         continents.add(continent);
