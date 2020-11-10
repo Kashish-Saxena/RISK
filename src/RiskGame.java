@@ -18,7 +18,6 @@ public class RiskGame implements Observer {
     private int currentPlayerIndex;
     private TurnPhase phase;
     private boolean gameInProgress;
-    private InputParser parser;
     private int numPlayers;
 
     private Territory fromTerritory;
