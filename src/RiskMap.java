@@ -6,7 +6,7 @@ import java.util.List;
  *  The RiskMap class does the initial instantiation of territories and continents and
  *  holds the state of all the Territories and continents in two hash maps:
  *  territoryMap (String to Territory) and territoryContinentMap (Territory to Continent). An instance of this
- *  class is created in the RiskGame class.
+ *  class is created in the first line of the main.
  *
  *  * @author David Sciola - 101082459, Kevin Quach - 101115704 and Kashish Saxena - 101107204
  *  * @version November 9, 2020
