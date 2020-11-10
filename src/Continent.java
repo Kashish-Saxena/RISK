@@ -8,7 +8,7 @@ import java.util.Map;
  * contains a method to get the continent associated with an input territory.
  *
  * @author David Sciola - 101082459 and Kevin Quach - 101115704
- * @version October 25, 2020
+ * @version November 9, 2020
  */
 public class Continent {
 
@@ -52,14 +52,26 @@ public class Continent {
         return this.territories;
     }
 
+    /**
+     * Returns the x coordinate of the Continent.
+     * @return The x coordinate of the Continent.
+     */
     public int getXPos(){
         return this.xPos;
     }
 
+    /**
+     * Returns the y coordinate of the Continent.
+     * @return The y coordinate of the Continent.
+     */
     public int getYPos(){
         return this.yPos;
     }
 
+    /**
+     * Returns the color of the Continent.
+     * @return The color of the Continent.
+     */
     public Color getColor(){
         return this.color;
     }

@@ -9,6 +9,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.List;
 
+/**
+ *  The RiskMapPanel class extends a JPanel and is a JPanel that holds the map. It contains a repaint() method
+ *  when invoked, the paintComponent() method runs which traverses all territories in the map. It fetches their
+ *  X and Y coordinates and draws them out as circles. The paintComponent() method also draws the connections between
+ *  territories.
+ *
+ * @author David Sciola - 101082459, Kevin Quach - 101115704
+ * @version November 9, 2020
+ */
 public class RiskMapPanel extends JPanel implements RiskView {
     private RiskMap riskMap;
     private BufferedImage image;
@@ -16,6 +25,12 @@ public class RiskMapPanel extends JPanel implements RiskView {
     private List<JLabel> territoryOwnerLabels;
     private List<JLabel> continentOwnerLabels;
 
+    /**
+     * Constructor of the RiskMap class. It initializes all the field values and then draws a circle at a Territory's X
+     * and Y coordinates along with the Territory's name.
+     * @param riskMap The Risk Map containing territories and continents.
+     * @param rg The Risk Game class.
+     */
     public RiskMapPanel(RiskMap riskMap, RiskGame rg) {
         this.riskMap = riskMap;
         territoryButtons = new ArrayList<>();
@@ -85,6 +100,11 @@ public class RiskMapPanel extends JPanel implements RiskView {
         }
     }
 
+    /**
+     *  Draws the Map on the Panel including the background image, territory connections, continents and
+     *  ownership etc.
+     * @param g the Graphics object to protect.
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -144,6 +164,10 @@ public class RiskMapPanel extends JPanel implements RiskView {
         }
     }
 
+    /**
+     * Handles the update of the game depending on the event that occured.
+     * @param e A riskEvent that occurred.
+     */
     @Override
     public void handleRiskUpdate(RiskEvent e) {
         for (JButton buttonTerritory : territoryButtons) {

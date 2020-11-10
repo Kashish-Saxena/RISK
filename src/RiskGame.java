@@ -9,7 +9,7 @@ import java.util.*;
  * of the game.
  *
  * @author David Sciola - 101082459, Kevin Quach - 101115704 and Kashish Saxena - 101107204
- * @version October 25, 2020
+ * @version November 9, 2020
  */
 public class RiskGame implements Observer {
 
@@ -40,7 +40,7 @@ public class RiskGame implements Observer {
     private boolean testing;
 
     /**
-     * Constructor of the RiskGame class. It initializes the field values, sets up the initial game state
+     * Constructor of the RiskGame class. It initializes the field values, sets up the initial game state.
      */
     public RiskGame(boolean testing){
         this.testing = testing;
@@ -73,8 +73,7 @@ public class RiskGame implements Observer {
     }
 
     /**
-     * setupOptions sets up the game's initial state, takes input from user for the number of players, instantiates player
-     * objects, territories, continents and set adjacent territories connections.
+     * Takes input from user for the number of players and player names and instantiates player objects.
      */
     private void setupOptions(){
         System.out.println("===========================================");
@@ -283,6 +282,9 @@ public class RiskGame implements Observer {
         //eventually, move
     }
 
+    /**
+     * Passes the turn to the next player.
+     */
     public void passTurn() {
         do {
             currentPlayerIndex++;
@@ -297,6 +299,10 @@ public class RiskGame implements Observer {
         riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
     }
 
+    /**
+     * Sets the attack dice number.
+     * @param num The dice number to be set.
+     */
     public void setAttackDice(int num) {
         //should check bounds again
         attackDiceNum = num;
@@ -304,12 +310,19 @@ public class RiskGame implements Observer {
         riskFrame.handleRiskUpdate(new RiskEventBounds(this, TurnPhase.DEFEND_CHOOSE_DICE, getCurrentPlayer(), 1, Math.min(toTerritory.getArmies(), MAX_DEFEND_DICE)));
     }
 
+    /**
+     * Sets the defend dice number.
+     * @param num The dice number to be set.
+     */
     public void setDefendDice(int num) {
         //should check bounds again
         defendDiceNum = num;
         battle();
     }
 
+    /**
+     * The main battle game of the Risk game.
+     */
     private void battle() {
         Random rand = new Random();
         ArrayList<Integer> attackDice = new ArrayList<>();
@@ -381,6 +394,10 @@ public class RiskGame implements Observer {
         }
     }
 
+    /**
+     * Moves the input number of armies from attacking territory to the territory attacked.
+     * @param num The number of armies to be moved.
+     */
     public void move(int num) {
         //should check bounds again
         toTerritory.addArmies(num);
@@ -439,14 +456,26 @@ public class RiskGame implements Observer {
         }
     }
 
+    /**
+     * Returns a list of players in the game.
+     * @return A list of players in the game.
+     */
     public List<Player> getPlayers(){
         return this.players;
     }
 
+    /**
+     * Returns the number of players in the game.
+     * @return The number of players in the game.
+     */
     public int getNumPlayers() {
         return numPlayers;
     }
 
+    /**
+     * Adds the input player to the list of players in the game.
+     * @param player Player to be added.
+     */
     public void addPlayer(Player player) {
         if (testing) {
             numPlayers++;
@@ -454,18 +483,30 @@ public class RiskGame implements Observer {
         }
     }
 
+    /**
+     * Returns the TurnPhase of the player.
+     * @return The TurnPhase of the player.
+     */
     public TurnPhase getPhase() {
         //if (testing) { //this shouldn't be used, use the RiskEvent
             return phase;
         //}
     }
 
+    /**
+     * Sets the TurnPhase of the player.
+     * @param phase The TurnPhase to be set.
+     */
     public void setPhase(TurnPhase phase) {
         if (testing) { //this shouldn't be used, use the RiskEvent
             this.phase = phase;
         }
     }
 
+    /**
+     * Return the Attack dice number.
+     * @return The Attack dice number.
+     */
     public int getAttackDiceNum() {
         //if (testing) { //this shouldn't be used outside of testing
             return attackDiceNum;
