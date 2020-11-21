@@ -147,7 +147,6 @@ public class RiskMapPanel extends JPanel implements RiskView {
     public void handleRiskUpdate(RiskEvent e) {
         for (JButton buttonTerritory : territoryButtons) {
 
-
             if (e instanceof RiskEventTerritories) {
                 RiskEventTerritories territoryEvent = (RiskEventTerritories)e;
 
@@ -194,6 +193,15 @@ public class RiskMapPanel extends JPanel implements RiskView {
                     else{
                         labelOwner.setText("unowned");
                     }
+                }
+            }
+        }
+
+        if(e instanceof RiskEventSingleTerritory){
+            RiskEventSingleTerritory territoryEvent = (RiskEventSingleTerritory)e;
+            for (JButton buttonTerritory : territoryButtons) {
+                if (buttonTerritory.getActionCommand().equals(territoryEvent.getTerritory().getName())) {
+                    buttonTerritory.setText("" + territoryEvent.getTerritory().getArmies());
                 }
             }
         }
