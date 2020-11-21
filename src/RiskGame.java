@@ -9,7 +9,7 @@ import java.util.*;
  * of the game.
  *
  * @author David Sciola - 101082459, Kevin Quach - 101115704 and Kashish Saxena - 101107204
- * @version November 9, 2020
+ * @version October 25, 2020
  */
 public class RiskGame implements Observer {
 
@@ -36,18 +36,20 @@ public class RiskGame implements Observer {
 
     private RiskView riskFrame;
 
-    private boolean testing;
+    private boolean testingMain;
+    private boolean testingGame;
 
     /**
-     * Constructor of the RiskGame class. It initializes the field values, sets up the initial game state.
+     * Constructor of the RiskGame class. It initializes the field values, sets up the initial game state
      */
-    public RiskGame(boolean testing){
-        this.testing = testing;
+    public RiskGame(boolean testingMain, boolean testingGame){
+        this.testingMain = testingMain;
+        this.testingGame = testingGame;
         players = new ArrayList<>();
         gameInProgress = true;
 
         //create all Players, Territories and Continents
-        if (!testing) {
+        if (!testingMain && !testingGame) {
             setupOptions();
         }
         else {
@@ -55,7 +57,7 @@ public class RiskGame implements Observer {
         }
         currentPlayerIndex = 0;
 
-        if (!testing) {
+        if (!testingMain && !testingGame) {
             //auto assign starting player armies to territories
             autoPlaceArmies();
         }
@@ -72,7 +74,8 @@ public class RiskGame implements Observer {
     }
 
     /**
-     * Takes input from user for the number of players and player names and instantiates player objects.
+     * setupOptions sets up the game's initial state, takes input from user for the number of players, instantiates player
+     * objects, territories, continents and set adjacent territories connections.
      */
     private void setupOptions(){
         System.out.println("===========================================");
@@ -198,72 +201,7 @@ public class RiskGame implements Observer {
         //printMapState();
     }
 
-    /**
-     * printMapState prints the current map state of the game.
-     */
-    private void printMapState(){
-
-        System.out.println();
-        System.out.println("================ MAP STATE ================");
-        for(Player p: players){
-            System.out.println("========== "+ p.getName() +" ==========");
-            if (p.getGameStanding() == 0) {//if they aren't dead
-              
-                //print owned continents
-                System.out.println("owned continents: ");
-                if (p.getContinents().size() == 0) {
-                    System.out.print("none");
-                } else {
-                    for (Continent c : p.getContinents()) {
-                        System.out.println(c);
-                    }
-                }
-                System.out.println("");
-
-                //print owned territories
-                System.out.println("owned territories: ");
-                for (Territory t : p.getTerritories()) {
-                    System.out.println(t.getName() + ":" + t.getArmies());
-                }
-                System.out.println();
-            }
-            else{
-                System.out.println("dead");
-                System.out.println();
-            }
-        }
-    } //deprecate this
-
-    /**
-     * printWinner prints the winner of the game and all the other player standings
-     */
-    private void printWinner(){
-        System.out.println("");
-        System.out.println("================ GAME OVER ================");
-        for(int i = 0; i <= players.size()-1; i++){
-            for(Player p : players){
-                if(p.getGameStanding() == i){
-                    if(i == 0){
-                        System.out.println(p.getName() + " wins!");
-                    }
-                    else{
-                        System.out.println(p.getName() + " had a standing of " + (i+1));
-                    }
-                }
-            }
-        }
-    } //deprecate this
-
-    /**
-     * printStalemate prints a stalemate game ending
-     */
-    private void printStalemate(){
-        System.out.println("");
-        System.out.println("=============== STALEMATE =================");
-        System.out.println("all remaining player don't have enough troops to mount an attack");
-    } //deprecate this
-
-    private Player getCurrentPlayer() {
+    public Player getCurrentPlayer() {
         return players.get(currentPlayerIndex);
     }
 
@@ -281,9 +219,6 @@ public class RiskGame implements Observer {
         //eventually, move
     }
 
-    /**
-     * Passes the turn to the next player.
-     */
     public void passTurn() {
         do {
             currentPlayerIndex++;
@@ -298,10 +233,6 @@ public class RiskGame implements Observer {
         riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
     }
 
-    /**
-     * Sets the attack dice number.
-     * @param num The dice number to be set.
-     */
     public void setAttackDice(int num) {
         //should check bounds again
         attackDiceNum = num;
@@ -309,37 +240,20 @@ public class RiskGame implements Observer {
         riskFrame.handleRiskUpdate(new RiskEventBounds(this, TurnPhase.DEFEND_CHOOSE_DICE, getCurrentPlayer(), 1, Math.min(toTerritory.getArmies(), MAX_DEFEND_DICE)));
     }
 
-    /**
-     * Sets the defend dice number.
-     * @param num The dice number to be set.
-     */
     public void setDefendDice(int num) {
         //should check bounds again
         defendDiceNum = num;
-        battle();
+        rollDice();
     }
 
-    /**
-     * The main battle game of the Risk game.
-     */
-    private void battle() {
-        Random rand = new Random();
-        ArrayList<Integer> attackDice = new ArrayList<>();
-        for (int i = 0; i < attackDiceNum; i++) {
-            attackDice.add(rand.nextInt(MAX_DICE_ROLL) + MIN_DICE_ROLL);
-        }
+    public int[] simulateBattleFromDiceLists(List<Integer> attackDice, List<Integer> defendDice) {
         Collections.sort(attackDice, Collections.reverseOrder());
-
-        ArrayList<Integer> defendDice = new ArrayList<>();
-        for (int i = 0; i < defendDiceNum; i++) {
-            defendDice.add(rand.nextInt(MAX_DICE_ROLL) + MIN_DICE_ROLL);
-        }
         Collections.sort(defendDice, Collections.reverseOrder());
 
         int attackArmyLoss = 0;
         int defendArmyLoss = 0;
 
-        int maxDiceNum = Math.min(attackDiceNum, defendDiceNum);
+        int maxDiceNum = Math.min(attackDice.size(), defendDice.size());
         for (int i = 0; i < maxDiceNum; i++) {
             if (attackDice.get(i) <= defendDice.get(i)) {
                 attackArmyLoss++;
@@ -349,12 +263,38 @@ public class RiskGame implements Observer {
             }
         }
 
+        int[] losses = new int[2];
+        losses[0] = attackArmyLoss;
+        losses[1] = defendArmyLoss;
+        return losses;
+    }
+
+    private void rollDice() {
+        Random rand = new Random();
+        //this creates a list of results from rolling the number of dice that the attacker requested
+        ArrayList<Integer> attackDice = new ArrayList<>();
+        for (int i = 0; i < attackDiceNum; i++) {
+            attackDice.add(rand.nextInt(MAX_DICE_ROLL) + MIN_DICE_ROLL);
+        }
+
+        //this creates a list of results from rolling the number of dice that the defender requested
+        ArrayList<Integer> defendDice = new ArrayList<>();
+        for (int i = 0; i < defendDiceNum; i++) {
+            defendDice.add(rand.nextInt(MAX_DICE_ROLL) + MIN_DICE_ROLL);
+        }
+        if (!testingMain && !testingGame) {
+            battleResults(simulateBattleFromDiceLists(attackDice, defendDice), attackDice, defendDice);
+        }
+    }
+
+    public void battleResults(int[] battleResults, List<Integer> attackDice, List<Integer> defendDice) {
+        int attackArmyLoss = battleResults[0];
+        int defendArmyLoss = battleResults[1];
+
         fromTerritory.subtractArmies(attackArmyLoss);
         Player defender = toTerritory.getOwner();
-
         if (toTerritory.getArmies() > defendArmyLoss) {
             toTerritory.subtractArmies(defendArmyLoss);
-
             riskFrame.handleRiskUpdate(new RiskEventDiceResults(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), fromTerritory, toTerritory, attackDice, defendDice, attackArmyLoss, defendArmyLoss, defender));
             if (getCurrentPlayer().canAttack()) {
                 phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
@@ -393,10 +333,6 @@ public class RiskGame implements Observer {
         }
     }
 
-    /**
-     * Moves the input number of armies from attacking territory to the territory attacked.
-     * @param num The number of armies to be moved.
-     */
     public void move(int num) {
         //should check bounds again
         toTerritory.addArmies(num);
@@ -407,7 +343,7 @@ public class RiskGame implements Observer {
             riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
         }
         else {
-            passTurn();
+            passTurn(); //change to fortify when available
         }
     }
 
@@ -420,7 +356,7 @@ public class RiskGame implements Observer {
     public void update(Observable o, Object arg) {
         updatePlayerGameStanding((Player) o);
         updateGameInProgress();
-        if (!gameInProgress && !testing) {
+        if (!gameInProgress && !testingMain) {
             riskFrame.handleRiskUpdate(new RiskEventEnd(this, TurnPhase.END, getCurrentPlayer(), players));
         }
     }
@@ -450,65 +386,48 @@ public class RiskGame implements Observer {
                 maxStanding = players.get(i).getGameStanding();
         }
         player.setGameStanding(maxStanding + 1);
-        if (!testing) {
+        if (!testingMain) {
             riskFrame.handleRiskUpdate(new RiskEventPlayer(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), player));
         }
     }
 
-    /**
-     * Returns a list of players in the game.
-     * @return A list of players in the game.
-     */
     public List<Player> getPlayers(){
         return this.players;
     }
 
-    /**
-     * Returns the number of players in the game.
-     * @return The number of players in the game.
-     */
     public int getNumPlayers() {
         return numPlayers;
     }
 
-    /**
-     * Adds the input player to the list of players in the game.
-     * @param player Player to be added.
-     */
+    //below methods are for testing only
     public void addPlayer(Player player) {
-        if (testing) {
-            numPlayers++;
+        if (testingMain || testingGame) {
             players.add(player);
+            numPlayers++;
         }
     }
 
-    /**
-     * Returns the TurnPhase of the player.
-     * @return The TurnPhase of the player.
-     */
     public TurnPhase getPhase() {
-        //if (testing) { //this shouldn't be used, use the RiskEvent
+        //if (testing || testingGame) { //this shouldn't be used, use the RiskEvent
             return phase;
         //}
     }
 
-    /**
-     * Sets the TurnPhase of the player.
-     * @param phase The TurnPhase to be set.
-     */
     public void setPhase(TurnPhase phase) {
-        if (testing) { //this shouldn't be used, use the RiskEvent
+        if (testingMain || testingGame) { //this shouldn't be used, use the RiskEvent
             this.phase = phase;
         }
     }
 
-    /**
-     * Return the Attack dice number.
-     * @return The Attack dice number.
-     */
     public int getAttackDiceNum() {
-        //if (testing) { //this shouldn't be used outside of testing
-            return attackDiceNum;
+        //if (testing || testingGame) { //this shouldn't be used outside of testing
+        return attackDiceNum;
+        //}
+    }
+
+    public int getDefendDiceNum() {
+        //if (testing || testingGame) { //this shouldn't be used outside of testing
+        return defendDiceNum;
         //}
     }
 }
