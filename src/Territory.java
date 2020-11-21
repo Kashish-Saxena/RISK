@@ -1,7 +1,5 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The Territory class represents a location in a continent. It includes the
@@ -10,7 +8,7 @@ import java.util.Map;
  * and to manipulate the number of armies in the territory.
  *
  * @author David Sciola - 101082459 and Kevin Quach - 101115704
- * @version November 9, 2020
+ * @version October 25, 2020
  */
 public class Territory {
 
@@ -18,7 +16,7 @@ public class Territory {
     private Player owner;
     private int numArmies;
     private List<Territory> adjacentTerritories;
-    //private static Map<String, Territory> territoryMap = new HashMap<>();
+
     private int xPos;
     private int yPos;
 
@@ -32,7 +30,6 @@ public class Territory {
         this.adjacentTerritories = new ArrayList<>();
         this.xPos = xPos;
         this.yPos = yPos;
-        //territoryMap.put(name.toLowerCase(), this);
     }
 
     /**
@@ -53,18 +50,10 @@ public class Territory {
         return name + ": " + numArmies + " armies";
     }
 
-    /**
-     * Returns the x coordinate of the Territory.
-     * @return The x coordinate of the Territory.
-     */
     public int getXPos(){
         return this.xPos;
     }
 
-    /**
-     * Returns the y coordinate of the Territory.
-     * @return The y coordinate of the Territory.
-     */
     public int getYPos(){
         return this.yPos;
     }
@@ -151,5 +140,4 @@ public class Territory {
     public void setAdjacentTerritories(List<Territory> adjacentTerritories) {
         this.adjacentTerritories = adjacentTerritories;
     }
-
 }

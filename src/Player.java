@@ -8,7 +8,7 @@ import java.util.Observable;
  * place. It also contains methods to get attackable territories and handle the battle.
  *
  * @author David Sciola - 101082459, Kevin Quach - 101115704 and Kashish Saxena - 101107204
- * @version November 9, 2020
+ * @version October 25, 2020
  */
 public class Player extends Observable {
 
@@ -94,9 +94,10 @@ public class Player extends Observable {
         ownedTerritories.remove(territory);
 
         //if this Player just died, notify Game to trigger its update() method
-        if (ownedTerritories.isEmpty())
+        if (ownedTerritories.isEmpty()) {
             setChanged();
             notifyObservers();
+        }
 
         this.removeContinent(RiskMap.getContinentFromTerritory(territory));
     }
