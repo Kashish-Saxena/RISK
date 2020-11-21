@@ -113,13 +113,25 @@ public class RiskGame implements Observer {
 
         //calculate the number of armies each player has to place
         int numArmiesToPlace;
-        if(numPlayers == 2){ numArmiesToPlace = 50; }
-        else{numArmiesToPlace = 50 - (5 * numPlayers); }
+        if (numPlayers == 2) {
+            numArmiesToPlace = 50;
+        } else {
+            numArmiesToPlace = 50 - (5 * numPlayers);
+        }
 
         //set armiesToPlace for each Player
-        for(Player p: players){ p.setArmiesToPlace(numArmiesToPlace); }
+        for (Player p : players) {
+            p.setArmiesToPlace(numArmiesToPlace);
+        }
 
-        //first fill territories with 1 army until every territory has 1 army on it
+        fillTerritoriesWithOneArmy();
+        addRemainingArmy();
+    }
+
+    /**
+     * first fill territories with 1 army until every territory has 1 army on it.
+     */
+    private void fillTerritoriesWithOneArmy(){
         Random ran = new Random();
         int initialNumArmiesToBePlaced = RiskMap.numTerritories()-1;
         int playerIndex = 0;
@@ -167,12 +179,8 @@ public class RiskGame implements Observer {
                 }
             }
 
-
             //give player the territory
-            tempTerr.setOwner(tempPlay);
-            tempPlay.addTerritory(tempTerr);
-            tempPlay.setArmiesToPlace(tempPlay.getArmiesToPlace() - 1);
-            tempTerr.addArmies(1);
+            giveTerritory(tempTerr, tempPlay);
 
             //increment playerIndex and update tempPlay
             if(playerIndex == players.size()-1){ playerIndex = 0; }
@@ -180,9 +188,25 @@ public class RiskGame implements Observer {
             tempPlay = players.get(playerIndex);
             initialNumArmiesToBePlaced -= 1;
         }
+    }
 
-        //now that every territory has at least 1 army on it, add the remaining
-        //player armies randomly across the territories which they own
+    /**
+     * gives Territory tempTerr to Player tempPlay by setting Territory owner
+     * and adding 1 army to the Territory, aslo decrements the Player's armies to place field
+     */
+    private void giveTerritory(Territory tempTerr, Player tempPlay){
+        tempTerr.setOwner(tempPlay);
+        tempPlay.addTerritory(tempTerr);
+        tempPlay.setArmiesToPlace(tempPlay.getArmiesToPlace() - 1);
+        tempTerr.addArmies(1);
+    }
+
+    /**
+     * now that every territory has at least 1 army on it, add the remaining
+     * player armies randomly across the territories which they own
+     */
+    private void addRemainingArmy() {
+        Random ran = new Random();
         int randTerrIndex;
         Territory randTerr;
         for(Player p: players){
@@ -193,75 +217,7 @@ public class RiskGame implements Observer {
             }
             p.setArmiesToPlace(0);
         }
-
-        //print the map state after initial auto army placement
-        //printMapState();
     }
-
-    /**
-     * printMapState prints the current map state of the game.
-     */
-    private void printMapState(){
-
-        System.out.println();
-        System.out.println("================ MAP STATE ================");
-        for(Player p: players){
-            System.out.println("========== "+ p.getName() +" ==========");
-            if (p.getGameStanding() == 0) {//if they aren't dead
-              
-                //print owned continents
-                System.out.println("owned continents: ");
-                if (p.getContinents().size() == 0) {
-                    System.out.print("none");
-                } else {
-                    for (Continent c : p.getContinents()) {
-                        System.out.println(c);
-                    }
-                }
-                System.out.println("");
-
-                //print owned territories
-                System.out.println("owned territories: ");
-                for (Territory t : p.getTerritories()) {
-                    System.out.println(t.getName() + ":" + t.getArmies());
-                }
-                System.out.println();
-            }
-            else{
-                System.out.println("dead");
-                System.out.println();
-            }
-        }
-    } //deprecate this
-
-    /**
-     * printWinner prints the winner of the game and all the other player standings
-     */
-    private void printWinner(){
-        System.out.println("");
-        System.out.println("================ GAME OVER ================");
-        for(int i = 0; i <= players.size()-1; i++){
-            for(Player p : players){
-                if(p.getGameStanding() == i){
-                    if(i == 0){
-                        System.out.println(p.getName() + " wins!");
-                    }
-                    else{
-                        System.out.println(p.getName() + " had a standing of " + (i+1));
-                    }
-                }
-            }
-        }
-    } //deprecate this
-
-    /**
-     * printStalemate prints a stalemate game ending
-     */
-    private void printStalemate(){
-        System.out.println("");
-        System.out.println("=============== STALEMATE =================");
-        System.out.println("all remaining player don't have enough troops to mount an attack");
-    } //deprecate this
 
     private Player getCurrentPlayer() {
         return players.get(currentPlayerIndex);
