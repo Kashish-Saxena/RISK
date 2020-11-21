@@ -36,7 +36,7 @@ public class RiskMapTest {
         List<Territory> territoryList = new ArrayList<>();
         territoryList.add(territory1);
         territoryList.add(territory2);
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK);
+        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK,0);
 
         RiskMap.addTerritory(territory1);
         RiskMap.addTerritory(territory2);
@@ -86,8 +86,8 @@ public class RiskMapTest {
         List<Territory> continent2Territories = new ArrayList<>();
         continent1Territories.add(territory1);
         continent2Territories.add(territory2);
-        Continent continent1 = new Continent("Continent1", continent1Territories, 0, 0, Color.BLACK);
-        Continent continent2 = new Continent("Continent2", continent2Territories, 0, 0, Color.BLACK);
+        Continent continent1 = new Continent("Continent1", continent1Territories, 0, 0, Color.BLACK,0);
+        Continent continent2 = new Continent("Continent2", continent2Territories, 0, 0, Color.BLACK,0);
         List<Continent> continentList = new ArrayList<>();
 
         assertEquals(continentList, RiskMap.getContinentsArrayList());

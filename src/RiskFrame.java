@@ -6,8 +6,6 @@ import java.util.List;
 //to the model, this class handles that change with the handleRiskUpdate method which re-draws everything
 public class RiskFrame extends JFrame implements RiskView {
 
-    //RiskFrame has a reference to map so that it can fetch all the Territory names and x,y coordinates
-    private RiskMap riskMap;
     private RiskGame rg;
     private RiskMapPanel mapPanel;
     private JLabel turn;
@@ -24,15 +22,15 @@ public class RiskFrame extends JFrame implements RiskView {
     public RiskFrame(RiskMap riskMap) {
         super("RISK");
         rg = new RiskGame(false, false);
-        this.riskMap = riskMap;
         this.setLayout(new BorderLayout());
 
+        //create a mapPanel and pass a reference to the RiskMap and RiskGame
         mapPanel = new RiskMapPanel(riskMap, rg);
 
         JPanel playerInputPanel = new JPanel();
         JPanel turnpanel = new JPanel();
         turn = new JLabel("Player's turn");
-        info = new JLabel("Choose a territory to attack from.");
+        info = new JLabel("Choose a territory to deploy armies to.");
         turnpanel.add(turn);
         turnpanel.add(info);
         JPanel buttonpanel = new JPanel();
@@ -54,6 +52,11 @@ public class RiskFrame extends JFrame implements RiskView {
         this.setResizable(false);
         this.setVisible(true);
         rg.addView(this);
+
+        //start the game by telling RiskGame to start off by calculating
+        //the first player's amount of armies to deploy
+        rg.calculateArmiesToDeploy();
+
     }
 
     //whenever a change to the model is made, the model will notify all Classes that implement the RiskView Interface
@@ -61,8 +64,15 @@ public class RiskFrame extends JFrame implements RiskView {
     //by triggering the handleRiskUpdate method of RiskMapPanel
     @Override
     public void handleRiskUpdate(RiskEvent e) {
+        //propagate the event to the map panel as well
         mapPanel.handleRiskUpdate(e);
         turn.setText(e.getCurrentPlayer().getName() + "'s turn"); //include the phase
+
+        //Deploy phase
+        if (e.getPhase() == TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO) {
+            info.setText("Choose a Territory to deploy to.");
+        }
+
         if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_ATTACKERS) {
             info.setText("Choose a Territory to attack with.");
         }

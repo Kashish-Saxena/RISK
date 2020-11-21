@@ -13,7 +13,6 @@ import java.util.*;
  */
 public class RiskGame implements Observer {
 
-
     private List<Player> players;
     private int currentPlayerIndex;
     private TurnPhase phase;
@@ -25,6 +24,7 @@ public class RiskGame implements Observer {
     private int attackDiceNum;
     private int defendDiceNum;
 
+    public static final int MIN_ARMY_DEPLOY = 3;
     public static final int MIN_ARMY_ATTACK = 2;
     public static final int MIN_PLAYERS = 2;
     public static final int MAX_PLAYERS = 6;
@@ -65,12 +65,14 @@ public class RiskGame implements Observer {
         attackDiceNum = 0;
         defendDiceNum = 0;
 
-        phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
+        //start game off with the deploy phase of the first player
+        phase = TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE;
     }
 
     public void addView(RiskView view) {
         riskFrame = view;
-        riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
+        //once again the game starts off with the deploy phase of the first player
+        riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
     }
 
     /**
@@ -116,13 +118,25 @@ public class RiskGame implements Observer {
 
         //calculate the number of armies each player has to place
         int numArmiesToPlace;
-        if(numPlayers == 2){ numArmiesToPlace = 50; }
-        else{numArmiesToPlace = 50 - (5 * numPlayers); }
+        if (numPlayers == 2) {
+            numArmiesToPlace = 50;
+        } else {
+            numArmiesToPlace = 50 - (5 * numPlayers);
+        }
 
         //set armiesToPlace for each Player
-        for(Player p: players){ p.setArmiesToPlace(numArmiesToPlace); }
+        for (Player p : players) {
+            p.setArmiesToPlace(numArmiesToPlace);
+        }
 
-        //first fill territories with 1 army until every territory has 1 army on it
+        fillTerritoriesWithOneArmy();
+        addRemainingArmy();
+    }
+
+    /**
+     * first fill territories with 1 army until every territory has 1 army on it.
+     */
+    private void fillTerritoriesWithOneArmy(){
         Random ran = new Random();
         int initialNumArmiesToBePlaced = RiskMap.numTerritories()-1;
         int playerIndex = 0;
@@ -170,12 +184,8 @@ public class RiskGame implements Observer {
                 }
             }
 
-
             //give player the territory
-            tempTerr.setOwner(tempPlay);
-            tempPlay.addTerritory(tempTerr);
-            tempPlay.setArmiesToPlace(tempPlay.getArmiesToPlace() - 1);
-            tempTerr.addArmies(1);
+            giveTerritory(tempTerr, tempPlay);
 
             //increment playerIndex and update tempPlay
             if(playerIndex == players.size()-1){ playerIndex = 0; }
@@ -183,9 +193,25 @@ public class RiskGame implements Observer {
             tempPlay = players.get(playerIndex);
             initialNumArmiesToBePlaced -= 1;
         }
+    }
 
-        //now that every territory has at least 1 army on it, add the remaining
-        //player armies randomly across the territories which they own
+    /**
+     * gives Territory tempTerr to Player tempPlay by setting Territory owner
+     * and adding 1 army to the Territory, aslo decrements the Player's armies to place field
+     */
+    private void giveTerritory(Territory tempTerr, Player tempPlay){
+        tempTerr.setOwner(tempPlay);
+        tempPlay.addTerritory(tempTerr);
+        tempPlay.setArmiesToPlace(tempPlay.getArmiesToPlace() - 1);
+        tempTerr.addArmies(1);
+    }
+
+    /**
+     * now that every territory has at least 1 army on it, add the remaining
+     * player armies randomly across the territories which they own
+     */
+    private void addRemainingArmy() {
+        Random ran = new Random();
         int randTerrIndex;
         Territory randTerr;
         for(Player p: players){
@@ -196,17 +222,60 @@ public class RiskGame implements Observer {
             }
             p.setArmiesToPlace(0);
         }
-
-        //print the map state after initial auto army placement
-        //printMapState();
     }
 
+    /**
+     * returns the current player from, players who is taking their turn based off currentPlayerIndex
+     */
     public Player getCurrentPlayer() {
         return players.get(currentPlayerIndex);
     }
 
+    /**
+     * calculates how many armies the player has to deploy and sets that value in their armiesToPlace field
+     */
+    public void calculateArmiesToDeploy(){
+        System.out.println("entering calculateArmiesToDeploy for " + getCurrentPlayer().getName());
+
+        Player currPlayer = getCurrentPlayer();
+
+        int numTerritoriesOwned = currPlayer.getTerritories().size();
+
+        System.out.println("num owned terr " + currPlayer.getTerritories().size());
+        System.out.println("owned continents:");
+        for(Continent c: currPlayer.getContinents()){
+            System.out.println(c.toString());
+        }
+
+        int armiesFromTerritoryOwnership = numTerritoriesOwned%3;
+        int armiesFromContinentOwnership = 0;
+        for(Continent c: currPlayer.getContinents()){
+            armiesFromContinentOwnership += c.getValue();
+        }
+
+        System.out.println("armies from Territories " + armiesFromTerritoryOwnership);
+        System.out.println("armies from continents " + armiesFromContinentOwnership);
+
+        int totalArmies = armiesFromTerritoryOwnership + armiesFromContinentOwnership;
+
+        //pity minimum amount of 3
+        if (totalArmies < MIN_ARMY_DEPLOY){
+            totalArmies = MIN_ARMY_DEPLOY;
+        }
+
+        currPlayer.setArmiesToPlace(totalArmies);
+
+        riskFrame.handleRiskUpdate(new RiskEventShowDeployAmount(this, TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE, getCurrentPlayer(), totalArmies));
+    }
+
+
     public void processTerritory(Territory territory) {
-        if (phase == TurnPhase.ATTACK_CHOOSE_ATTACKERS) {
+        if(phase == TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO){
+            riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO, getCurrentPlayer(), territory.getAdjacentEnemyTerritories()));
+
+        }
+
+        else if (phase == TurnPhase.ATTACK_CHOOSE_ATTACKERS) {
             fromTerritory = territory;
             phase = TurnPhase.ATTACK_CHOOSE_ENEMY;
             riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ENEMY, getCurrentPlayer(), territory.getAdjacentEnemyTerritories()));
@@ -307,8 +376,6 @@ public class RiskGame implements Observer {
         else {
             defender.removeTerritory(toTerritory);
             getCurrentPlayer().addTerritory(toTerritory);
-            System.out.println("triggering cont event");
-            System.out.println("CURRENT PHASE " + phase);
             riskFrame.handleRiskUpdate(new RiskEventContinent(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), RiskMap.getContinentFromTerritory(toTerritory)));
 
             if (fromTerritory.getArmies() < MIN_ARMY_TO_MOVE_FROM_ATTACK) {

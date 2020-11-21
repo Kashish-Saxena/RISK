@@ -15,6 +15,7 @@ public class Continent {
     private int xPos;
     private int yPos;
     private Color color;
+    private int value; //how many extra armies player gets to place during deploy if they own the continent
 
     /**
      * Constructor of the Continent class. It initializes the field values and maps
@@ -22,12 +23,13 @@ public class Continent {
      * @param name Name of the continent.
      * @param territories A list of territories associated with the continent.
      */
-    public Continent(String name, List<Territory> territories, int xPos, int yPos, Color color){
+    public Continent(String name, List<Territory> territories, int xPos, int yPos, Color color, int value){
         this.name = name;
         this.territories = territories;
         this.xPos = xPos;
         this.yPos = yPos;
         this.color = color;
+        this.value = value;
     }
 
     /**
@@ -56,5 +58,9 @@ public class Continent {
 
     public Color getColor(){
         return this.color;
+    }
+
+    public int getValue() {
+        return this.value;
     }
 }
