@@ -30,7 +30,7 @@ public class RiskFrame extends JFrame implements RiskView {
         JPanel playerInputPanel = new JPanel();
         JPanel turnpanel = new JPanel();
         turn = new JLabel("Player's turn");
-        info = new JLabel("Choose a territory to deploy armies to.");
+        info = new JLabel("Choose a territory to deploy to.");
         turnpanel.add(turn);
         turnpanel.add(info);
         JPanel buttonpanel = new JPanel();
@@ -68,12 +68,35 @@ public class RiskFrame extends JFrame implements RiskView {
         mapPanel.handleRiskUpdate(e);
         turn.setText(e.getCurrentPlayer().getName() + "'s turn"); //include the phase
 
-        //Deploy phase
-        if (e.getPhase() == TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO) {
-            info.setText("Choose a Territory to deploy to.");
+        //Deploy phases
+        if(e.getPhase() == TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE){
+            RiskEventShowDeployAmount r = (RiskEventShowDeployAmount)e;
+            JOptionPane.showMessageDialog(null, e.getCurrentPlayer().getName() +
+                    " has " + r.getTotalDeployAmount() + " armies to deploy\n" + r.getTerritoryAmount() +
+                    " from territories\n" + r.getContinentAmount() + " from continents", "" + "", JOptionPane.INFORMATION_MESSAGE);
         }
 
-        if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_ATTACKERS) {
+        else if (e.getPhase() == TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO) {
+            info.setText("Choose a territory to deploy to.");
+        }
+
+        else if (e.getPhase() == TurnPhase.DEPLOY_CHOOSE_DEPLOY_AMOUNT) {
+            RiskEventBounds r = (RiskEventBounds)e;
+            info.setText("Choose an amount of armies to deploy.");
+
+            String str = JOptionPane.showInputDialog("Choose a number of armies to deploy ( "+r.getMinChoice()+" - " + r.getMaxChoice() + ")"); //list options
+
+            int armyNum = Integer.parseInt(str);
+
+
+            while (((armyNum > ((RiskEventBounds)e).getMaxChoice()) || (armyNum < ((RiskEventBounds)e).getMinChoice()))) {
+                armyNum = Integer.parseInt(JOptionPane.showInputDialog("Invalid. Please enter number of armies between ("+r.getMinChoice()+ " - " + ((RiskEventBounds)e).getMaxChoice() + ")"));
+            }
+            System.out.println("player chose to deploy " + armyNum);
+
+        }
+
+        else if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_ATTACKERS) {
             info.setText("Choose a Territory to attack with.");
         }
         else if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_ENEMY) {

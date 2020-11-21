@@ -90,7 +90,6 @@ public class RiskMapPanel extends JPanel implements RiskView {
         super.paintComponent(g);
         this.setBackground(Color.white);
 
-        System.out.println("entering paint");//todo, remove this later, just using it for debugging
         Graphics2D g2 = (Graphics2D) g;
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 12f));
 
@@ -147,6 +146,8 @@ public class RiskMapPanel extends JPanel implements RiskView {
     @Override
     public void handleRiskUpdate(RiskEvent e) {
         for (JButton buttonTerritory : territoryButtons) {
+
+
             if (e instanceof RiskEventTerritories) {
                 RiskEventTerritories territoryEvent = (RiskEventTerritories)e;
 

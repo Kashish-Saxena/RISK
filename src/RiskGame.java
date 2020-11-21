@@ -19,12 +19,14 @@ public class RiskGame implements Observer {
     private boolean gameInProgress;
     private int numPlayers;
 
+    private Territory deployTerritory;
     private Territory fromTerritory;
     private Territory toTerritory;
     private int attackDiceNum;
     private int defendDiceNum;
 
     public static final int MIN_ARMY_DEPLOY = 3;
+    public static final int MIN_DEPLOY_AMOUNT = 1;
     public static final int MIN_ARMY_ATTACK = 2;
     public static final int MIN_PLAYERS = 2;
     public static final int MAX_PLAYERS = 6;
@@ -71,8 +73,11 @@ public class RiskGame implements Observer {
 
     public void addView(RiskView view) {
         riskFrame = view;
+
+        //note, I removed the initial handleRiskUpdate while making the deploy phase
+
         //once again the game starts off with the deploy phase of the first player
-        riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
+        //riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
     }
 
     /**
@@ -235,7 +240,7 @@ public class RiskGame implements Observer {
      * calculates how many armies the player has to deploy and sets that value in their armiesToPlace field
      */
     public void calculateArmiesToDeploy(){
-        System.out.println("entering calculateArmiesToDeploy for " + getCurrentPlayer().getName());
+        System.out.println("==== entering calculateArmiesToDeploy for " + getCurrentPlayer().getName() + " ====");
 
         Player currPlayer = getCurrentPlayer();
 
@@ -247,7 +252,7 @@ public class RiskGame implements Observer {
             System.out.println(c.toString());
         }
 
-        int armiesFromTerritoryOwnership = numTerritoriesOwned%3;
+        int armiesFromTerritoryOwnership = numTerritoriesOwned/3;
         int armiesFromContinentOwnership = 0;
         for(Continent c: currPlayer.getContinents()){
             armiesFromContinentOwnership += c.getValue();
@@ -265,14 +270,40 @@ public class RiskGame implements Observer {
 
         currPlayer.setArmiesToPlace(totalArmies);
 
-        riskFrame.handleRiskUpdate(new RiskEventShowDeployAmount(this, TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE, getCurrentPlayer(), totalArmies));
+        riskFrame.handleRiskUpdate(new RiskEventShowDeployAmount(this, TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE,
+                getCurrentPlayer(), totalArmies, armiesFromTerritoryOwnership, armiesFromContinentOwnership));
+
+        //set phase to DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO to let player choose the territory(s) to deploy to
+        phase = TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO;
+
+        riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO, getCurrentPlayer(), getCurrentPlayer().getTerritories()));
     }
+
+    /**
+     * fetches the amount of armies the player has to deploy from the player and creates a prompt for an amount
+     * to deploy (1 to maxDeployAmount)
+     */
+    public void promptDeployAmount(){
+        System.out.println("==== entering promptDeployAmount ====");
+        Player currPlayer = getCurrentPlayer();
+
+        int maxDeployAmount = currPlayer.getArmiesToPlace();
+        System.out.println("they can deploy " + maxDeployAmount);
+
+        riskFrame.handleRiskUpdate(new RiskEventBounds(this, TurnPhase.DEPLOY_CHOOSE_DEPLOY_AMOUNT,
+                getCurrentPlayer(), MIN_DEPLOY_AMOUNT, maxDeployAmount));
+    }
+
 
 
     public void processTerritory(Territory territory) {
         if(phase == TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO){
-            riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO, getCurrentPlayer(), territory.getAdjacentEnemyTerritories()));
+            deployTerritory = territory;
+            System.out.println("deploy territory is " +  deployTerritory.getName());
 
+            //after user clicked on territory to deploy to, prompt the player for a Deploy Amount
+            phase = TurnPhase.DEPLOY_CHOOSE_DEPLOY_AMOUNT;
+            promptDeployAmount();
         }
 
         else if (phase == TurnPhase.ATTACK_CHOOSE_ATTACKERS) {

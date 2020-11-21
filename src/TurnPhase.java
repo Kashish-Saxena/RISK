@@ -8,6 +8,7 @@ public enum TurnPhase {
     //deploy phases
     DEPLOY_CALCULATE_ARMIES_TO_PLACE,
     DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO,
+    DEPLOY_CHOOSE_DEPLOY_AMOUNT,
 
     //attack phases
     ATTACK_CHOOSE_ATTACKERS,
