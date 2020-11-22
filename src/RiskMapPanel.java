@@ -141,6 +141,17 @@ public class RiskMapPanel extends JPanel implements RiskView {
             g2.setColor(tempContinent.getColor());
             g2.fillRect(tempContinent.getXPos(), tempContinent.getYPos()-14, 90,26);
         }
+
+        //draw the continent ownership values table at the bottom left corner
+        g2.setColor(Color.black);
+        //g2.drawRect(25, 500, 200,100);
+        g2.drawString("Continent Ownership values", 25, 530);
+        g2.drawLine(25,535,200,535);
+        int offset = 0;
+        for(Continent tempContinent: RiskMap.getContinentsArrayList()) {
+            g2.drawString(tempContinent.toString() + " : " + tempContinent.getValue(), 25, 550 + offset);
+            offset += 12;
+        }
     }
 
     @Override
