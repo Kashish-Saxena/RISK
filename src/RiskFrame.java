@@ -226,6 +226,7 @@ public class RiskFrame extends JFrame implements RiskView {
         }
         else if(e.getPhase() == TurnPhase.FORTIFY_UPDATE_FORTIFIED_TERRITORIES){
             //do I need this?
+            //todo, check if this is even necessary
         }
 
         else if (e.getPhase() == TurnPhase.END) {

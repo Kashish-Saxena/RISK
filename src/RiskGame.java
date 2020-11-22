@@ -316,16 +316,15 @@ public class RiskGame implements Observer {
         }
     }
     /**
-     * todo, finish me
+     * calculates the valid territories to fortify from and makes user select one of those options
+     * note, at any time the player may decide to skip their fortify phase, in which case they
+     * click the pass turn button and the turn is passed to the next player
      */
     public void chooseFortifyFrom(){
         System.out.println("===== entering fortify =====");
         Player currPlayer = getCurrentPlayer();
-        //note, at any time the player may decide to skip their fortify phase, in which
-        //case they click the pass turn button and the turn is passed to the next player
 
-        //let player select territory to move armies from
-        //only show friendly territories that are connected to at least one other friendly territory and have at least 2 armies
+        //valid fortify from territories are friendly territories that are connected to at least one other friendly territory and have at least 2 armies
         phase = TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY;
         ArrayList<Territory> validChoices = new ArrayList<Territory>();
         for(Territory t: currPlayer.getTerritories()){
@@ -334,16 +333,6 @@ public class RiskGame implements Observer {
             }
         }
         riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY, currPlayer, validChoices));
-
-
-        //now let player select territory to move armies to
-        //to a dfs to only show friendly territories that are connected to the fromTerritory (minus the fromTerritory itself)
-
-        //prompt player for the amount of armies to move
-
-        //actually move the armies
-
-        //pass turn to next player
     }
 
     /**
@@ -435,8 +424,6 @@ public class RiskGame implements Observer {
             phase = TurnPhase.DEPLOY_CHOOSE_DEPLOY_AMOUNT;
             riskFrame.handleRiskUpdate(new RiskEventBounds(this, TurnPhase.FORTIFY_CHOOSE_FORTIFY_AMOUNT,
                     getCurrentPlayer(), MIN_FORTIFY_AMOUNT, fromTerritory.getArmies()-1));
-
-
         }
 
         //eventually, move
@@ -452,6 +439,10 @@ public class RiskGame implements Observer {
 
         attackDiceNum = 0;
         defendDiceNum = 0;
+
+        //show message saying its player's next turn
+        riskFrame.handleRiskUpdate(new RiskEventMessage(this, TurnPhase.SHOW_NEXT_PLAYER_TURN,
+                getCurrentPlayer(), getCurrentPlayer().getName() + "'s turn"));
 
         //start the next player's turn by calculating their armies to deploy
         phase = TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE;

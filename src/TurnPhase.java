@@ -27,5 +27,7 @@ public enum TurnPhase {
     FORTIFY_CHOOSE_FORTIFY_AMOUNT,
     FORTIFY_UPDATE_FORTIFIED_TERRITORIES,
 
+    SHOW_NEXT_PLAYER_TURN, //for player turn popup message
+
     END
 }
