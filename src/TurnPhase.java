@@ -19,6 +19,8 @@ public enum TurnPhase {
     ATTACK_RESULT,
     ATTACK_CHOOSE_MOVE,
 
+    ATTACK_UPDATE_TERRITORIES, //added this to fix bug where territories weren't being updated after a player took over another territory
+
     //move phase
 
     END

@@ -73,12 +73,7 @@ public class RiskFrame extends JFrame implements RiskView {
 
         //Deploy phases
         if(e.getPhase() == TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE){
-            RiskEventShowDeployAmount r = (RiskEventShowDeployAmount)e;
-            JOptionPane.showMessageDialog(null, e.getCurrentPlayer().getName() +
-                    " has " + r.getTotalDeployAmount() + " armies to deploy\n" + r.getTerritoryAmount() +
-                    " from territories\n" + r.getContinentAmount() + " from continents", "" + "", JOptionPane.INFORMATION_MESSAGE);
-
-            //also disable the pass button for deploy phase
+            //disable the pass button for deploy phase
             pass.setEnabled(false);
         }
 
