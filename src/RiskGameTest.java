@@ -156,7 +156,7 @@ public class RiskGameTest implements RiskView {
         con.add(territory1);
         con.add(territory2);
         con.add(territory3);
-        Continent continent1 = new Continent("Continent", con, 0, 0, Color.BLACK);
+        Continent continent1 = new Continent("Continent", con, 0, 0, Color.BLACK, 0);
 
         RiskMap.addTerritory(territory1);
         RiskMap.addTerritory(territory2);
@@ -334,7 +334,7 @@ public class RiskGameTest implements RiskView {
         territoryList.add(territory2);
         territoryList.add(territory3);
 
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK);
+        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK, 0);
 
         List<Territory> adj1 = new ArrayList<>();
         List<Territory> adj2 = new ArrayList<>();
@@ -403,7 +403,7 @@ public class RiskGameTest implements RiskView {
         territoryList.add(territory1);
         territoryList.add(territory2);
 
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK);
+        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK, 0);
 
         List<Territory> adj1 = new ArrayList<>();
         List<Territory> adj2 = new ArrayList<>();
@@ -457,7 +457,7 @@ public class RiskGameTest implements RiskView {
         territoryList.add(territory1);
         territoryList.add(territory2);
 
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK);
+        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK,0);
 
         List<Territory> adj1 = new ArrayList<>();
         List<Territory> adj2 = new ArrayList<>();
@@ -512,7 +512,7 @@ public class RiskGameTest implements RiskView {
         territoryList.add(territory1);
         territoryList.add(territory2);
 
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK);
+        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK,0);
 
         List<Territory> adj1 = new ArrayList<>();
         List<Territory> adj2 = new ArrayList<>();
@@ -567,7 +567,7 @@ public class RiskGameTest implements RiskView {
         territoryList.add(territory1);
         territoryList.add(territory2);
 
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK);
+        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK, 0);
 
         List<Territory> adj1 = new ArrayList<>();
         List<Territory> adj2 = new ArrayList<>();
@@ -623,7 +623,7 @@ public class RiskGameTest implements RiskView {
         territoryList.add(territory1);
         territoryList.add(territory2);
 
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK);
+        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK, 0);
 
         List<Territory> adj1 = new ArrayList<>();
         List<Territory> adj2 = new ArrayList<>();
@@ -684,7 +684,7 @@ public class RiskGameTest implements RiskView {
         territoryList.add(territory2);
         territoryList.add(territory3);
 
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK);
+        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK,0);
 
         List<Territory> adj1 = new ArrayList<>();
         List<Territory> adj2 = new ArrayList<>();
@@ -749,7 +749,7 @@ public class RiskGameTest implements RiskView {
         territoryList.add(territory1);
         territoryList.add(territory2);
 
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK);
+        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK,0);
 
         List<Territory> adj1 = new ArrayList<>();
         List<Territory> adj2 = new ArrayList<>();

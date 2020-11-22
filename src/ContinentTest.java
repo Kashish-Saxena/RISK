@@ -10,13 +10,13 @@ public class ContinentTest {
 
     @Test
     public void testToString() {
-        Continent continent1 = new Continent("Continent1", new ArrayList<>(), 0, 0, Color.BLACK);
+        Continent continent1 = new Continent("Continent1", new ArrayList<>(), 0, 0, Color.BLACK,0);
         assertEquals("Continent1", continent1.toString());
     }
 
     @Test
     public void testGetTerritoriesEmpty() {
-        Continent continent1 = new Continent("Continent1", new ArrayList<>(), 0, 0, Color.BLACK);
+        Continent continent1 = new Continent("Continent1", new ArrayList<>(), 0, 0, Color.BLACK,0);
         assertArrayEquals((new ArrayList<Territory>()).toArray(), continent1.getTerritories().toArray());
     }
 
@@ -30,25 +30,25 @@ public class ContinentTest {
         territoryList.add(territory2);
         territoryList.add(territory3);
 
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK);
+        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK,0);
         assertArrayEquals(territoryList.toArray(), continent1.getTerritories().toArray());
     }
 
     @Test
     public void testGetXPos() {
-        Continent continent1 = new Continent("Continent1", new ArrayList<>(), 0, 0, Color.BLACK);
+        Continent continent1 = new Continent("Continent1", new ArrayList<>(), 0, 0, Color.BLACK,0);
         assertEquals(0, continent1.getXPos());
     }
 
     @Test
     public void testGetYPos() {
-        Continent continent1 = new Continent("Continent1", new ArrayList<>(), 0, 0, Color.BLACK);
+        Continent continent1 = new Continent("Continent1", new ArrayList<>(), 0, 0, Color.BLACK,0);
         assertEquals(0, continent1.getYPos());
     }
     
     @Test
     public void testGetColor() {
-        Continent continent1 = new Continent("Continent1", new ArrayList<>(), 0, 0, Color.BLACK);
+        Continent continent1 = new Continent("Continent1", new ArrayList<>(), 0, 0, Color.BLACK,0);
         assertEquals(Color.BLACK, continent1.getColor());
     }
 }

@@ -132,15 +132,16 @@ public class RiskMap {
 
         //instantiate continents
         Continent northAmerica = new Continent("North America", Arrays.asList(alaska,alberta,centralAmerica,easternUnitedStates,
-                greenland,northwestTerritory,ontario,quebec,westernUnitedStates), 20, 225, Color.yellow);
-        Continent southAmerica = new Continent("South America", Arrays.asList(argentina,brazil,peru,venezuela), 100, 460, Color.red);
+                greenland,northwestTerritory,ontario,quebec,westernUnitedStates), 20, 225, Color.yellow, 5);
+        Continent southAmerica = new Continent("South America", Arrays.asList(argentina,brazil,peru,venezuela), 100, 460, Color.red, 2);
         Continent europe = new Continent("Europe", Arrays.asList(greatBritain,iceland,northernEurope,scandinavia,
-                southernEurope,ukraine,westernEurope), 600, 30, new Color(50,150,250));
-        Continent africa = new Continent("Africa", Arrays.asList(congo,eastAfrica,egypt,madagascar,northAfrica,southAfrica), 495, 505, new Color(150,100,0));
+                southernEurope,ukraine,westernEurope), 600, 30, new Color(50,150,250), 5);
+        Continent africa = new Continent("Africa", Arrays.asList(congo,eastAfrica,egypt,madagascar,northAfrica,southAfrica),
+                495, 505, new Color(150,100,0), 3);
         Continent asia = new Continent("Asia", Arrays.asList(afghanistan,china,india,irkutsk,japan,kamchatka,middleEast,
-                mongolia,siam,siberia,ural,yakutsk), 1100, 300, new Color(100,250,100));
+                mongolia,siam,siberia,ural,yakutsk), 1100, 300, new Color(100,250,100), 7);
         Continent australia = new Continent("Australia", Arrays.asList(easternAustralia,indonesia,newGuinea,westernAustralia), 1100, 385, new Color(230
-                ,0,250));
+                ,0,250), 2);
 
         //add all continents to territoryContinentMap hash map
         for(Territory t: northAmerica.getTerritories()){ territoryContinentMap.put(t, northAmerica); }

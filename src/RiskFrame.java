@@ -6,12 +6,11 @@ import java.util.List;
 //to the model, this class handles that change with the handleRiskUpdate method which re-draws everything
 public class RiskFrame extends JFrame implements RiskView {
 
-    //RiskFrame has a reference to map so that it can fetch all the Territory names and x,y coordinates
-    private RiskMap riskMap;
     private RiskGame rg;
     private RiskMapPanel mapPanel;
     private JLabel turn;
     private JLabel info;
+    private JButton pass;
 
     //todo, move hardcoded values into finals here
     //todo, clean up the wording of comments once done everything
@@ -24,20 +23,21 @@ public class RiskFrame extends JFrame implements RiskView {
     public RiskFrame(RiskMap riskMap) {
         super("RISK");
         rg = new RiskGame(false, false);
-        this.riskMap = riskMap;
         this.setLayout(new BorderLayout());
 
+        //create a mapPanel and pass a reference to the RiskMap and RiskGame
         mapPanel = new RiskMapPanel(riskMap, rg);
 
         JPanel playerInputPanel = new JPanel();
         JPanel turnpanel = new JPanel();
         turn = new JLabel("Player's turn");
-        info = new JLabel("Choose a territory to attack from.");
+        info = new JLabel("Choose a territory to deploy to.");
         turnpanel.add(turn);
         turnpanel.add(info);
         JPanel buttonpanel = new JPanel();
-        JButton pass = new JButton("PASS");
+        pass = new JButton("PASS");
         pass.setActionCommand("pass");
+        pass.setEnabled(false);
 
         buttonpanel.add(pass);
         playerInputPanel.add(turnpanel);
@@ -54,6 +54,11 @@ public class RiskFrame extends JFrame implements RiskView {
         this.setResizable(false);
         this.setVisible(true);
         rg.addView(this);
+
+        //start the game by telling RiskGame to start off by calculating
+        //the first player's amount of armies to deploy
+        rg.calculateArmiesToDeploy();
+
     }
 
     //whenever a change to the model is made, the model will notify all Classes that implement the RiskView Interface
@@ -61,10 +66,48 @@ public class RiskFrame extends JFrame implements RiskView {
     //by triggering the handleRiskUpdate method of RiskMapPanel
     @Override
     public void handleRiskUpdate(RiskEvent e) {
+        //propagate the event to the map panel as well
         mapPanel.handleRiskUpdate(e);
+
         turn.setText(e.getCurrentPlayer().getName() + "'s turn"); //include the phase
-        if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_ATTACKERS) {
+
+        //Deploy phases
+        if(e.getPhase() == TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE){
+            RiskEventShowDeployAmount r = (RiskEventShowDeployAmount)e;
+            JOptionPane.showMessageDialog(null, e.getCurrentPlayer().getName() +
+                    " has " + r.getTotalDeployAmount() + " armies to deploy\n" + r.getTerritoryAmount() +
+                    " from territories\n" + r.getContinentAmount() + " from continents", "" + "", JOptionPane.INFORMATION_MESSAGE);
+
+            //also disable the pass button for deploy phase
+            pass.setEnabled(false);
+        }
+
+        else if (e.getPhase() == TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO) {
+            info.setText("Choose a territory to deploy to.");
+        }
+        else if (e.getPhase() == TurnPhase.DEPLOY_CHOOSE_DEPLOY_AMOUNT) {
+            RiskEventBounds r = (RiskEventBounds)e;
+            info.setText("Choose an amount of armies to deploy.");
+
+            String str = JOptionPane.showInputDialog("Choose a number of armies to deploy ( "+r.getMinChoice()+" - " + r.getMaxChoice() + ")"); //list options
+
+            int armyNum = Integer.parseInt(str);
+
+            while (((armyNum > ((RiskEventBounds)e).getMaxChoice()) || (armyNum < ((RiskEventBounds)e).getMinChoice()))) {
+                armyNum = Integer.parseInt(JOptionPane.showInputDialog("Invalid. Please enter number of armies between ("+r.getMinChoice()+ " - " + ((RiskEventBounds)e).getMaxChoice() + ")"));
+            }
+            System.out.println("player chose to deploy " + armyNum);
+            rg.giveDeployedArmies(armyNum);
+        }
+        else if (e.getPhase() == TurnPhase.DEPLOY_UPDATE_DEPLOYED_TERRITORY) {
+            RiskEventSingleTerritory r = (RiskEventSingleTerritory)e;
+            info.setText("deployed armies to "+r.getTerritory().getName()+".");
+        }
+
+        else if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_ATTACKERS) {
             info.setText("Choose a Territory to attack with.");
+            //also re-enable the pass button that was disabled from deploy phase
+            pass.setEnabled(true);
         }
         else if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_ENEMY) {
             info.setText("Choose a Territory to attack.");
