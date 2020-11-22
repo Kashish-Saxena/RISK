@@ -13,5 +13,8 @@ public class RiskFrameController implements ActionListener {
         if (e.getActionCommand().equals("pass")) {
             rg.passTurn();
         }
+        else if (e.getActionCommand().equals("fortify")){
+            rg.chooseFortifyFrom();
+        }
     }
 }

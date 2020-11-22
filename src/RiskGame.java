@@ -28,6 +28,7 @@ public class RiskGame implements Observer {
 
     public static final int MIN_ARMY_DEPLOY = 3;
     public static final int MIN_DEPLOY_AMOUNT = 1;
+    public static final int MIN_FORTIFY_AMOUNT = 1;
     public static final int MIN_ARMY_ATTACK = 2;
     public static final int MIN_PLAYERS = 2;
     public static final int MAX_PLAYERS = 6;
@@ -87,7 +88,7 @@ public class RiskGame implements Observer {
      */
     private void setupOptions(){
         System.out.println("===========================================");
-        System.out.println("==           RISK MILESTONE 1            ==");
+        System.out.println("==           RISK MILESTONE 3            ==");
         System.out.println("==                  By                   ==");
         System.out.println("==         David Sciola 101082459        ==");
         System.out.println("==         Kevin Quach 101115704         ==");
@@ -314,7 +315,86 @@ public class RiskGame implements Observer {
             riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
         }
     }
+    /**
+     * todo, finish me
+     */
+    public void chooseFortifyFrom(){
+        System.out.println("===== entering fortify =====");
+        Player currPlayer = getCurrentPlayer();
+        //note, at any time the player may decide to skip their fortify phase, in which
+        //case they click the pass turn button and the turn is passed to the next player
 
+        //let player select territory to move armies from
+        //only show friendly territories that are connected to at least one other friendly territory and have at least 2 armies
+        phase = TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY;
+        ArrayList<Territory> validChoices = new ArrayList<Territory>();
+        for(Territory t: currPlayer.getTerritories()){
+            if(t.getAdjacentFriendlyTerritories().size() >= 1 && t.getArmies() >= 2){
+                validChoices.add(t);
+            }
+        }
+        riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY, currPlayer, validChoices));
+
+
+        //now let player select territory to move armies to
+        //to a dfs to only show friendly territories that are connected to the fromTerritory (minus the fromTerritory itself)
+
+        //prompt player for the amount of armies to move
+
+        //actually move the armies
+
+        //pass turn to next player
+    }
+
+    /**
+     * makes the player select the Territory to fortify/move armies to, note that this method
+     * uses recursiveDepthFirstSearchOnFriendlyTerritories as a helper method to to determine all "connected" friendly territories
+     * of the fromTerritory
+     */
+    private void chooseFortifyTo(){
+        ArrayList<Territory> validChoices = new ArrayList<Territory>();
+
+        //after calling recursiveDepthFirstSearchOnFriendlyTerritories, validChoices contains all the visited Territories
+        recursiveDepthFirstSearchOnFriendlyTerritories(fromTerritory, validChoices);
+
+        //remove fromTerritory from choices since you can't move armies from one Territory to itself
+        validChoices.remove(fromTerritory);
+
+        riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.FORTIFY_CHOOSE_TO_TERRITORY, getCurrentPlayer(), validChoices));
+    }
+
+    /**
+     * does a depth first search traversal starting at currentTerritory to determine all "connected" friendly territories
+     */
+    private void recursiveDepthFirstSearchOnFriendlyTerritories(Territory currentTerritory, ArrayList<Territory> visitedTerritories){
+        //mark currentTerritory as visted by adding it to visitedTerritories
+        visitedTerritories.add(currentTerritory);
+
+        System.out.println("dfs visiting " + currentTerritory.getName());
+
+        //Traverse all the adjacent and unmarked Territories and call the recursive function with index of adjacent Territory.
+        for(Territory t: currentTerritory.getAdjacentFriendlyTerritories()){
+            if(!visitedTerritories.contains(t)){//if not visited
+                recursiveDepthFirstSearchOnFriendlyTerritories(t, visitedTerritories);
+            }
+        }
+    }
+
+    public void fortify(int fortifyArmyAmount){
+        fromTerritory.setArmies(fromTerritory.getArmies() - fortifyArmyAmount);
+        toTerritory.setArmies(toTerritory.getArmies() + fortifyArmyAmount);
+
+        //update gui with changes
+        phase = TurnPhase.FORTIFY_UPDATE_FORTIFIED_TERRITORIES;
+        riskFrame.handleRiskUpdate(new RiskEventTerritories(this, TurnPhase.FORTIFY_UPDATE_FORTIFIED_TERRITORIES, getCurrentPlayer(), fromTerritory, toTerritory));
+
+        //pass turn to next player
+        passTurn();
+    }
+
+    /**
+     * this method is invoked by RiskMapController whenever a territory button is clicked
+     */
     public void processTerritory(Territory territory) {
         if(phase == TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO){
             deployTerritory = territory;
@@ -331,11 +411,34 @@ public class RiskGame implements Observer {
             phase = TurnPhase.ATTACK_CHOOSE_ENEMY;
             riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ENEMY, getCurrentPlayer(), territory.getAdjacentEnemyTerritories()));
         }
+
         else if (phase == TurnPhase.ATTACK_CHOOSE_ENEMY) {
             toTerritory = territory;
             phase = TurnPhase.ATTACK_CHOOSE_DICE;
             riskFrame.handleRiskUpdate(new RiskEventBounds(this, TurnPhase.ATTACK_CHOOSE_DICE, getCurrentPlayer(), 1, Math.min(fromTerritory.getArmies() - 1, MAX_ATTACK_DICE)));
         }
+
+        else if(phase == TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY){
+            fromTerritory = territory;
+            System.out.println("from territory is " +  fromTerritory.getName());
+
+            //after user clicked on territory to move armies from, make the
+            // user select a connected territory to move the armies to
+            phase = TurnPhase.FORTIFY_CHOOSE_TO_TERRITORY;
+            chooseFortifyTo();
+        }
+        else if(phase == TurnPhase.FORTIFY_CHOOSE_TO_TERRITORY){
+            toTerritory = territory;
+            System.out.println("to territory is " +  fromTerritory.getName());
+
+            //after user clicked on territory to fortify to, prompt the player for a fortify Amount
+            phase = TurnPhase.DEPLOY_CHOOSE_DEPLOY_AMOUNT;
+            riskFrame.handleRiskUpdate(new RiskEventBounds(this, TurnPhase.FORTIFY_CHOOSE_FORTIFY_AMOUNT,
+                    getCurrentPlayer(), MIN_FORTIFY_AMOUNT, fromTerritory.getArmies()-1));
+
+
+        }
+
         //eventually, move
     }
 
@@ -349,9 +452,6 @@ public class RiskGame implements Observer {
 
         attackDiceNum = 0;
         defendDiceNum = 0;
-
-//        phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
-//        riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
 
         //start the next player's turn by calculating their armies to deploy
         phase = TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE;
@@ -426,7 +526,7 @@ public class RiskGame implements Observer {
                 riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
             }
             else {
-                passTurn();
+                chooseFortifyFrom();//start fortify phase
             }
         }
         else {
@@ -444,7 +544,7 @@ public class RiskGame implements Observer {
                     riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
                 }
                 else {
-                    passTurn();
+                    chooseFortifyFrom();//start fortify phase
                 }
             }
             else {
@@ -467,7 +567,7 @@ public class RiskGame implements Observer {
             riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
         }
         else {
-            passTurn(); //change to fortify when available
+            chooseFortifyFrom();//start fortify phase
         }
     }
 
