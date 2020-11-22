@@ -205,5 +205,10 @@ public class RiskMapPanel extends JPanel implements RiskView {
                 }
             }
         }
+
+        if(e instanceof RiskEventMessage){
+            RiskEventMessage r = (RiskEventMessage)e;
+            JOptionPane.showMessageDialog(null, r.getMessage(), "" + "", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 }

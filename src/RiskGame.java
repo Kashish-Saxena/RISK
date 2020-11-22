@@ -269,14 +269,19 @@ public class RiskGame implements Observer {
             totalDeployAmount = MIN_ARMY_DEPLOY;
         }
 
-        riskFrame.handleRiskUpdate(new RiskEventShowDeployAmount(this, TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE,
-                getCurrentPlayer(), totalDeployAmount, armiesFromTerritoryOwnership, armiesFromContinentOwnership));
+        String message = currPlayer.getName() + " has " + totalDeployAmount + " armies to place \n" +
+                armiesFromTerritoryOwnership + " from Territories and \n" + armiesFromContinentOwnership + " from Continents";
+        riskFrame.handleRiskUpdate(new RiskEventMessage(this, TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE,
+                getCurrentPlayer(), message));
 
         //set phase to DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO to let player choose the territory(s) to deploy to
         phase = TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO;
         riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO, getCurrentPlayer(), getCurrentPlayer().getTerritories()));
     }
 
+    /**
+     * gives amountToDeploy armies to the territory the player selected
+     */
     public void giveDeployedArmies(int amountToDeploy){
         deployTerritory.addArmies(amountToDeploy);
         totalDeployAmount -= amountToDeploy;
@@ -285,15 +290,24 @@ public class RiskGame implements Observer {
         phase = TurnPhase.DEPLOY_UPDATE_DEPLOYED_TERRITORY;
         riskFrame.handleRiskUpdate(new RiskEventSingleTerritory(this, TurnPhase.DEPLOY_UPDATE_DEPLOYED_TERRITORY, getCurrentPlayer(), deployTerritory));
 
-        //if the player still have some armies left to deploy go through another deployment loop
+        checkIfThereAreArmiesLeftToDeploy();
+    }
+
+    /**
+     * checks if the player still has Armies left to deploy, if yes then send them through another
+     * deployment loop, else they have no more armies left to deploy so move onto the attack phase
+     */
+    public void checkIfThereAreArmiesLeftToDeploy(){
         if(totalDeployAmount >= 1){
             System.out.println("there are still armies to deploy");
+            String message = totalDeployAmount + " armies remaining to deploy";
+            riskFrame.handleRiskUpdate(new RiskEventMessage(this, TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO,
+                    getCurrentPlayer(), message));
 
             //set phase to DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO to let player choose the territory(s) to deploy to
             phase = TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO;
             riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO, getCurrentPlayer(), getCurrentPlayer().getTerritories()));
         }
-        //else they have no more armies left to deploy so move onto the attack phase
         else{
             System.out.println("moving onto attack phase");
             phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
@@ -335,8 +349,13 @@ public class RiskGame implements Observer {
 
         attackDiceNum = 0;
         defendDiceNum = 0;
-        phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
-        riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
+
+//        phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
+//        riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
+
+        //start the next player's turn by calculating their armies to deploy
+        phase = TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE;
+        calculateArmiesToDeploy();
     }
 
     public void setAttackDice(int num) {
@@ -433,6 +452,7 @@ public class RiskGame implements Observer {
                 phase = TurnPhase.ATTACK_CHOOSE_MOVE;
                 riskFrame.handleRiskUpdate(new RiskEventDiceResults(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), fromTerritory, toTerritory, attackDice, defendDice, attackArmyLoss, -1, defender));
                 riskFrame.handleRiskUpdate(new RiskEventBounds(this, TurnPhase.ATTACK_CHOOSE_MOVE, getCurrentPlayer(), attackDiceNum, fromTerritory.getArmies() - 1));
+                riskFrame.handleRiskUpdate(new RiskEventTerritories(this, TurnPhase.ATTACK_UPDATE_TERRITORIES, getCurrentPlayer(), fromTerritory, toTerritory));
             }
         }
     }
