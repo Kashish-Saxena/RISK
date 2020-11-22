@@ -260,8 +260,8 @@ public class RiskGame implements Observer {
             armiesFromContinentOwnership += c.getValue();
         }
 
-        System.out.println("armies from Territories " + armiesFromTerritoryOwnership);
-        System.out.println("armies from continents " + armiesFromContinentOwnership);
+        System.out.println("deploy armies from Territories " + armiesFromTerritoryOwnership);
+        System.out.println("deploy armies from continents " + armiesFromContinentOwnership);
 
         totalDeployAmount = armiesFromTerritoryOwnership + armiesFromContinentOwnership;
 
