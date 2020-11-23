@@ -79,11 +79,6 @@ public class RiskGame implements Observer {
      */
     public void addView(RiskView view) {
         riskFrame = view;
-
-        //note, I removed the initial handleRiskUpdate while making the deploy phase
-
-        //once again the game starts off with the deploy phase of the first player
-        //riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
     }
 
     /**
@@ -152,6 +147,8 @@ public class RiskGame implements Observer {
             p.setArmiesToPlace(numArmiesToPlace);
         }
 
+        //invoke methods to automatically randomly fill assign territories
+        // to players and assign armies to those territories
         fillTerritoriesWithOneArmy();
         addRemainingArmy();
     }
@@ -258,27 +255,18 @@ public class RiskGame implements Observer {
      * calculates how many armies the player has to deploy then begins the DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO phase
      */
     public void calculateArmiesToDeploy() {
-        System.out.println("==== entering calculateArmiesToDeploy for " + getCurrentPlayer().getName() + " ====");
-
         Player currPlayer = getCurrentPlayer();
 
-        int numTerritoriesOwned = currPlayer.getTerritories().size();
+        //1 army per 3 territories owned
+        int armiesFromTerritoryOwnership = currPlayer.getTerritories().size() / 3;
 
-        System.out.println("num owned terr " + currPlayer.getTerritories().size());
-        System.out.println("owned continents:");
-        for (Continent c : currPlayer.getContinents()) {
-            System.out.println(c.toString());
-        }
-
-        int armiesFromTerritoryOwnership = numTerritoriesOwned / 3;
+        //armies for owning entire continents
         int armiesFromContinentOwnership = 0;
         for (Continent c : currPlayer.getContinents()) {
             armiesFromContinentOwnership += c.getValue();
         }
 
-        System.out.println("deploy armies from Territories " + armiesFromTerritoryOwnership);
-        System.out.println("deploy armies from continents " + armiesFromContinentOwnership);
-
+        //set totalDeployAmount, this value represents the total amount of armies the player has to deploy
         totalDeployAmount = armiesFromTerritoryOwnership + armiesFromContinentOwnership;
 
         //pity minimum amount of 3
@@ -309,6 +297,9 @@ public class RiskGame implements Observer {
      */
     public void giveDeployedArmies(int amountToDeploy){
         deployTerritory.addArmies(amountToDeploy);
+
+        //subtract the amount deployed from totalDeployAmount
+        //(will be used later to check if player has armies left to deploy)
         totalDeployAmount -= amountToDeploy;
 
         //update the army number of that territory on GUI
@@ -325,13 +316,13 @@ public class RiskGame implements Observer {
      * deployment loop, else they have no more armies left to deploy so move onto the attack phase
      */
     public void checkIfThereAreArmiesLeftToDeploy(){
+        //if player has armies left to deploy
         if(totalDeployAmount >= 1) {
-            System.out.println("there are still armies to deploy");
             String message = totalDeployAmount + " armies remaining to deploy";
             riskFrame.handleRiskUpdate(new RiskEventMessage(this, TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO,
                     getCurrentPlayer(), message));
 
-            //set phase to DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO to let player choose the territory(s) to deploy to
+            //set phase to DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO to let player choose more territory(s) to deploy to
             phase = TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO;
             if (!getCurrentPlayer().isAI()) {
                 riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO, getCurrentPlayer(), getCurrentPlayer().getTerritories()));
@@ -341,8 +332,8 @@ public class RiskGame implements Observer {
                 processTerritory(player.getDeployTerritory());
             }
         }
+        //else player has no armies left to deploy so send them to next phase
         else {
-            System.out.println("moving onto attack phase");
             phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
             if (!getCurrentPlayer().isAI()) {
                 riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
@@ -370,7 +361,6 @@ public class RiskGame implements Observer {
      * click the pass turn button and the turn is passed to the next player
      */
     public void chooseFortifyFrom(){
-        System.out.println("===== entering fortify =====");
         Player currPlayer = getCurrentPlayer();
 
         //valid fortify from territories are friendly territories that are connected to at least one other friendly territory and have at least 2 armies
@@ -420,8 +410,6 @@ public class RiskGame implements Observer {
         //mark currentTerritory as visited by adding it to visitedTerritories
         visitedTerritories.add(currentTerritory);
 
-        System.out.println("dfs visiting " + currentTerritory.getName());
-
         //Traverse all the adjacent and unmarked Territories and call the recursive function with index of adjacent Territory.
         for(Territory t: currentTerritory.getAdjacentFriendlyTerritories()){
             if(!visitedTerritories.contains(t)){//if not visited
@@ -451,7 +439,6 @@ public class RiskGame implements Observer {
     public void processTerritory(Territory territory) {
         if(phase == TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO){
             deployTerritory = territory;
-            System.out.println("deploy territory is " +  deployTerritory.getName());
 
             //after user clicked on territory to deploy to, prompt the player for a Deploy Amount
             phase = TurnPhase.DEPLOY_CHOOSE_DEPLOY_AMOUNT;
@@ -491,7 +478,6 @@ public class RiskGame implements Observer {
 
         else if(phase == TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY){
             fromTerritory = territory;
-            System.out.println("from territory is " +  fromTerritory.getName());
 
             //after user clicked on territory to move armies from, make the
             // user select a connected territory to move the armies to
@@ -500,7 +486,6 @@ public class RiskGame implements Observer {
         }
         else if(phase == TurnPhase.FORTIFY_CHOOSE_TO_TERRITORY){
             toTerritory = territory;
-            System.out.println("to territory is " +  fromTerritory.getName());
 
             //after user clicked on territory to fortify to, prompt the player for a fortify Amount
             phase = TurnPhase.DEPLOY_CHOOSE_DEPLOY_AMOUNT;
@@ -810,18 +795,27 @@ public class RiskGame implements Observer {
         //}
     }
 
+    /**
+     * Sets fromTerritory (used in testing).
+     */
     public void setFromTerritory(Territory territory) {
         if (testingMain || testingGame) {
             fromTerritory = territory;
         }
     }
 
+    /**
+     * Sets toTerritory (used in testing).
+     */
     public void setToTerritory(Territory territory) {
         if (testingMain || testingGame) {
             toTerritory = territory;
         }
     }
 
+    /**
+     * cancels an attack in progress.
+     */
     public void cancelAttack() {
         phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
         riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));

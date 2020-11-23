@@ -18,9 +18,6 @@ public class RiskFrame extends JFrame implements RiskView {
     private JLabel info;
     private JButton passAndFortifyButton;
 
-    //todo, move hardcoded values into finals here
-    //todo, clean up the wording of comments once done everything
-
     /**
      * Constructor of the RiskFrame class. It initializes the field values
      * @param riskMap Map of the game.
@@ -66,10 +63,6 @@ public class RiskFrame extends JFrame implements RiskView {
 
     }
 
-    //whenever a change to the model is made, the model will notify all Classes that implement the RiskView Interface
-    //by invoking their handleRiskUpdate method, for RiskFrame, the handleRiskUpdate method redraws the updated map
-    //by triggering the handleRiskUpdate method of RiskMapPanel
-
     @Override
     public void handleRiskUpdate(RiskEvent e) {
         //propagate the event to the map panel as well
@@ -112,7 +105,6 @@ public class RiskFrame extends JFrame implements RiskView {
             else {
                 rg.giveDeployedArmies(armyNum);
             }
-            System.out.println("player chose to deploy " + armyNum);
         }
         else if (e.getPhase() == TurnPhase.DEPLOY_UPDATE_DEPLOYED_TERRITORY) {
             RiskEventSingleTerritory r = (RiskEventSingleTerritory)e;
@@ -255,11 +247,6 @@ public class RiskFrame extends JFrame implements RiskView {
             else {
                 rg.fortify(armyNum);
             }
-            System.out.println("player chose to move/fortify " + armyNum);
-        }
-        else if(e.getPhase() == TurnPhase.FORTIFY_UPDATE_FORTIFIED_TERRITORIES){
-            //do I need this?
-            //todo, check if this is even necessary
         }
 
         else if (e.getPhase() == TurnPhase.END) {
