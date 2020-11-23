@@ -168,4 +168,15 @@ public class Player extends Observable {
     public int getArmiesToPlace(){
         return this.armiesToPlace;
     }
+
+    public boolean isAI() {
+        return false;
+    }
+
+    public void updatePlayer(Player player) {
+        ownedTerritories = player.ownedTerritories;
+        ownedContinents = player.ownedContinents;
+        gameStanding = player.gameStanding;
+        armiesToPlace = player.armiesToPlace;
+    }
 }

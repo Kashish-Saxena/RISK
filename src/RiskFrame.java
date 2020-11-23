@@ -78,7 +78,8 @@ public class RiskFrame extends JFrame implements RiskView {
         turn.setText(e.getCurrentPlayer().getName() + "'s turn"); //include the phase
 
         //Deploy phases
-        if(e.getPhase() == TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE){
+        if (e.getPhase() == TurnPhase.AI_INFO) {}
+        else if (e.getPhase() == TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE){
             //disable the fortify button for deploy phase
             passAndFortifyButton.setEnabled(false);
         }
