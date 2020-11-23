@@ -8,7 +8,7 @@ import java.util.Observable;
  * place. It also contains methods to get attackable territories and handle the battle.
  *
  * @author David Sciola - 101082459, Kevin Quach - 101115704 and Kashish Saxena - 101107204
- * @version October 25, 2020
+ * @version November 23, 2020
  */
 public class Player extends Observable {
 
@@ -20,6 +20,9 @@ public class Player extends Observable {
 
     /**
      * Constructor of the Player class. It initializes all the field values.
+     *
+     * @param name Name of the player.
+     * @param game RiskGame.
      */
     public Player(String name, RiskGame game){
         this.name = name;
