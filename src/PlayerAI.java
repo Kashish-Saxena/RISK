@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerAI extends Player {
     public PlayerAI(String name, RiskGame game) {
@@ -40,26 +41,20 @@ public class PlayerAI extends Player {
         Territory movingTerritory = this.getTerritories().get(0);
         for (Territory t : this.getTerritories()) {
             if (t.getAdjacentEnemyTerritories().isEmpty() && t.getArmies() > 1) {
-                if (t.)
+                if (searchForAttackableTerritory(t, new ArrayList<>()) != null) {
+                    return t;
+                }
             }
         }
         return null;
     }
 
     //TODO refactor to return a list with above?
-    public Territory getTerritoryToFortify(Territory attackingTerritory) {
-        int maxDifference = 0;
-        Territory minTerritory = attackingTerritory.getAdjacentEnemyTerritories().get(0);
-        for (Territory enemyTerritory : attackingTerritory.getAdjacentEnemyTerritories()) {
-            if (attackingTerritory.getArmies() - enemyTerritory.getArmies() > maxDifference) {
-                maxDifference = attackingTerritory.getArmies() - enemyTerritory.getArmies();
-                minTerritory = enemyTerritory;
-            }
-        }
-        return minTerritory;
+    public Territory getTerritoryToFortify(Territory movingTerritory) {
+        return searchForAttackableTerritory(movingTerritory, new ArrayList<>());
     }
 
-    private Territory searchForAttackableTerritory(Territory currentTerritory, ArrayList<Territory> visitedTerritories){
+    private Territory searchForAttackableTerritory(Territory currentTerritory, List<Territory> visitedTerritories){
         //mark currentTerritory as visited by adding it to visitedTerritories
         visitedTerritories.add(currentTerritory);
 
@@ -67,12 +62,13 @@ public class PlayerAI extends Player {
 
         //Traverse all the adjacent and unmarked Territories and call the recursive function with index of adjacent Territory.
         for(Territory t: currentTerritory.getAdjacentFriendlyTerritories()){
-            if(!visitedTerritories.contains(t)){//if not visited
-                searchForAttackableTerritory(t, visitedTerritories);
-            }
             if (!t.getAdjacentEnemyTerritories().isEmpty()) {
                 return t;
             }
+            else if(!visitedTerritories.contains(t)){//if not visited
+                return searchForAttackableTerritory(t, visitedTerritories);
+            }
         }
+        return null;
     }
 }
