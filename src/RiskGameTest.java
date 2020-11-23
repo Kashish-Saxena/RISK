@@ -21,9 +21,7 @@ public class RiskGameTest implements RiskView {
     private final int TEST_SET_ATTACK_DICE3 = 9;
     private final int TEST_MOVE = 10;
     private final int TEST_BATTLE_NO_DEATH_ATTACKER_LOSS1 = 11;
-    private final int TEST_BATTLE_NO_DEATH_ATTACKER_LOSS2 = 12;
     private final int TEST_BATTLE_NO_DEATH_DEFENDER_LOSS = 13;
-    private final int TEST_BATTLE_DEATH_NO_CHOOSE_MOVE = 14;
     private final int TEST_BATTLE_DEATH_CHOOSE_MOVE = 15;
     private final int TEST_PLAYER_ELIMINATION = 16;
     private final int TEST_GAME_OVER = 17;
@@ -192,23 +190,19 @@ public class RiskGameTest implements RiskView {
         player3.addTerritory(territory3);
 
         test = TEST_PASS_TURN;
-        territoryList.add(territory2);
         player = player2;
         rg.passTurn();
 
-        territoryList.clear();
-        territoryList.add(territory3);
+        test = TEST_PASS_TURN;
         player = player3;
         rg.passTurn();
 
-        territoryList.clear();
-        territoryList.add(territory1);
+        test = TEST_PASS_TURN;
         player = player1;
         rg.passTurn();
 
+        test = TEST_PASS_TURN;
         player2.setGameStanding(1);
-        territoryList.clear();
-        territoryList.add(territory3);
         player = player3;
         rg.passTurn();
     }
@@ -225,6 +219,9 @@ public class RiskGameTest implements RiskView {
 
         rg.processTerritory(territory1);
         rg.processTerritory(territory1);
+        territory1.setOwner(player1);
+        rg.setFromTerritory(territory1);
+        rg.setToTerritory(territory1);
 
         test = TEST_SET_ATTACK_DICE1;
         player = player1;
@@ -242,6 +239,15 @@ public class RiskGameTest implements RiskView {
     @Test
     public void testSetDefendDice() {
         rg = new RiskGame(true, false);
+        RiskMap rm = new RiskMap(true);
+        Player player1 = new Player("Player1", rg);
+        Territory territory1 = new Territory("Territory1", 0, 0);
+        territory1.setArmies(1);
+        territory1.setOwner(player1);
+        rg.addPlayer(player1);
+        rg.addView(this);
+
+        rg.setToTerritory(territory1);
         rg.setDefendDice(1);
         assertEquals(1, rg.getDefendDiceNum());
     }
@@ -364,25 +370,18 @@ public class RiskGameTest implements RiskView {
         player2.addTerritory(territory3);
 
         rg.addView(this);
-        rg.processTerritory(territory1);
-        rg.processTerritory(territory2);
+        rg.setFromTerritory(territory1);
+        rg.setToTerritory(territory2);
 
         assertEquals(5, territory1.getArmies());
         assertEquals(1, territory2.getArmies());
 
+        test = TEST_MOVE;
+        player = player1;
         rg.move(4);
         assertEquals(TurnPhase.ATTACK_CHOOSE_ATTACKERS, rg.getPhase());
         assertEquals(1, territory1.getArmies());
         assertEquals(5, territory2.getArmies());
-
-        player1.removeTerritory(territory1);
-        player1.removeTerritory(territory2);
-
-        rg.processTerritory(territory1);
-        rg.processTerritory(territory2);
-        test = TEST_MOVE;
-        player = player2;
-        rg.move(0);
     }
 
 
@@ -424,8 +423,8 @@ public class RiskGameTest implements RiskView {
 
         rg.addView(this);
 
-        rg.processTerritory(territory1);
-        rg.processTerritory(territory2);
+        rg.setFromTerritory(territory1);
+        rg.setToTerritory(territory2);
         rg.setAttackDice(1);
         rg.setDefendDice(1);
 
@@ -438,61 +437,6 @@ public class RiskGameTest implements RiskView {
         rg.battleResults(new int[] {1, 0}, attackDice, defendDice);
         assertTrue(reachedProperEvent);
         assertEquals(player1, rg.getCurrentPlayer());
-    }
-
-    @Test
-    public void testBattleNoDeathAttackerLoss2() {
-        rg = new RiskGame(false, true);
-        RiskMap rm = new RiskMap(true);
-        Player player1 = new Player("Player1", rg);
-        Player player2 = new Player("Player2", rg);
-        rg.addPlayer(player1);
-        rg.addPlayer(player2);
-        Territory territory1 = new Territory("Territory1", 0, 0);
-        Territory territory2 = new Territory("Territory2", 0, 0);
-        territory1.setArmies(2);
-        territory2.setArmies(2);
-
-        List<Territory> territoryList = new ArrayList<>();
-        territoryList.add(territory1);
-        territoryList.add(territory2);
-
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK,0);
-
-        List<Territory> adj1 = new ArrayList<>();
-        List<Territory> adj2 = new ArrayList<>();
-
-        adj1.add(territory2);
-        territory1.setAdjacentTerritories(adj1);
-
-        adj2.add(territory1);
-        territory2.setAdjacentTerritories(adj2);
-
-        RiskMap.addTerritory(territory1);
-        RiskMap.addTerritory(territory2);
-        RiskMap.addContinent(territory1, continent1);
-        RiskMap.addContinent(territory2, continent1);
-
-        player1.addTerritory(territory1);
-        player2.addTerritory(territory2);
-
-        rg.addView(this);
-
-        rg.processTerritory(territory1);
-        rg.processTerritory(territory2);
-        rg.setAttackDice(1);
-        rg.setDefendDice(1);
-
-        List<Integer> attackDice = new ArrayList<>();
-        List<Integer> defendDice = new ArrayList<>();
-        attackDice.add(1);
-        defendDice.add(6);
-
-        test = TEST_BATTLE_NO_DEATH_ATTACKER_LOSS2;
-        reachedProperEvent = false;
-        rg.battleResults(new int[] {1, 0}, attackDice, defendDice);
-        assertTrue(reachedProperEvent);
-        assertEquals(player2, rg.getCurrentPlayer());
     }
 
     @Test
@@ -533,8 +477,8 @@ public class RiskGameTest implements RiskView {
 
         rg.addView(this);
 
-        rg.processTerritory(territory1);
-        rg.processTerritory(territory2);
+        rg.setFromTerritory(territory1);
+        rg.setToTerritory(territory2);
         rg.setAttackDice(1);
         rg.setDefendDice(1);
 
@@ -545,62 +489,6 @@ public class RiskGameTest implements RiskView {
 
         test = TEST_BATTLE_NO_DEATH_DEFENDER_LOSS;
         reachedProperEvent = false;
-        rg.battleResults(new int[] {0, 1}, attackDice, defendDice);
-        assertTrue(reachedProperEvent);
-        assertEquals(player1, rg.getCurrentPlayer());
-    }
-
-    @Test
-    public void testBattleDeathNoChooseMove() {
-        rg = new RiskGame(false, true);
-        RiskMap rm = new RiskMap(true);
-        Player player1 = new Player("Player1", rg);
-        Player player2 = new Player("Player2", rg);
-        rg.addPlayer(player1);
-        rg.addPlayer(player2);
-        Territory territory1 = new Territory("Territory1", 0, 0);
-        Territory territory2 = new Territory("Territory2", 0, 0);
-        territory1.setArmies(2);
-        territory2.setArmies(1);
-
-        List<Territory> territoryList = new ArrayList<>();
-        territoryList.add(territory1);
-        territoryList.add(territory2);
-
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK, 0);
-
-        List<Territory> adj1 = new ArrayList<>();
-        List<Territory> adj2 = new ArrayList<>();
-
-        adj1.add(territory2);
-        territory1.setAdjacentTerritories(adj1);
-
-        adj2.add(territory1);
-        territory2.setAdjacentTerritories(adj2);
-
-        RiskMap.addTerritory(territory1);
-        RiskMap.addTerritory(territory2);
-        RiskMap.addContinent(territory1, continent1);
-        RiskMap.addContinent(territory2, continent1);
-
-        player1.addTerritory(territory1);
-        player2.addTerritory(territory2);
-
-        rg.addView(this);
-
-        rg.processTerritory(territory1);
-        rg.processTerritory(territory2);
-        rg.setAttackDice(1);
-        rg.setDefendDice(1);
-
-        List<Integer> attackDice = new ArrayList<>();
-        List<Integer> defendDice = new ArrayList<>();
-        attackDice.add(6);
-        defendDice.add(1);
-
-        test = TEST_BATTLE_DEATH_NO_CHOOSE_MOVE;
-        reachedProperEvent = false;
-        player = player1;
         rg.battleResults(new int[] {0, 1}, attackDice, defendDice);
         assertTrue(reachedProperEvent);
         assertEquals(player1, rg.getCurrentPlayer());
@@ -644,8 +532,8 @@ public class RiskGameTest implements RiskView {
 
         rg.addView(this);
 
-        rg.processTerritory(territory1);
-        rg.processTerritory(territory2);
+        rg.setFromTerritory(territory1);
+        rg.setToTerritory(territory2);
         rg.setAttackDice(1);
         rg.setDefendDice(1);
 
@@ -715,8 +603,8 @@ public class RiskGameTest implements RiskView {
 
         rg.addView(this);
 
-        rg.processTerritory(territory1);
-        rg.processTerritory(territory2);
+        rg.setFromTerritory(territory1);
+        rg.setToTerritory(territory2);
         rg.setAttackDice(1);
         rg.setDefendDice(1);
 
@@ -770,8 +658,8 @@ public class RiskGameTest implements RiskView {
 
         rg.addView(this);
 
-        rg.processTerritory(territory1);
-        rg.processTerritory(territory2);
+        rg.setFromTerritory(territory1);
+        rg.setToTerritory(territory2);
         rg.setAttackDice(1);
         rg.setDefendDice(1);
 
@@ -824,11 +712,9 @@ public class RiskGameTest implements RiskView {
             assertEquals(3, chooseBoundsEvent.getMaxChoice());
         }
         else if (test == TEST_PASS_TURN) {
-            assertEquals(TurnPhase.ATTACK_CHOOSE_ATTACKERS, rg.getPhase());
-            assertEquals(TurnPhase.ATTACK_CHOOSE_ATTACKERS, e.getPhase());
-            RiskEventChooseTerritory chooseTerritoryEvent = (RiskEventChooseTerritory)e;
-            assertEquals(player, chooseTerritoryEvent.getCurrentPlayer());
-            assertEquals(territoryList, chooseTerritoryEvent.getEnabledTerritories());
+            assertEquals(TurnPhase.SHOW_NEXT_PLAYER_TURN, e.getPhase());
+            assertEquals(player, e.getCurrentPlayer());
+            test = this.INITIAL;
         }
         else if (test == TEST_SET_ATTACK_DICE1) {
             assertEquals(1, rg.getAttackDiceNum());
@@ -838,6 +724,7 @@ public class RiskGameTest implements RiskView {
             assertEquals(player, e.getCurrentPlayer());
             assertEquals(1, chooseBoundsEvent.getMinChoice());
             assertEquals(1, chooseBoundsEvent.getMaxChoice());
+            test = this.INITIAL;
         }
         else if (test == TEST_SET_ATTACK_DICE2) {
             assertEquals(1, rg.getAttackDiceNum());
@@ -847,6 +734,7 @@ public class RiskGameTest implements RiskView {
             assertEquals(player, e.getCurrentPlayer());
             assertEquals(1, chooseBoundsEvent.getMinChoice());
             assertEquals(2, chooseBoundsEvent.getMaxChoice());
+            test = this.INITIAL;
         }
         else if (test == TEST_SET_ATTACK_DICE3) {
             assertEquals(1, rg.getAttackDiceNum());
@@ -856,6 +744,7 @@ public class RiskGameTest implements RiskView {
             assertEquals(player, e.getCurrentPlayer());
             assertEquals(1, chooseBoundsEvent.getMinChoice());
             assertEquals(2, chooseBoundsEvent.getMaxChoice());
+            test = this.INITIAL;
         }
         else if (test == TEST_MOVE) {
             assertEquals(player, e.getCurrentPlayer());
@@ -868,29 +757,12 @@ public class RiskGameTest implements RiskView {
                 assertEquals(2, diceResultsEvent.getTerritoryTo().getArmies());
             }
         }
-        else if (test == TEST_BATTLE_NO_DEATH_ATTACKER_LOSS2) {
-            if (e instanceof RiskEventDiceResults) {
-                reachedProperEvent = true;
-                RiskEventDiceResults diceResultsEvent = (RiskEventDiceResults)e;
-                assertEquals(1, diceResultsEvent.getTerritoryFrom().getArmies());
-                assertEquals(2, diceResultsEvent.getTerritoryTo().getArmies());
-            }
-        }
         else if (test == TEST_BATTLE_NO_DEATH_DEFENDER_LOSS) {
             if (e instanceof RiskEventDiceResults) {
                 reachedProperEvent = true;
                 RiskEventDiceResults diceResultsEvent = (RiskEventDiceResults)e;
                 assertEquals(2, diceResultsEvent.getTerritoryFrom().getArmies());
                 assertEquals(1, diceResultsEvent.getTerritoryTo().getArmies());
-            }
-        }
-        else if (test == TEST_BATTLE_DEATH_NO_CHOOSE_MOVE) {
-            if (e instanceof RiskEventDiceResults) {
-                reachedProperEvent = true;
-                RiskEventDiceResults diceResultsEvent = (RiskEventDiceResults)e;
-                assertEquals(1, diceResultsEvent.getTerritoryFrom().getArmies());
-                assertEquals(1, diceResultsEvent.getTerritoryTo().getArmies());
-                assertEquals(player, diceResultsEvent.getTerritoryTo().getOwner());
             }
         }
         else if (test == TEST_BATTLE_DEATH_CHOOSE_MOVE) {
