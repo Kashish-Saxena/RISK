@@ -99,23 +99,28 @@ public class RiskGame implements Observer {
         System.out.println("===========================================");
 
         //Prompting for player information
-        String str = JOptionPane.showInputDialog("Enter Number of Players (2-6):");
         numPlayers = 0;
-        try
-        {
-            if(str != null)
-                numPlayers = Integer.parseInt(str);
-        }
-        catch (NumberFormatException e)
-        {
-            numPlayers = 0;
-        }
+        String str = "";
         while (!(numPlayers >= MIN_PLAYERS && numPlayers <= MAX_PLAYERS)) {
-            numPlayers = Integer.parseInt(JOptionPane.showInputDialog("Invalid. Please enter number of players between 2-6:"));
+            try {
+                str = JOptionPane.showInputDialog("Enter Number of Players (2-6):");
+                if (str != null) { //cannot cancel a player number choice
+                    numPlayers = Integer.parseInt(str);
+                }
+            } catch (NumberFormatException excp) {
+                numPlayers = 0;
+            }
         }
+
+        String name = "";
+        int isAI = 0;
         for (int i = 0; i < numPlayers; i++) {
-            String name = JOptionPane.showInputDialog("Enter Player " + (i + 1) + "'s name:");
-            int isAI = JOptionPane.showConfirmDialog(null, "Is " + name + " an AI?");
+            name = "";
+            while (name == null || name.equals("")) {
+                name = JOptionPane.showInputDialog("Enter Player " + (i + 1) + "'s name:");
+            }
+
+            isAI = JOptionPane.showConfirmDialog(null, "Is " + name + " an AI?");
             //0 corresponds to yes button, 1 corresponds to no button
             if (isAI == 0) {
                 Player player = new PlayerAI(name + " (ai)", this);
@@ -803,5 +808,10 @@ public class RiskGame implements Observer {
         //if (testing || testingGame) { //this shouldn't be used outside of testing
         return defendDiceNum;
         //}
+    }
+
+    public void cancelAttack() {
+        phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
+        riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
     }
 }

@@ -90,16 +90,29 @@ public class RiskFrame extends JFrame implements RiskView {
         else if (e.getPhase() == TurnPhase.DEPLOY_CHOOSE_DEPLOY_AMOUNT) {
             RiskEventBounds r = (RiskEventBounds)e;
             info.setText("Choose an amount of armies to deploy.");
-
-            String str = JOptionPane.showInputDialog("Choose a number of armies to deploy ( "+r.getMinChoice()+" - " + r.getMaxChoice() + ")"); //list options
-
-            int armyNum = Integer.parseInt(str);
-
-            while (((armyNum > ((RiskEventBounds)e).getMaxChoice()) || (armyNum < ((RiskEventBounds)e).getMinChoice()))) {
-                armyNum = Integer.parseInt(JOptionPane.showInputDialog("Invalid. Please enter number of armies between ("+r.getMinChoice()+ " - " + ((RiskEventBounds)e).getMaxChoice() + ")"));
+            int armyNum = 0;
+            String str = "";
+            boolean cancel = false;
+            while (!cancel && ((armyNum > ((RiskEventBounds)e).getMaxChoice()) || (armyNum < ((RiskEventBounds)e).getMinChoice()))) {
+                try {
+                    str = JOptionPane.showInputDialog("Choose a number of armies to deploy ( "+r.getMinChoice()+" - " + r.getMaxChoice() + ")"); //list options
+                    if (str == null) {
+                        cancel = 0 == JOptionPane.showConfirmDialog(null, "Cancel deploy?");
+                    }
+                    else {
+                        armyNum = Integer.parseInt(str);
+                    }
+                } catch (NumberFormatException excp) {
+                    armyNum = 0;
+                }
+            }
+            if (cancel) {
+                rg.checkIfThereAreArmiesLeftToDeploy(); //note! some controller logic in here
+            }
+            else {
+                rg.giveDeployedArmies(armyNum);
             }
             System.out.println("player chose to deploy " + armyNum);
-            rg.giveDeployedArmies(armyNum);
         }
         else if (e.getPhase() == TurnPhase.DEPLOY_UPDATE_DEPLOYED_TERRITORY) {
             RiskEventSingleTerritory r = (RiskEventSingleTerritory)e;
@@ -117,63 +130,63 @@ public class RiskFrame extends JFrame implements RiskView {
         }
         else if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_DICE) { //update this to use new phases
             info.setText("Choose a number of dice to attack with."); //list options
-            //TODO: wrap JOptionPane in the try catch, or implement a spinner
-            String str = JOptionPane.showInputDialog("Choose a number of dice to attack with (1 - " + ((RiskEventBounds)e).getMaxChoice() + ")"); //list options
             int diceNum = 0;
-            try
-            {
-                if(str != null)
-                    diceNum = Integer.parseInt(str);
+            String str = "";
+            boolean cancel = false;
+            while (!cancel && ((diceNum > ((RiskEventBounds)e).getMaxChoice()) || (diceNum < ((RiskEventBounds)e).getMinChoice()))) {
+                try {
+                    str = JOptionPane.showInputDialog("Choose a number of dice to attack with (1 - " + ((RiskEventBounds) e).getMaxChoice() + ")"); //list options
+                    if (str == null) {
+                        cancel = 0 == JOptionPane.showConfirmDialog(null, "Cancel attack?");
+                    }
+                    else {
+                        diceNum = Integer.parseInt(str);
+                    }
+                } catch (NumberFormatException excp) {
+                    diceNum = 0;
+                }
             }
-            catch (NumberFormatException excp)
-            {
-                diceNum = 0;
+            if (cancel) {
+                rg.cancelAttack(); //note! some controller logic in here
             }
-            while (((diceNum > ((RiskEventBounds)e).getMaxChoice()) || (diceNum < ((RiskEventBounds)e).getMinChoice()))) {
-                diceNum = Integer.parseInt(JOptionPane.showInputDialog("Invalid. Please enter number of dice between (1 - " + ((RiskEventBounds)e).getMaxChoice() + ")"));
+            else {
+                rg.setAttackDice(diceNum);
             }
-            rg.setAttackDice(diceNum); //note! some controller logic in here
         }
         else if (e.getPhase() == TurnPhase.DEFEND_CHOOSE_DICE) {
             info.setText("Choose a number of dice to defend with.");
-            //TODO: wrap JOptionPane in the try catch, or implement a spinner
-            String str = JOptionPane.showInputDialog("Choose a number of dice to defend with (1 - " + ((RiskEventBounds)e).getMaxChoice() + ")"); //list options
             int diceNum = 0;
-            try
-            {
-                if(str != null)
-                    diceNum = Integer.parseInt(str);
-            }
-            catch (NumberFormatException excp)
-            {
-                diceNum = 0;
-            }
-            while (((diceNum > ((RiskEventBounds)e).getMaxChoice()) || (diceNum < ((RiskEventBounds)e).getMinChoice()))) {
-                diceNum = Integer.parseInt(JOptionPane.showInputDialog("Invalid. Please enter number of dice between (1 - " + ((RiskEventBounds)e).getMaxChoice() + ")"));
+            String str = "";
+            while (diceNum > ((RiskEventBounds)e).getMaxChoice() || diceNum < ((RiskEventBounds)e).getMinChoice()) {
+                try {
+                    str = JOptionPane.showInputDialog("Choose a number of dice to defend with (1 - " + ((RiskEventBounds)e).getMaxChoice() + ")"); //list options
+                    if (str != null) { //player cannot cancel a defend choice
+                        diceNum = Integer.parseInt(str);
+                    }
+                } catch (NumberFormatException excp) {
+                    diceNum = 0;
+                }
             }
             rg.setDefendDice(diceNum); //note! some controller logic in here
         }
         else if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_MOVE) {
             info.setText("Choose a number of army to move.");
-            //TODO: wrap JOptionPane in the try catch, or implement a spinner
-            String str = JOptionPane.showInputDialog("Choose a number of army to move ("+ ((RiskEventBounds)e).getMinChoice() + " - " + ((RiskEventBounds)e).getMaxChoice() + ")"); //list options
             int armyNum = 0;
-            try
-            {
-                if(str != null)
-                    armyNum = Integer.parseInt(str);
-            }
-            catch (NumberFormatException excp)
-            {
-                armyNum = 0;
-            }
-            while (((armyNum > ((RiskEventBounds)e).getMaxChoice()) || (armyNum < ((RiskEventBounds)e).getMinChoice()))) {
-                armyNum = Integer.parseInt(JOptionPane.showInputDialog("Invalid. Please enter number of armies between (" + ((RiskEventBounds)e).getMinChoice() + " - " + ((RiskEventBounds)e).getMaxChoice() + ")"));
+            String str = "";
+            while (armyNum > ((RiskEventBounds)e).getMaxChoice() || armyNum < ((RiskEventBounds)e).getMinChoice()) {
+                try {
+                    str = JOptionPane.showInputDialog("Choose a number of army to move ("+ ((RiskEventBounds)e).getMinChoice() + " - " + ((RiskEventBounds)e).getMaxChoice() + ")"); //list options
+                    if (str != null) { //player cannot cancel an attack move choice
+                        armyNum = Integer.parseInt(str);
+                    }
+                } catch (NumberFormatException excp) {
+                    armyNum = 0;
+                }
             }
             rg.move(armyNum); //note! some controller logic in here
         }
         else if (e.getPhase() == TurnPhase.ATTACK_RESULT) {
-            info.setText("Game over!");
+            info.setText("Attack over!");
             if (e instanceof RiskEventDiceResults) {
                 RiskEventDiceResults diceResults = (RiskEventDiceResults) e;
 
@@ -218,18 +231,31 @@ public class RiskFrame extends JFrame implements RiskView {
             info.setText("Choose a Territory to move armies to.");
         }
         else if(e.getPhase() == TurnPhase.FORTIFY_CHOOSE_FORTIFY_AMOUNT){
-            RiskEventBounds r = (RiskEventBounds)e;
             info.setText("Choose an amount of armies to move.");
-
-            String str = JOptionPane.showInputDialog("Choose a number of armies to move ( "+r.getMinChoice()+" - " + r.getMaxChoice() + ")"); //list options
-
-            int armyNum = Integer.parseInt(str);
-
-            while (((armyNum > ((RiskEventBounds)e).getMaxChoice()) || (armyNum < ((RiskEventBounds)e).getMinChoice()))) {
-                armyNum = Integer.parseInt(JOptionPane.showInputDialog("Invalid. Please enter number of armies between ("+r.getMinChoice()+ " - " + ((RiskEventBounds)e).getMaxChoice() + ")"));
+            RiskEventBounds r = (RiskEventBounds)e;
+            int armyNum = 0;
+            String str = "";
+            boolean cancel = false;
+            while (!cancel && ((armyNum > ((RiskEventBounds)e).getMaxChoice()) || (armyNum < ((RiskEventBounds)e).getMinChoice()))) {
+                try {
+                    str = JOptionPane.showInputDialog("Choose a number of armies to move ( "+r.getMinChoice()+" - " + r.getMaxChoice() + ")"); //list options
+                    if (str == null) {
+                        cancel = 0 == JOptionPane.showConfirmDialog(null, "Cancel fortify?");
+                    }
+                    else {
+                        armyNum = Integer.parseInt(str);
+                    }
+                } catch (NumberFormatException excp) {
+                    armyNum = 0;
+                }
+            }
+            if (cancel) {
+                rg.chooseFortifyFrom(); //note! some controller logic in here
+            }
+            else {
+                rg.fortify(armyNum);
             }
             System.out.println("player chose to move/fortify " + armyNum);
-            rg.fortify(armyNum);
         }
         else if(e.getPhase() == TurnPhase.FORTIFY_UPDATE_FORTIFIED_TERRITORIES){
             //do I need this?
@@ -237,6 +263,7 @@ public class RiskFrame extends JFrame implements RiskView {
         }
 
         else if (e.getPhase() == TurnPhase.END) {
+            info.setText("Game over!");
             RiskEventEnd endEvent = (RiskEventEnd)e;
             List<Player> players = endEvent.getPlayers();
             String message = "================ GAME OVER ================\n";
