@@ -21,7 +21,13 @@ public enum TurnPhase {
 
     ATTACK_UPDATE_TERRITORIES, //added this to fix bug where territories weren't being updated after a player took over another territory
 
-    //move phase
+    //fortify/move phase
+    FORTIFY_CHOOSE_FROM_TERRITORY,
+    FORTIFY_CHOOSE_TO_TERRITORY,
+    FORTIFY_CHOOSE_FORTIFY_AMOUNT,
+    FORTIFY_UPDATE_FORTIFIED_TERRITORIES,
+
+    SHOW_NEXT_PLAYER_TURN, //for player turn popup message
 
     END
 }

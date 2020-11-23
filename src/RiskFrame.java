@@ -16,7 +16,7 @@ public class RiskFrame extends JFrame implements RiskView {
     private RiskMapPanel mapPanel;
     private JLabel turn;
     private JLabel info;
-    private JButton pass;
+    private JButton passAndFortifyButton;
 
     //todo, move hardcoded values into finals here
     //todo, clean up the wording of comments once done everything
@@ -40,16 +40,16 @@ public class RiskFrame extends JFrame implements RiskView {
         turnpanel.add(turn);
         turnpanel.add(info);
         JPanel buttonpanel = new JPanel();
-        pass = new JButton("PASS");
-        pass.setActionCommand("pass");
-        pass.setEnabled(false);
+        passAndFortifyButton = new JButton("END ATTACK AND FORTIFY");
+        passAndFortifyButton.setActionCommand("fortify");
+        passAndFortifyButton.setEnabled(false);
 
-        buttonpanel.add(pass);
+        buttonpanel.add(passAndFortifyButton);
         playerInputPanel.add(turnpanel);
         playerInputPanel.add(buttonpanel);
 
         RiskFrameController rfc = new RiskFrameController(rg);
-        pass.addActionListener(rfc);
+        passAndFortifyButton.addActionListener(rfc);
 
         this.add(mapPanel,BorderLayout.CENTER);
         this.add(playerInputPanel, BorderLayout.SOUTH);
@@ -79,8 +79,8 @@ public class RiskFrame extends JFrame implements RiskView {
 
         //Deploy phases
         if(e.getPhase() == TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE){
-            //disable the pass button for deploy phase
-            pass.setEnabled(false);
+            //disable the fortify button for deploy phase
+            passAndFortifyButton.setEnabled(false);
         }
 
         else if (e.getPhase() == TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO) {
@@ -105,10 +105,11 @@ public class RiskFrame extends JFrame implements RiskView {
             info.setText("deployed armies to "+r.getTerritory().getName()+".");
         }
 
+        //attack phases
         else if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_ATTACKERS) {
             info.setText("Choose a Territory to attack with.");
-            //also re-enable the pass button that was disabled from deploy phase
-            pass.setEnabled(true);
+            //also re-enable the fortify button that was disabled from deploy phase
+            passAndFortifyButton.setEnabled(true);
         }
         else if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_ENEMY) {
             info.setText("Choose a Territory to attack.");
@@ -205,6 +206,35 @@ public class RiskFrame extends JFrame implements RiskView {
                 //do nothing
             }
         }
+
+        //fortify phases
+        else if(e.getPhase() == TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY){
+            passAndFortifyButton.setText("PASS TURN");
+            passAndFortifyButton.setActionCommand("pass");
+            info.setText("Choose a Territory to move armies from.");
+        }
+        else if(e.getPhase() == TurnPhase.FORTIFY_CHOOSE_TO_TERRITORY){
+            info.setText("Choose a Territory to move armies to.");
+        }
+        else if(e.getPhase() == TurnPhase.FORTIFY_CHOOSE_FORTIFY_AMOUNT){
+            RiskEventBounds r = (RiskEventBounds)e;
+            info.setText("Choose an amount of armies to move.");
+
+            String str = JOptionPane.showInputDialog("Choose a number of armies to move ( "+r.getMinChoice()+" - " + r.getMaxChoice() + ")"); //list options
+
+            int armyNum = Integer.parseInt(str);
+
+            while (((armyNum > ((RiskEventBounds)e).getMaxChoice()) || (armyNum < ((RiskEventBounds)e).getMinChoice()))) {
+                armyNum = Integer.parseInt(JOptionPane.showInputDialog("Invalid. Please enter number of armies between ("+r.getMinChoice()+ " - " + ((RiskEventBounds)e).getMaxChoice() + ")"));
+            }
+            System.out.println("player chose to move/fortify " + armyNum);
+            rg.fortify(armyNum);
+        }
+        else if(e.getPhase() == TurnPhase.FORTIFY_UPDATE_FORTIFIED_TERRITORIES){
+            //do I need this?
+            //todo, check if this is even necessary
+        }
+
         else if (e.getPhase() == TurnPhase.END) {
             RiskEventEnd endEvent = (RiskEventEnd)e;
             List<Player> players = endEvent.getPlayers();

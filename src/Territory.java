@@ -129,8 +129,21 @@ public class Territory {
                 adjacentEnemyTerritories.add(adj);
             }
         }
-
         return adjacentEnemyTerritories;
+    }
+
+    /**
+     * Returns a list of friendly territories that are adjacent to this territory.
+     * @return A list of adjacent enemy territories.
+     */
+    public List<Territory> getAdjacentFriendlyTerritories(){
+        ArrayList<Territory> adjacentFriendlyTerritories = new ArrayList<>();
+        for (Territory adj : this.adjacentTerritories) {
+            if (adj.getOwner() == this.owner) {
+                adjacentFriendlyTerritories.add(adj);
+            }
+        }
+        return adjacentFriendlyTerritories;
     }
 
     /**
