@@ -10,6 +10,25 @@ public class PlayerAI extends Player {
         return true;
     }
 
+    public Territory getDeployTerritory() {
+        //find the territory with the greatest difference between its army and the army of an attackable territory
+        int maxDifference = 0;
+        Territory maxTerritory = this.getAttackableTerritories().get(0);
+        for (Territory t : this.getAttackableTerritories()) {
+            for (Territory enemyTerritory : t.getAdjacentEnemyTerritories()) {
+                if (enemyTerritory.getArmies() - t.getArmies() > maxDifference) {
+                    maxDifference = enemyTerritory.getArmies() - t.getArmies();
+                    maxTerritory = t;
+                }
+            }
+        }
+        return maxTerritory;
+    }
+
+    public int getDeployAmount() {
+        return 1;
+    }
+
     public Territory getAttackingTerritory() {
         //find the territory with the greatest difference between its army and the army of an attackable territory
         int maxDifference = 0;

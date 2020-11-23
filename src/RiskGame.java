@@ -320,6 +320,11 @@ public class RiskGame implements Observer {
             riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
         }
     }
+
+    public int getTotalDeployAmount() {
+        return totalDeployAmount;
+    }
+
     /**
      * calculates the valid territories to fortify from and makes user select one of those options
      * note, at any time the player may decide to skip their fortify phase, in which case they
