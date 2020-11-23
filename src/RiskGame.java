@@ -348,6 +348,7 @@ public class RiskGame implements Observer {
                     processTerritory(player.getAttackingTerritory());
                 }
                 else {
+                    phase = TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY;
                     chooseFortifyFrom();
                 }
             }
@@ -503,7 +504,7 @@ public class RiskGame implements Observer {
                         getCurrentPlayer(), MIN_FORTIFY_AMOUNT, fromTerritory.getArmies() - 1));
             }
             else {
-                setAttackDice(PlayerAI.getMoveNum(fromTerritory));
+                fortify(PlayerAI.getMoveNum(fromTerritory));
             }
         }
     }
@@ -627,11 +628,13 @@ public class RiskGame implements Observer {
                         processTerritory(player.getAttackingTerritory());
                     }
                     else {
+                        phase = TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY;
                         chooseFortifyFrom();
                     }
                 }
             }
             else {
+                phase = TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY;
                 chooseFortifyFrom();//start fortify phase
             }
         }
@@ -678,11 +681,13 @@ public class RiskGame implements Observer {
                     processTerritory(player.getAttackingTerritory());
                 }
                 else {
+                    phase = TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY;
                     chooseFortifyFrom();
                 }
             }
         }
         else {
+            phase = TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY;
             chooseFortifyFrom();//start fortify phase
         }
     }

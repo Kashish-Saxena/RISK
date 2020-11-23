@@ -30,15 +30,16 @@ public class PlayerAI extends Player {
     }
 
     public boolean hasFavorableAttacks() {
+        if (this.getAttackableTerritories().isEmpty()) {
+            return false;
+        }
         for (Territory t : this.getAttackableTerritories()) {
             for (Territory e : t.getAdjacentEnemyTerritories()) {
                 if (t.getArmies() >= e.getArmies()) {
-                    System.out.println("attack possible");
                     return true;
                 }
             }
         }
-        System.out.println("attack not good");
         return false;
     }
 
@@ -67,7 +68,6 @@ public class PlayerAI extends Player {
                 minTerritory = enemyTerritory;
             }
         }
-        System.out.println(attackingTerritory.getName() + " " + minTerritory.getName());
         return minTerritory;
     }
 
@@ -90,7 +90,7 @@ public class PlayerAI extends Player {
         Territory movingTerritory = this.getTerritories().get(0);
         for (Territory t : this.getTerritories()) {
             if (t.getAdjacentEnemyTerritories().isEmpty() && t.getArmies() > 1) {
-                if (searchForAttackableTerritory(t, new ArrayList<>()) != null) {
+                if (searchForConnectedAttackableTerritory(t, new ArrayList<>()) != null) {
                     return t;
                 }
             }
@@ -100,14 +100,14 @@ public class PlayerAI extends Player {
 
     //TODO refactor to return a list with above?
     public Territory getTerritoryToFortify(Territory movingTerritory) {
-        return searchForAttackableTerritory(movingTerritory, new ArrayList<>());
+        return searchForConnectedAttackableTerritory(movingTerritory, new ArrayList<>());
     }
 
     public static int getMoveNum(Territory movingTerritory) {
         return movingTerritory.getArmies() - 1; //1 needs to be left on own territory
     }
 
-    private Territory searchForAttackableTerritory(Territory currentTerritory, List<Territory> visitedTerritories){
+    private Territory searchForConnectedAttackableTerritory(Territory currentTerritory, List<Territory> visitedTerritories){
         //mark currentTerritory as visited by adding it to visitedTerritories
         visitedTerritories.add(currentTerritory);
 
@@ -119,7 +119,7 @@ public class PlayerAI extends Player {
                 return t;
             }
             else if(!visitedTerritories.contains(t)){//if not visited
-                return searchForAttackableTerritory(t, visitedTerritories);
+                return searchForConnectedAttackableTerritory(t, visitedTerritories);
             }
         }
         return null;
