@@ -29,5 +29,7 @@ public enum TurnPhase {
 
     SHOW_NEXT_PLAYER_TURN, //for player turn popup message
 
+    AI_INFO,
+
     END
 }

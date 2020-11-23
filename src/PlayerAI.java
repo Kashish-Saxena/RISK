@@ -56,6 +56,22 @@ public class PlayerAI extends Player {
         }
         return minTerritory;
     }
+
+    public static int getAttackDiceNum(Territory attackingTerritory) {
+        return Math.max(1, Math.min(attackingTerritory.getArmies(), RiskGame.MAX_ATTACK_DICE));
+        //max number of dice possible
+    }
+
+    public static int getDefendDiceNum(Territory attackingTerritory) {
+        return Math.max(1, Math.min(attackingTerritory.getArmies(), RiskGame.MAX_DEFEND_DICE));
+        //max number of dice possible
+    }
+
+    public static int getAttackMoveNum(Territory fromTerritory) {
+        return fromTerritory.getArmies() - 1;
+        //max number of armies possible
+    }
+
     public Territory getMovingTerritory() {
         Territory movingTerritory = this.getTerritories().get(0);
         for (Territory t : this.getTerritories()) {
@@ -65,12 +81,16 @@ public class PlayerAI extends Player {
                 }
             }
         }
-        return null;
+        return movingTerritory;
     }
 
     //TODO refactor to return a list with above?
     public Territory getTerritoryToFortify(Territory movingTerritory) {
         return searchForAttackableTerritory(movingTerritory, new ArrayList<>());
+    }
+
+    public static int getMoveNum(Territory movingTerritory) {
+        return movingTerritory.getArmies() - 1; //1 needs to be left on own territory
     }
 
     private Territory searchForAttackableTerritory(Territory currentTerritory, List<Territory> visitedTerritories){
