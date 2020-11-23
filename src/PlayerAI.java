@@ -63,7 +63,7 @@ public class PlayerAI extends Player {
         int maxDifference = 0;
         Territory minTerritory = attackingTerritory.getAdjacentEnemyTerritories().get(0);
         for (Territory enemyTerritory : attackingTerritory.getAdjacentEnemyTerritories()) {
-            if (attackingTerritory.getArmies() - enemyTerritory.getArmies() > maxDifference) {
+            if (attackingTerritory.getArmies() - enemyTerritory.getArmies() >= maxDifference) {
                 maxDifference = attackingTerritory.getArmies() - enemyTerritory.getArmies();
                 minTerritory = enemyTerritory;
             }
