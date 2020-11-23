@@ -8,7 +8,7 @@ import java.util.List;
  * and to manipulate the number of armies in the territory.
  *
  * @author David Sciola - 101082459 and Kevin Quach - 101115704
- * @version October 25, 2020
+ * @version November 23, 2020
  */
 public class Territory {
 
