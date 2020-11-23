@@ -2,8 +2,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-//RiskFrame is the JFrame that holds all the GUI, it implements RiskView and whenever a change is made
-//to the model, this class handles that change with the handleRiskUpdate method which re-draws everything
+/**
+ * RiskFrame is the JFrame that contains the GUI. This class implements the RiskView interface which contains a method
+ * handleRiskUpdate(). This method updates the appropriate components on the map whenever the model changes.
+ *
+ * @author David Sciola - 101082459, Kevin Quach - 101115704 and Kashish Saxena - 101107204
+ * @version November 23, 2020
+ */
+
 public class RiskFrame extends JFrame implements RiskView {
 
     private RiskGame rg;
@@ -15,11 +21,10 @@ public class RiskFrame extends JFrame implements RiskView {
     //todo, move hardcoded values into finals here
     //todo, clean up the wording of comments once done everything
 
-    //nested MapDrawer class extends a JPanel and is the JPanel that holds the board
-    //when ever the repaint() method is invoked, the paintComponent method ran which traverses all Territories
-    //in the Map, fetches their X, Y coordinates and draws them out as circles
-    //paintComponent also draws all the "connections" between the Territories
-
+    /**
+     * Constructor of the RiskFrame class. It initializes the field values
+     * @param riskMap Map of the game.
+     */
     public RiskFrame(RiskMap riskMap) {
         super("RISK");
         rg = new RiskGame(false, false);
@@ -64,6 +69,7 @@ public class RiskFrame extends JFrame implements RiskView {
     //whenever a change to the model is made, the model will notify all Classes that implement the RiskView Interface
     //by invoking their handleRiskUpdate method, for RiskFrame, the handleRiskUpdate method redraws the updated map
     //by triggering the handleRiskUpdate method of RiskMapPanel
+
     @Override
     public void handleRiskUpdate(RiskEvent e) {
         //propagate the event to the map panel as well
