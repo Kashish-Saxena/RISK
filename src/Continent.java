@@ -6,7 +6,7 @@ import java.util.List;
  * contains a method to get the continent associated with an input territory.
  *
  * @author David Sciola - 101082459 and Kevin Quach - 101115704
- * @version October 25, 2020
+ * @version November 23, 2020
  */
 public class Continent {
 
@@ -22,6 +22,10 @@ public class Continent {
      * the continent to all the territories in the list of territories.
      * @param name Name of the continent.
      * @param territories A list of territories associated with the continent.
+     * @param xPos x coordinate of the Continent.
+     * @param yPos y coordinate of the Continent.
+     * @param color Color of the Continent.
+     * @param value Number of extra armies player gets to place during deploy if they own the continent.
      */
     public Continent(String name, List<Territory> territories, int xPos, int yPos, Color color, int value){
         this.name = name;
@@ -48,18 +52,34 @@ public class Continent {
         return this.territories;
     }
 
+    /**
+     * Returns the x coordinate of the Continent.
+     * @return The x coordinate of the Continent.
+     */
     public int getXPos(){
         return this.xPos;
     }
 
+    /**
+     * Returns the y coordinate of the Continent.
+     * @return The y coordinate of the Continent.
+     */
     public int getYPos(){
         return this.yPos;
     }
 
+    /**
+     * Returns the color of the Continent.
+     * @return The color of the Continent.
+     */
     public Color getColor(){
         return this.color;
     }
 
+    /**
+     * Returns the number of extra armies player gets to place during deploy if they own the continent.
+     * @return The number of extra armies player gets to place during deploy if they own the continent.
+     */
     public int getValue() {
         return this.value;
     }
