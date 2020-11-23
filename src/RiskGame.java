@@ -619,7 +619,7 @@ public class RiskGame implements Observer {
 
         fromTerritory.subtractArmies(attackArmyLoss);
         Player defender = toTerritory.getOwner();
-        if (toTerritory.getArmies() > defendArmyLoss) {
+        if (toTerritory.getArmies() > defendArmyLoss) { //territory not conquered
             toTerritory.subtractArmies(defendArmyLoss);
             riskFrame.handleRiskUpdate(new RiskEventDiceResults(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), fromTerritory, toTerritory, attackDice, defendDice, attackArmyLoss, defendArmyLoss, defender));
             if (getCurrentPlayer().canAttack()) {
@@ -643,7 +643,7 @@ public class RiskGame implements Observer {
                 chooseFortifyFrom();//start fortify phase
             }
         }
-        else {
+        else { //territory conquered
             defender.removeTerritory(toTerritory);
             getCurrentPlayer().addTerritory(toTerritory);
             riskFrame.handleRiskUpdate(new RiskEventContinent(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), RiskMap.getContinentFromTerritory(toTerritory)));
@@ -808,6 +808,18 @@ public class RiskGame implements Observer {
         //if (testing || testingGame) { //this shouldn't be used outside of testing
         return defendDiceNum;
         //}
+    }
+
+    public void setFromTerritory(Territory territory) {
+        if (testingMain || testingGame) {
+            fromTerritory = territory;
+        }
+    }
+
+    public void setToTerritory(Territory territory) {
+        if (testingMain || testingGame) {
+            toTerritory = territory;
+        }
     }
 
     public void cancelAttack() {
