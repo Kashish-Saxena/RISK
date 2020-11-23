@@ -115,8 +115,16 @@ public class RiskGame implements Observer {
         }
         for (int i = 0; i < numPlayers; i++) {
             String name = JOptionPane.showInputDialog("Enter Player " + (i + 1) + "'s name:");
-            Player player = new Player(name,this);
-            players.add(player);
+            int dialogButton = JOptionPane.YES_NO_OPTION;
+            int isAI = JOptionPane.showConfirmDialog(null, "Is " + name + " an AI?");
+            if (isAI == 1) {
+                Player player = new PlayerAI(name, this);
+                players.add(player);
+            }
+            else {
+                Player player = new Player(name + " (ai)", this);
+                players.add(player);
+            }
         }
     }
 
