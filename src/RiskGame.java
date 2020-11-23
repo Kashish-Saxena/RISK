@@ -344,7 +344,12 @@ public class RiskGame implements Observer {
             }
             else {
                 PlayerAI player = (PlayerAI) getCurrentPlayer();
-                processTerritory(player.getAttackingTerritory());
+                if (player.hasFavorableAttacks()) {
+                    processTerritory(player.getAttackingTerritory());
+                }
+                else {
+                    chooseFortifyFrom();
+                }
             }
         }
     }
@@ -535,7 +540,7 @@ public class RiskGame implements Observer {
         attackDiceNum = num;
         phase = TurnPhase.DEFEND_CHOOSE_DICE;
         if (fromTerritory.getOwner().isAI()) {
-            String message = getCurrentPlayer().getName() + " attacks " + toTerritory.getName() + " from " + fromTerritory + " with " + num + " dice";
+            String message = getCurrentPlayer().getName() + " attacks " + toTerritory.getName() + " from " + fromTerritory.getName() + " with " + num + " dice";
             riskFrame.handleRiskUpdate(new RiskEventMessage(this, TurnPhase.AI_INFO, getCurrentPlayer(), message));
         }
 
@@ -618,7 +623,12 @@ public class RiskGame implements Observer {
                 }
                 else {
                     PlayerAI player = (PlayerAI) getCurrentPlayer();
-                    processTerritory(player.getAttackingTerritory());
+                    if (player.hasFavorableAttacks()) {
+                        processTerritory(player.getAttackingTerritory());
+                    }
+                    else {
+                        chooseFortifyFrom();
+                    }
                 }
             }
             else {
@@ -664,7 +674,12 @@ public class RiskGame implements Observer {
             }
             else {
                 PlayerAI player = (PlayerAI) getCurrentPlayer();
-                processTerritory(player.getAttackingTerritory());
+                if (player.hasFavorableAttacks()) {
+                    processTerritory(player.getAttackingTerritory());
+                }
+                else {
+                    chooseFortifyFrom();
+                }
             }
         }
         else {

@@ -13,8 +13,8 @@ public class PlayerAI extends Player {
     public Territory getDeployTerritory() {
         //find the territory with the greatest difference between its army and the army of an attackable territory
         int maxDifference = 0;
-        Territory maxTerritory = this.getAttackableTerritories().get(0);
-        for (Territory t : this.getAttackableTerritories()) {
+        Territory maxTerritory = this.getTerritories().get(0);
+        for (Territory t : this.getTerritories()) {
             for (Territory enemyTerritory : t.getAdjacentEnemyTerritories()) {
                 if (enemyTerritory.getArmies() - t.getArmies() > maxDifference) {
                     maxDifference = enemyTerritory.getArmies() - t.getArmies();
@@ -29,13 +29,26 @@ public class PlayerAI extends Player {
         return 1;
     }
 
+    public boolean hasFavorableAttacks() {
+        for (Territory t : this.getAttackableTerritories()) {
+            for (Territory e : t.getAdjacentEnemyTerritories()) {
+                if (t.getArmies() >= e.getArmies()) {
+                    System.out.println("attack possible");
+                    return true;
+                }
+            }
+        }
+        System.out.println("attack not good");
+        return false;
+    }
+
     public Territory getAttackingTerritory() {
         //find the territory with the greatest difference between its army and the army of an attackable territory
         int maxDifference = 0;
         Territory maxTerritory = this.getAttackableTerritories().get(0);
         for (Territory t : this.getAttackableTerritories()) {
             for (Territory enemyTerritory : t.getAdjacentEnemyTerritories()) {
-                if (t.getArmies() - enemyTerritory.getArmies() > maxDifference) {
+                if (t.getArmies() - enemyTerritory.getArmies() >= maxDifference) {
                     maxDifference = t.getArmies() - enemyTerritory.getArmies();
                     maxTerritory = t;
                 }
@@ -54,11 +67,12 @@ public class PlayerAI extends Player {
                 minTerritory = enemyTerritory;
             }
         }
+        System.out.println(attackingTerritory.getName() + " " + minTerritory.getName());
         return minTerritory;
     }
 
     public static int getAttackDiceNum(Territory attackingTerritory) {
-        return Math.max(1, Math.min(attackingTerritory.getArmies(), RiskGame.MAX_ATTACK_DICE));
+        return Math.max(1, Math.min(attackingTerritory.getArmies() - 1, RiskGame.MAX_ATTACK_DICE));
         //max number of dice possible
     }
 
