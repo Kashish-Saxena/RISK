@@ -361,7 +361,7 @@ public class RiskGame implements Observer {
      * does a depth first search traversal starting at currentTerritory to determine all "connected" friendly territories
      */
     private void recursiveDepthFirstSearchOnFriendlyTerritories(Territory currentTerritory, ArrayList<Territory> visitedTerritories){
-        //mark currentTerritory as visted by adding it to visitedTerritories
+        //mark currentTerritory as visited by adding it to visitedTerritories
         visitedTerritories.add(currentTerritory);
 
         System.out.println("dfs visiting " + currentTerritory.getName());

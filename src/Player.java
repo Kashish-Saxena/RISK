@@ -168,4 +168,8 @@ public class Player extends Observable {
     public int getArmiesToPlace(){
         return this.armiesToPlace;
     }
+
+    public boolean isAI() {
+        return false;
+    }
 }
