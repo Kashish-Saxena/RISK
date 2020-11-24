@@ -55,6 +55,9 @@ public class RiskFrame extends JFrame implements RiskView {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
         this.setVisible(true);
+
+        //subscribe this frame (which implements RiskView) to the RiskGame model
+        //this way the model can tell this frame to handle any updates
         rg.addView(this);
 
         //start the game by telling RiskGame to start off by calculating
