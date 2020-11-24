@@ -87,7 +87,7 @@ public class RiskGame implements Observer {
      * This method just invokes the handleRiskUpdate of all views and passes the RiskEvent e to all the views
      * @param e the event to send to all views
      */
-    private void notifyViews(RiskEvent e){
+    private void notifyAllViews(RiskEvent e){
         for(RiskView v: riskViews){
             v.handleRiskUpdate(e);
         }
@@ -288,13 +288,13 @@ public class RiskGame implements Observer {
 
         String message = currPlayer.getName() + " has " + totalDeployAmount + " armies to place \n" +
                 armiesFromTerritoryOwnership + " from Territories and \n" + armiesFromContinentOwnership + " from Continents";
-        notifyViews(new RiskEventMessage(this, TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE,
+        notifyAllViews(new RiskEventMessage(this, TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE,
                 getCurrentPlayer(), message));
 
         //set phase to DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO to let player choose the territory(s) to deploy to
         phase = TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO;
         if (!getCurrentPlayer().isAI()) {
-            notifyViews(new RiskEventChooseTerritory(this, TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO, getCurrentPlayer(), getCurrentPlayer().getTerritories()));
+            notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO, getCurrentPlayer(), getCurrentPlayer().getTerritories()));
         }
         else {
             PlayerAI player = (PlayerAI) getCurrentPlayer();
@@ -316,9 +316,9 @@ public class RiskGame implements Observer {
 
         //update the army number of that territory on GUI
         phase = TurnPhase.DEPLOY_UPDATE_DEPLOYED_TERRITORY;
-        notifyViews(new RiskEventSingleTerritory(this, TurnPhase.DEPLOY_UPDATE_DEPLOYED_TERRITORY, getCurrentPlayer(), deployTerritory));
+        notifyAllViews(new RiskEventSingleTerritory(this, TurnPhase.DEPLOY_UPDATE_DEPLOYED_TERRITORY, getCurrentPlayer(), deployTerritory));
         if (getCurrentPlayer().isAI()) {
-            notifyViews(new RiskEventMessage(this, TurnPhase.AI_INFO, getCurrentPlayer(), "Deployed " + amountToDeploy + " to " + deployTerritory.getName()));
+            notifyAllViews(new RiskEventMessage(this, TurnPhase.AI_INFO, getCurrentPlayer(), "Deployed " + amountToDeploy + " to " + deployTerritory.getName()));
         }
         checkIfThereAreArmiesLeftToDeploy();
     }
@@ -331,13 +331,13 @@ public class RiskGame implements Observer {
         //if player has armies left to deploy
         if(totalDeployAmount >= 1) {
             String message = totalDeployAmount + " armies remaining to deploy";
-            notifyViews(new RiskEventMessage(this, TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO,
+            notifyAllViews(new RiskEventMessage(this, TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO,
                     getCurrentPlayer(), message));
 
             //set phase to DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO to let player choose more territory(s) to deploy to
             phase = TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO;
             if (!getCurrentPlayer().isAI()) {
-                notifyViews(new RiskEventChooseTerritory(this, TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO, getCurrentPlayer(), getCurrentPlayer().getTerritories()));
+                notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO, getCurrentPlayer(), getCurrentPlayer().getTerritories()));
             }
             else {
                 PlayerAI player = (PlayerAI) getCurrentPlayer();
@@ -348,7 +348,7 @@ public class RiskGame implements Observer {
         else {
             phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
             if (!getCurrentPlayer().isAI()) {
-                notifyViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
+                notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
             }
             else {
                 PlayerAI player = (PlayerAI) getCurrentPlayer();
@@ -384,7 +384,7 @@ public class RiskGame implements Observer {
                     validChoices.add(t);
                 }
             }
-            notifyViews(new RiskEventChooseTerritory(this, TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY, currPlayer, validChoices));
+            notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY, currPlayer, validChoices));
         }
         else {
             PlayerAI player = (PlayerAI) currPlayer;
@@ -407,7 +407,7 @@ public class RiskGame implements Observer {
             //remove fromTerritory from choices since you can't move armies from one Territory to itself
             validChoices.remove(fromTerritory);
 
-            notifyViews(new RiskEventChooseTerritory(this, TurnPhase.FORTIFY_CHOOSE_TO_TERRITORY, getCurrentPlayer(), validChoices));
+            notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.FORTIFY_CHOOSE_TO_TERRITORY, getCurrentPlayer(), validChoices));
         }
         else {
             PlayerAI player = (PlayerAI) getCurrentPlayer();
@@ -435,12 +435,12 @@ public class RiskGame implements Observer {
         toTerritory.setArmies(toTerritory.getArmies() + fortifyArmyAmount);
 
         if (getCurrentPlayer().isAI()) {
-            notifyViews(new RiskEventMessage(this, TurnPhase.AI_INFO, getCurrentPlayer(), "Moved " + fortifyArmyAmount + " from " + fromTerritory.getName() + " to " + toTerritory.getName()));
+            notifyAllViews(new RiskEventMessage(this, TurnPhase.AI_INFO, getCurrentPlayer(), "Moved " + fortifyArmyAmount + " from " + fromTerritory.getName() + " to " + toTerritory.getName()));
         }
 
         //update gui with changes
         phase = TurnPhase.FORTIFY_UPDATE_FORTIFIED_TERRITORIES;
-        notifyViews(new RiskEventTerritories(this, TurnPhase.FORTIFY_UPDATE_FORTIFIED_TERRITORIES, getCurrentPlayer(), fromTerritory, toTerritory));
+        notifyAllViews(new RiskEventTerritories(this, TurnPhase.FORTIFY_UPDATE_FORTIFIED_TERRITORIES, getCurrentPlayer(), fromTerritory, toTerritory));
         //pass turn to next player
         passTurn();
     }
@@ -455,7 +455,7 @@ public class RiskGame implements Observer {
             //after user clicked on territory to deploy to, prompt the player for a Deploy Amount
             phase = TurnPhase.DEPLOY_CHOOSE_DEPLOY_AMOUNT;
             if (!getCurrentPlayer().isAI()) {
-                notifyViews(new RiskEventBounds(this, TurnPhase.DEPLOY_CHOOSE_DEPLOY_AMOUNT,
+                notifyAllViews(new RiskEventBounds(this, TurnPhase.DEPLOY_CHOOSE_DEPLOY_AMOUNT,
                         getCurrentPlayer(), MIN_DEPLOY_AMOUNT, totalDeployAmount));
             }
             else {
@@ -468,7 +468,7 @@ public class RiskGame implements Observer {
             fromTerritory = territory;
             phase = TurnPhase.ATTACK_CHOOSE_ENEMY;
             if (!getCurrentPlayer().isAI()) {
-                notifyViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ENEMY, getCurrentPlayer(), territory.getAdjacentEnemyTerritories()));
+                notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ENEMY, getCurrentPlayer(), territory.getAdjacentEnemyTerritories()));
             }
             else {
                 PlayerAI player = (PlayerAI) getCurrentPlayer();
@@ -480,7 +480,7 @@ public class RiskGame implements Observer {
             toTerritory = territory;
             phase = TurnPhase.ATTACK_CHOOSE_DICE;
             if (!getCurrentPlayer().isAI()) {
-                notifyViews(new RiskEventBounds(this, TurnPhase.ATTACK_CHOOSE_DICE, getCurrentPlayer(), 1, Math.min(fromTerritory.getArmies() - 1, MAX_ATTACK_DICE)));
+                notifyAllViews(new RiskEventBounds(this, TurnPhase.ATTACK_CHOOSE_DICE, getCurrentPlayer(), 1, Math.min(fromTerritory.getArmies() - 1, MAX_ATTACK_DICE)));
             }
             else {
                 PlayerAI player = (PlayerAI) getCurrentPlayer();
@@ -502,7 +502,7 @@ public class RiskGame implements Observer {
             //after user clicked on territory to fortify to, prompt the player for a fortify Amount
             phase = TurnPhase.DEPLOY_CHOOSE_DEPLOY_AMOUNT;
             if (!getCurrentPlayer().isAI()) {
-                notifyViews(new RiskEventBounds(this, TurnPhase.FORTIFY_CHOOSE_FORTIFY_AMOUNT,
+                notifyAllViews(new RiskEventBounds(this, TurnPhase.FORTIFY_CHOOSE_FORTIFY_AMOUNT,
                         getCurrentPlayer(), MIN_FORTIFY_AMOUNT, fromTerritory.getArmies() - 1));
             }
             else {
@@ -526,7 +526,7 @@ public class RiskGame implements Observer {
         defendDiceNum = 0;
 
         //show message saying its player's next turn
-        notifyViews(new RiskEventMessage(this, TurnPhase.SHOW_NEXT_PLAYER_TURN,
+        notifyAllViews(new RiskEventMessage(this, TurnPhase.SHOW_NEXT_PLAYER_TURN,
                 getCurrentPlayer(), getCurrentPlayer().getName() + "'s turn"));
 
         //start the next player's turn by calculating their armies to deploy
@@ -544,11 +544,11 @@ public class RiskGame implements Observer {
         phase = TurnPhase.DEFEND_CHOOSE_DICE;
         if (fromTerritory.getOwner().isAI()) {
             String message = getCurrentPlayer().getName() + " attacks " + toTerritory.getName() + " from " + fromTerritory.getName() + " with " + num + " dice";
-            notifyViews(new RiskEventMessage(this, TurnPhase.AI_INFO, getCurrentPlayer(), message));
+            notifyAllViews(new RiskEventMessage(this, TurnPhase.AI_INFO, getCurrentPlayer(), message));
         }
 
         if (!toTerritory.getOwner().isAI()) {
-            notifyViews(new RiskEventBounds(this, TurnPhase.DEFEND_CHOOSE_DICE, getCurrentPlayer(), 1, Math.min(toTerritory.getArmies(), MAX_DEFEND_DICE)));
+            notifyAllViews(new RiskEventBounds(this, TurnPhase.DEFEND_CHOOSE_DICE, getCurrentPlayer(), 1, Math.min(toTerritory.getArmies(), MAX_DEFEND_DICE)));
         }
         else {
             setDefendDice(PlayerAI.getDefendDiceNum(toTerritory));
@@ -564,7 +564,7 @@ public class RiskGame implements Observer {
         defendDiceNum = num;
         if (toTerritory.getOwner().isAI()) {
             String message = getCurrentPlayer().getName() + " defends with " + num + " dice";
-            notifyViews(new RiskEventMessage(this, TurnPhase.AI_INFO, getCurrentPlayer(), message));
+            notifyAllViews(new RiskEventMessage(this, TurnPhase.AI_INFO, getCurrentPlayer(), message));
         }
         rollDice();
     }
@@ -618,11 +618,11 @@ public class RiskGame implements Observer {
         Player defender = toTerritory.getOwner();
         if (toTerritory.getArmies() > defendArmyLoss) { //territory not conquered
             toTerritory.subtractArmies(defendArmyLoss);
-            notifyViews(new RiskEventDiceResults(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), fromTerritory, toTerritory, attackDice, defendDice, attackArmyLoss, defendArmyLoss, defender));
+            notifyAllViews(new RiskEventDiceResults(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), fromTerritory, toTerritory, attackDice, defendDice, attackArmyLoss, defendArmyLoss, defender));
             if (getCurrentPlayer().canAttack()) {
                 phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
                 if (!getCurrentPlayer().isAI()) {
-                    notifyViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
+                    notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
                 }
                 else {
                     PlayerAI player = (PlayerAI) getCurrentPlayer();
@@ -643,14 +643,14 @@ public class RiskGame implements Observer {
         else { //territory conquered
             defender.removeTerritory(toTerritory);
             getCurrentPlayer().addTerritory(toTerritory);
-            notifyViews(new RiskEventContinent(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), RiskMap.getContinentFromTerritory(toTerritory)));
+            notifyAllViews(new RiskEventContinent(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), RiskMap.getContinentFromTerritory(toTerritory)));
 
 
             toTerritory.setArmies(0);
             phase = TurnPhase.ATTACK_CHOOSE_MOVE;
-            notifyViews(new RiskEventDiceResults(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), fromTerritory, toTerritory, attackDice, defendDice, attackArmyLoss, -1, defender));
+            notifyAllViews(new RiskEventDiceResults(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), fromTerritory, toTerritory, attackDice, defendDice, attackArmyLoss, -1, defender));
             if (!getCurrentPlayer().isAI()) {
-                notifyViews(new RiskEventBounds(this, TurnPhase.ATTACK_CHOOSE_MOVE, getCurrentPlayer(), attackDiceNum, fromTerritory.getArmies() - 1));
+                notifyAllViews(new RiskEventBounds(this, TurnPhase.ATTACK_CHOOSE_MOVE, getCurrentPlayer(), attackDiceNum, fromTerritory.getArmies() - 1));
             }
             else {
                 move(PlayerAI.getAttackMoveNum(fromTerritory));
@@ -666,16 +666,16 @@ public class RiskGame implements Observer {
         //should check bounds again
         toTerritory.addArmies(num);
         fromTerritory.subtractArmies(num);
-        notifyViews(new RiskEventTerritories(this, TurnPhase.ATTACK_UPDATE_TERRITORIES, getCurrentPlayer(), fromTerritory, toTerritory));
+        notifyAllViews(new RiskEventTerritories(this, TurnPhase.ATTACK_UPDATE_TERRITORIES, getCurrentPlayer(), fromTerritory, toTerritory));
         if (getCurrentPlayer().isAI()) {
             String message = "Moved " + num + " armies from " + fromTerritory.getName() + " to " + toTerritory.getName();
-            notifyViews(new RiskEventMessage(this, TurnPhase.AI_INFO, getCurrentPlayer(), message));
+            notifyAllViews(new RiskEventMessage(this, TurnPhase.AI_INFO, getCurrentPlayer(), message));
         }
 
         if (getCurrentPlayer().canAttack()) {
             phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
             if (!getCurrentPlayer().isAI()) {
-                notifyViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
+                notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
             }
             else {
                 PlayerAI player = (PlayerAI) getCurrentPlayer();
@@ -704,7 +704,7 @@ public class RiskGame implements Observer {
         updatePlayerGameStanding((Player) o);
         updateGameInProgress();
         if (!gameInProgress && !testingMain) {
-            notifyViews(new RiskEventEnd(this, TurnPhase.END, getCurrentPlayer(), players));
+            notifyAllViews(new RiskEventEnd(this, TurnPhase.END, getCurrentPlayer(), players));
         }
     }
 
@@ -734,7 +734,7 @@ public class RiskGame implements Observer {
         }
         player.setGameStanding(maxStanding + 1);
         if (!testingMain) {
-            notifyViews(new RiskEventPlayer(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), player));
+            notifyAllViews(new RiskEventPlayer(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), player));
         }
     }
 
@@ -830,6 +830,6 @@ public class RiskGame implements Observer {
      */
     public void cancelAttack() {
         phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
-        notifyViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
+        notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
     }
 }
