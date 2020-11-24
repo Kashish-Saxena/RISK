@@ -7,6 +7,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class RiskGameTest implements RiskView {
+
     private RiskGame rg;
     private int test;
     private final int INITIAL = -1;
@@ -25,6 +26,7 @@ public class RiskGameTest implements RiskView {
     private final int TEST_BATTLE_DEATH_CHOOSE_MOVE = 15;
     private final int TEST_PLAYER_ELIMINATION = 16;
     private final int TEST_GAME_OVER = 17;
+    private final int TEST_DEPLOY = 18;
 
     private List<Territory> territoryList;
     private Player player;
@@ -673,6 +675,162 @@ public class RiskGameTest implements RiskView {
         reachedProperEvent = false;
         rg.battleResults(new int[] {0, 1}, attackDice, defendDice);
         assertTrue(reachedProperEvent);
+    }
+
+    @Test
+    public void testCalculateArmiesToDeploy1(){
+        rg = new RiskGame(true, true);
+        Player player1 = new Player("Player1", rg);
+        RiskMap rm = new RiskMap(true);
+        rg.addPlayer(player1);
+        rg.addView(this);
+
+        //players owns 1 territory and 1 continent worth 5
+        Territory territory1 = new Territory("Territory1", 0, 0);
+        RiskMap.addTerritory(territory1);
+        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK, 5);//value of 5
+        RiskMap.addContinent(territory1, continent1);
+        player1.addTerritory(territory1);
+        rg.calculateArmiesToDeploy();
+
+        //check for 5 (5 from continents)
+        assertEquals(5, rg.getTotalDeployAmount());
+    }
+
+    @Test
+    public void testCalculateArmiesToDeploy2(){
+        rg = new RiskGame(true, true);
+        Player player1 = new Player("Player1", rg);
+        RiskMap rm = new RiskMap(true);
+        rg.addPlayer(player1);
+        rg.addView(this);
+
+        //player owns 3 territories and 2 continents, one worth 5 and one worth 5
+        Territory territory1 = new Territory("Territory1", 0, 0);
+        Territory territory2 = new Territory("Territory1", 0, 0);
+        Territory territory3 = new Territory("Territory1", 0, 0);
+        RiskMap.addTerritory(territory1);
+        RiskMap.addTerritory(territory2);
+        RiskMap.addTerritory(territory3);
+
+        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK, 5);//value of 5
+        Continent continent2 = new Continent("Continent2", territoryList, 0, 0, Color.BLACK, 0);//value of 0
+        RiskMap.addContinent(territory1, continent1);
+        RiskMap.addContinent(territory2, continent2);
+        RiskMap.addContinent(territory3, continent2);
+        player1.addTerritory(territory1);
+        player1.addTerritory(territory2);
+        player1.addTerritory(territory3);
+
+        rg.calculateArmiesToDeploy();
+
+        //check for 6 (1 from territories and 5 from continents)
+        assertEquals(6, rg.getTotalDeployAmount());
+    }
+
+    @Test
+    public void testCalculateArmiesToDeploy3(){
+        rg = new RiskGame(true, true);
+        Player player1 = new Player("Player1", rg);
+        RiskMap rm = new RiskMap(true);
+        rg.addPlayer(player1);
+        rg.addView(this);
+
+        //player owns nothing
+        rg.calculateArmiesToDeploy();
+
+        //check for 3 (minimum amount to deploy is always 3)
+        assertEquals(3, rg.getTotalDeployAmount());
+    }
+
+    @Test
+    public void testDeployScenario(){
+        rg = new RiskGame(true, true);
+        Player player1 = new Player("Player1", rg);
+        RiskMap rm = new RiskMap(true);
+        rg.addPlayer(player1);
+        rg.addView(this);
+
+        Territory territory1 = new Territory("Territory1", 0, 0);
+        RiskMap.addTerritory(territory1);
+        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK, 5);//value of 5
+        RiskMap.addContinent(territory1, continent1);
+        player1.addTerritory(territory1);
+        rg.calculateArmiesToDeploy();
+
+        //player has 5 to deploy (5 from continents)
+        assertEquals(5, rg.getTotalDeployAmount());
+
+        //deploy 1 to territory1
+        rg.setDeployTerritory(territory1);
+        rg.giveDeployedArmies(1);
+
+        //player should have 4 left to deploy
+        assertEquals(4, rg.getTotalDeployAmount());
+
+        //territory1 which started at 0 armies should not have 1
+        assertEquals(1, territory1.getArmies());
+    }
+
+    @Test
+    public void testFortifyScenario(){
+        rg = new RiskGame(true, true);
+        Player player1 = new Player("Player1", rg);
+        RiskMap rm = new RiskMap(true);
+        rg.addPlayer(player1);
+        rg.addView(this);
+
+        //territory1 has 10
+        Territory territory1 = new Territory("Territory1", 0, 0);
+        territory1.setArmies(10);
+
+        //territory2 has 1
+        Territory territory2 = new Territory("Territory2", 0, 0);
+        territory2.setArmies(1);
+
+        rg.setFromTerritory(territory1);
+        rg.setToTerritory(territory2);
+
+        //fortify 9 from territory1 to territory2
+        rg.fortify(9);
+
+        assertEquals(1, territory1.getArmies());
+        assertEquals(10, territory2.getArmies());
+    }
+
+    @Test
+    public void testRecursiveDepthFirstSearchOnFriendlyTerritories(){
+        rg = new RiskGame(true, true);
+        Territory territory1 = new Territory("Territory1", 0, 0);
+        Territory territory2 = new Territory("Territory2", 0, 0);
+        Territory territory3 = new Territory("Territory3", 0, 0);
+        Territory territory4 = new Territory("Territory4", 0, 0);
+        Territory territory5 = new Territory("Territory5", 0, 0);
+
+        ArrayList<Territory> t1 = new ArrayList<>();
+        t1.add(territory2);
+        t1.add(territory3);
+        territory1.setAdjacentTerritories(t1);
+
+        ArrayList<Territory> t2 = new ArrayList<>();
+        t2.add(territory1);
+        t2.add(territory3);
+        territory2.setAdjacentTerritories(t2);
+
+        ArrayList<Territory> t3 = new ArrayList<>();
+        t3.add(territory1);
+        t3.add(territory2);
+        t3.add(territory4);
+        territory3.setAdjacentTerritories(t3);
+
+        ArrayList<Territory> t4 = new ArrayList<>();
+        t4.add(territory3);
+        territory4.setAdjacentTerritories(t4);
+
+        ArrayList<Territory> visitedTerritories = new ArrayList<>();
+        rg.recursiveDepthFirstSearchOnFriendlyTerritories(territory1,visitedTerritories);
+
+        assertEquals(4, visitedTerritories.size());
     }
 
     @Override

@@ -117,7 +117,7 @@ public class Player extends Observable {
      * Adds an input continent to the list of continents owned by the player.
      * @param continent The continent to be added to the owned continents list.
      */
-    private void addContinent(Continent continent){
+    public void addContinent(Continent continent){
         this.ownedContinents.add(continent);
     }
 
@@ -125,7 +125,7 @@ public class Player extends Observable {
      * Removes the input continent from the list of continents owned by the player.
      * @param continent The continent to be removed from the owned continents list.
      */
-    private void removeContinent(Continent continent){
+    public void removeContinent(Continent continent){
         this.ownedContinents.remove(continent);
     }
 
