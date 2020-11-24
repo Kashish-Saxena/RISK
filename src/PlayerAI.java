@@ -173,8 +173,6 @@ public class PlayerAI extends Player {
         //mark currentTerritory as visited by adding it to visitedTerritories
         visitedTerritories.add(currentTerritory);
 
-        System.out.println("dfs visiting " + currentTerritory.getName());
-
         //Traverse all the adjacent and unmarked Territories and call the recursive function with index of adjacent Territory.
         for(Territory t: currentTerritory.getAdjacentFriendlyTerritories()){
             if (!t.getAdjacentEnemyTerritories().isEmpty()) {

@@ -176,6 +176,13 @@ public class RiskMapPanel extends JPanel implements RiskView {
         }
     }
 
+    /**
+     * handleRiskUpdate is the method that all classes which implement the RiskView interface must have.
+     * This method basically handles the update created by the RiskGame model. More specifically it involves
+     * enabling/ disabling the territory button on this JPanel to obtain territory selections from the player as
+     * well as setting the text labels of continents and territories as they change ownership throughout the game.
+     * @param e the RiskEvent which contains info of the update.
+     */
     @Override
     public void handleRiskUpdate(RiskEvent e) {
         for (JButton buttonTerritory : territoryButtons) {
