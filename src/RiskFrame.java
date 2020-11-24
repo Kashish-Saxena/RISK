@@ -79,207 +79,282 @@ public class RiskFrame extends JFrame implements RiskView {
         //propagate the event to the map panel as well
         mapPanel.handleRiskUpdate(e);
 
-        turn.setText(e.getCurrentPlayer().getName() + "'s turn"); //include the phase
+        //update turn label
+        turn.setText(e.getCurrentPlayer().getName() + "'s turn");
 
-        //Deploy phases
-        if (e.getPhase() == TurnPhase.AI_INFO) {}
-        else if (e.getPhase() == TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE){
-            //disable the fortify button for deploy phase
-            passAndFortifyButton.setEnabled(false);
+        //also invoke the proper handling method so that this RiskFrame reacts to the update accordingly
+
+        //Deploy related phases
+        if (e.getPhase() == TurnPhase.DEPLOY_CALCULATE_ARMIES_TO_PLACE){
+            handleDeployCalculateArmiesToPlace(e);
         }
-
         else if (e.getPhase() == TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO) {
-            info.setText("Choose a territory to deploy to.");
+            handleDeployChooseTerritoryToDeploy(e);
         }
         else if (e.getPhase() == TurnPhase.DEPLOY_CHOOSE_DEPLOY_AMOUNT) {
-            RiskEventBounds r = (RiskEventBounds)e;
-            info.setText("Choose an amount of armies to deploy.");
-            int armyNum = 0;
-            String str = "";
-            boolean cancel = false;
-            while (!cancel && ((armyNum > ((RiskEventBounds)e).getMaxChoice()) || (armyNum < ((RiskEventBounds)e).getMinChoice()))) {
-                try {
-                    str = JOptionPane.showInputDialog("Choose a number of armies to deploy ( "+r.getMinChoice()+" - " + r.getMaxChoice() + ")"); //list options
-                    if (str == null) {
-                        cancel = 0 == JOptionPane.showConfirmDialog(null, "Cancel deploy?");
-                    }
-                    else {
-                        armyNum = Integer.parseInt(str);
-                    }
-                } catch (NumberFormatException excp) {
-                    armyNum = 0;
-                }
-            }
-            if (cancel) {
-                rg.checkIfThereAreArmiesLeftToDeploy(); //note! some controller logic in here
-            }
-            else {
-                rg.giveDeployedArmies(armyNum);
-            }
+            handleDeployChooseDeployAmount(e);
         }
         else if (e.getPhase() == TurnPhase.DEPLOY_UPDATE_DEPLOYED_TERRITORY) {
-            RiskEventSingleTerritory r = (RiskEventSingleTerritory)e;
-            info.setText("deployed armies to "+r.getTerritory().getName()+".");
+            handleDeployUpdateDeployedTerritory(e);
         }
 
-        //attack phases
+        //Attack related phases
         else if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_ATTACKERS) {
-            info.setText("Choose a Territory to attack with.");
-            //also re-enable the fortify button that was disabled from deploy phase
-            passAndFortifyButton.setEnabled(true);
+            handleAttackChooseAttackers(e);
         }
         else if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_ENEMY) {
-            info.setText("Choose a Territory to attack.");
+            handleAttackChooseEnemy(e);
         }
-        else if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_DICE) { //update this to use new phases
-            info.setText("Choose a number of dice to attack with."); //list options
-            int diceNum = 0;
-            String str = "";
-            boolean cancel = false;
-            while (!cancel && ((diceNum > ((RiskEventBounds)e).getMaxChoice()) || (diceNum < ((RiskEventBounds)e).getMinChoice()))) {
-                try {
-                    str = JOptionPane.showInputDialog("Choose a number of dice to attack with (1 - " + ((RiskEventBounds) e).getMaxChoice() + ")"); //list options
-                    if (str == null) {
-                        cancel = 0 == JOptionPane.showConfirmDialog(null, "Cancel attack?");
-                    }
-                    else {
-                        diceNum = Integer.parseInt(str);
-                    }
-                } catch (NumberFormatException excp) {
-                    diceNum = 0;
-                }
-            }
-            if (cancel) {
-                rg.cancelAttack(); //note! some controller logic in here
-            }
-            else {
-                rg.setAttackDice(diceNum);
-            }
+        else if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_DICE) {
+            handleAttackChooseDice(e);
         }
         else if (e.getPhase() == TurnPhase.DEFEND_CHOOSE_DICE) {
-            info.setText("Choose a number of dice to defend with.");
-            int diceNum = 0;
-            String str = "";
-            while (diceNum > ((RiskEventBounds)e).getMaxChoice() || diceNum < ((RiskEventBounds)e).getMinChoice()) {
-                try {
-                    str = JOptionPane.showInputDialog("Choose a number of dice to defend with (1 - " + ((RiskEventBounds)e).getMaxChoice() + ")"); //list options
-                    if (str != null) { //player cannot cancel a defend choice
-                        diceNum = Integer.parseInt(str);
-                    }
-                } catch (NumberFormatException excp) {
-                    diceNum = 0;
-                }
-            }
-            rg.setDefendDice(diceNum); //note! some controller logic in here
+            handleDefendChooseDice(e);
         }
         else if (e.getPhase() == TurnPhase.ATTACK_CHOOSE_MOVE) {
-            info.setText("Choose a number of army to move.");
-            int armyNum = 0;
-            String str = "";
-            while (armyNum > ((RiskEventBounds)e).getMaxChoice() || armyNum < ((RiskEventBounds)e).getMinChoice()) {
-                try {
-                    str = JOptionPane.showInputDialog("Choose a number of army to move ("+ ((RiskEventBounds)e).getMinChoice() + " - " + ((RiskEventBounds)e).getMaxChoice() + ")"); //list options
-                    if (str != null) { //player cannot cancel an attack move choice
-                        armyNum = Integer.parseInt(str);
-                    }
-                } catch (NumberFormatException excp) {
-                    armyNum = 0;
-                }
-            }
-            rg.move(armyNum); //note! some controller logic in here
+            handleAttackChooseMove(e);
         }
         else if (e.getPhase() == TurnPhase.ATTACK_RESULT) {
-            info.setText("Attack over!");
-            if (e instanceof RiskEventDiceResults) {
-                RiskEventDiceResults diceResults = (RiskEventDiceResults) e;
-
-                String message = "";
-                for (Integer i : diceResults.getAttackDice()) {
-                    message += i + ", ";
-                }
-                message = "Attacker rolls: " + message.substring(0, message.length() - 2) + "\n";
-
-                String diceRolls = "";
-                for (Integer i : diceResults.getDefendDice()) {
-                    diceRolls += i + ", ";
-                }
-                diceRolls = diceRolls.substring(0, diceRolls.length() - 2);
-                message += "Defender rolls: " + diceRolls + "\n"
-                        + "Attackers (" + diceResults.getTerritoryFrom().getName() + ") lost " + diceResults.getAttackLoss() + " armies.\n";
-
-                if (diceResults.getDefendLoss() != -1) {
-                    message += "Defenders (" + diceResults.getTerritoryTo().getName() + ") lost " + diceResults.getDefendLoss() + " armies.";
-                } else {
-                    message += diceResults.getCurrentPlayer().getName() + " took over " + diceResults.getDefender().getName() + "'s " + diceResults.getTerritoryTo().getName();
-                }
-                JOptionPane.showMessageDialog(this, message);
-            }
-            else if (e instanceof RiskEventPlayer) {
-                RiskEventPlayer playerEvent = (RiskEventPlayer)e;
-                JOptionPane.showMessageDialog(this, playerEvent.getPlayer().getName() + " was eliminated at " + (rg.getNumPlayers() - playerEvent.getPlayer().getGameStanding() + 1) + "th place.");
-            }
-            else if (e instanceof RiskEventContinent){
-                //do nothing since mapPanel.handleRiskUpdate(e); handles ev
-                //do nothing
-            }
+            handleAttackResult(e);
         }
 
-        //fortify phases
+        //Fortify/move related phases
         else if(e.getPhase() == TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY){
-            passAndFortifyButton.setText("PASS TURN");
-            passAndFortifyButton.setActionCommand("pass");
-            info.setText("Choose a Territory to move armies from.");
+            handleFortifyChooseFromTerritory(e);
         }
         else if(e.getPhase() == TurnPhase.FORTIFY_CHOOSE_TO_TERRITORY){
-            info.setText("Choose a Territory to move armies to.");
+            handleFortifyChooseToTerritory(e);
         }
         else if(e.getPhase() == TurnPhase.FORTIFY_CHOOSE_FORTIFY_AMOUNT){
-            info.setText("Choose an amount of armies to move.");
-            RiskEventBounds r = (RiskEventBounds)e;
-            int armyNum = 0;
-            String str = "";
-            boolean cancel = false;
-            while (!cancel && ((armyNum > ((RiskEventBounds)e).getMaxChoice()) || (armyNum < ((RiskEventBounds)e).getMinChoice()))) {
-                try {
-                    str = JOptionPane.showInputDialog("Choose a number of armies to move ( "+r.getMinChoice()+" - " + r.getMaxChoice() + ")"); //list options
-                    if (str == null) {
-                        cancel = 0 == JOptionPane.showConfirmDialog(null, "Cancel fortify?");
-                    }
-                    else {
-                        armyNum = Integer.parseInt(str);
-                    }
-                } catch (NumberFormatException excp) {
-                    armyNum = 0;
-                }
-            }
-            if (cancel) {
-                rg.chooseFortifyFrom(); //note! some controller logic in here
-            }
-            else {
-                rg.fortify(armyNum);
-            }
+            handleFortifyChooseFortifyAmount(e);
         }
 
+        //AI phase
+        else if (e.getPhase() == TurnPhase.AI_INFO) {}
+
+        //game over phase
         else if (e.getPhase() == TurnPhase.END) {
-            info.setText("Game over!");
-            RiskEventEnd endEvent = (RiskEventEnd)e;
-            List<Player> players = endEvent.getPlayers();
-            String message = "================ GAME OVER ================\n";
-            for(int i = 0; i <= players.size()-1; i++){
-                Player p = players.get(i);
-                if(p.getGameStanding() == 0){
-                    if(i == 0){
-                        message += p.getName() + " wins!\n";
-                    }
-                    else{
-                        message += p.getName() + " had a standing of " + (rg.getNumPlayers() - p.getGameStanding() + 1) + "th place\n";
-                    }
-                }
-            }
-            JOptionPane.showMessageDialog(this, message);
+            handleEnd(e);
         }
     }
 
+    /**
+     * Various deploy related helper handler methods.
+     */
+    private void handleDeployCalculateArmiesToPlace(RiskEvent e){
+        //disable the fortify button for deploy phase
+        passAndFortifyButton.setEnabled(false);
+    }
+
+    private void handleDeployChooseTerritoryToDeploy(RiskEvent e){
+        info.setText("Choose a territory to deploy to.");
+    }
+
+    private void handleDeployChooseDeployAmount(RiskEvent e){
+        RiskEventBounds r = (RiskEventBounds)e;
+        info.setText("Choose an amount of armies to deploy.");
+        int armyNum = 0;
+        String str = "";
+        boolean cancel = false;
+        while (!cancel && ((armyNum > ((RiskEventBounds)e).getMaxChoice()) || (armyNum < ((RiskEventBounds)e).getMinChoice()))) {
+            try {
+                str = JOptionPane.showInputDialog("Choose a number of armies to deploy ( "+r.getMinChoice()+" - " + r.getMaxChoice() + ")"); //list options
+                if (str == null) {
+                    cancel = 0 == JOptionPane.showConfirmDialog(null, "Cancel deploy?");
+                }
+                else {
+                    armyNum = Integer.parseInt(str);
+                }
+            } catch (NumberFormatException excp) {
+                armyNum = 0;
+            }
+        }
+        if (cancel) {
+            rg.checkIfThereAreArmiesLeftToDeploy(); //note! some controller logic in here
+        }
+        else {
+            rg.giveDeployedArmies(armyNum);
+        }
+    }
+
+    private void handleDeployUpdateDeployedTerritory(RiskEvent e){
+        RiskEventSingleTerritory r = (RiskEventSingleTerritory)e;
+        info.setText("deployed armies to "+r.getTerritory().getName()+".");
+    }
+
+    /**
+     * Various attack related helper handler methods.
+     */
+    private void handleAttackChooseAttackers(RiskEvent e){
+        info.setText("Choose a Territory to attack with.");
+        //also re-enable the fortify button that was disabled from deploy phase
+        passAndFortifyButton.setEnabled(true);
+    }
+
+    private void handleAttackChooseEnemy(RiskEvent e){
+        info.setText("Choose a Territory to attack.");
+    }
+
+    private void handleAttackChooseDice(RiskEvent e){
+        info.setText("Choose a number of dice to attack with."); //list options
+        int diceNum = 0;
+        String str = "";
+        boolean cancel = false;
+        while (!cancel && ((diceNum > ((RiskEventBounds)e).getMaxChoice()) || (diceNum < ((RiskEventBounds)e).getMinChoice()))) {
+            try {
+                str = JOptionPane.showInputDialog("Choose a number of dice to attack with (1 - " + ((RiskEventBounds) e).getMaxChoice() + ")"); //list options
+                if (str == null) {
+                    cancel = 0 == JOptionPane.showConfirmDialog(null, "Cancel attack?");
+                }
+                else {
+                    diceNum = Integer.parseInt(str);
+                }
+            } catch (NumberFormatException excp) {
+                diceNum = 0;
+            }
+        }
+        if (cancel) {
+            rg.cancelAttack(); //note! some controller logic in here
+        }
+        else {
+            rg.setAttackDice(diceNum);
+        }
+    }
+
+    private void handleDefendChooseDice(RiskEvent e){
+        info.setText("Choose a number of dice to defend with.");
+        int diceNum = 0;
+        String str = "";
+        while (diceNum > ((RiskEventBounds)e).getMaxChoice() || diceNum < ((RiskEventBounds)e).getMinChoice()) {
+            try {
+                str = JOptionPane.showInputDialog("Choose a number of dice to defend with (1 - " + ((RiskEventBounds)e).getMaxChoice() + ")"); //list options
+                if (str != null) { //player cannot cancel a defend choice
+                    diceNum = Integer.parseInt(str);
+                }
+            } catch (NumberFormatException excp) {
+                diceNum = 0;
+            }
+        }
+        rg.setDefendDice(diceNum); //note! some controller logic in here
+    }
+
+    private void handleAttackChooseMove(RiskEvent e){
+        info.setText("Choose a number of army to move.");
+        int armyNum = 0;
+        String str = "";
+        while (armyNum > ((RiskEventBounds)e).getMaxChoice() || armyNum < ((RiskEventBounds)e).getMinChoice()) {
+            try {
+                str = JOptionPane.showInputDialog("Choose a number of army to move ("+ ((RiskEventBounds)e).getMinChoice() + " - " + ((RiskEventBounds)e).getMaxChoice() + ")"); //list options
+                if (str != null) { //player cannot cancel an attack move choice
+                    armyNum = Integer.parseInt(str);
+                }
+            } catch (NumberFormatException excp) {
+                armyNum = 0;
+            }
+        }
+        rg.move(armyNum); //note! some controller logic in here
+    }
+
+    private void handleAttackResult(RiskEvent e){
+        info.setText("Attack over!");
+        if (e instanceof RiskEventDiceResults) {
+            RiskEventDiceResults diceResults = (RiskEventDiceResults) e;
+
+            String message = "";
+            for (Integer i : diceResults.getAttackDice()) {
+                message += i + ", ";
+            }
+            message = "Attacker rolls: " + message.substring(0, message.length() - 2) + "\n";
+
+            String diceRolls = "";
+            for (Integer i : diceResults.getDefendDice()) {
+                diceRolls += i + ", ";
+            }
+            diceRolls = diceRolls.substring(0, diceRolls.length() - 2);
+            message += "Defender rolls: " + diceRolls + "\n"
+                    + "Attackers (" + diceResults.getTerritoryFrom().getName() + ") lost " + diceResults.getAttackLoss() + " armies.\n";
+
+            if (diceResults.getDefendLoss() != -1) {
+                message += "Defenders (" + diceResults.getTerritoryTo().getName() + ") lost " + diceResults.getDefendLoss() + " armies.";
+            } else {
+                message += diceResults.getCurrentPlayer().getName() + " took over " + diceResults.getDefender().getName() + "'s " + diceResults.getTerritoryTo().getName();
+            }
+            JOptionPane.showMessageDialog(this, message);
+        }
+        else if (e instanceof RiskEventPlayer) {
+            RiskEventPlayer playerEvent = (RiskEventPlayer)e;
+            JOptionPane.showMessageDialog(this, playerEvent.getPlayer().getName() + " was eliminated at " + (rg.getNumPlayers() - playerEvent.getPlayer().getGameStanding() + 1) + "th place.");
+        }
+        else if (e instanceof RiskEventContinent){
+            //do nothing since mapPanel.handleRiskUpdate(e); handles ev
+            //do nothing
+        }
+    }
+
+    /**
+     * Various fortify/move related helper handler methods.
+     */
+    private void handleFortifyChooseFromTerritory(RiskEvent e){
+        passAndFortifyButton.setText("PASS TURN");
+        passAndFortifyButton.setActionCommand("pass");
+        info.setText("Choose a Territory to move armies from.");
+    }
+    private void handleFortifyChooseToTerritory(RiskEvent e){
+        info.setText("Choose a Territory to move armies to.");
+    }
+    private void handleFortifyChooseFortifyAmount(RiskEvent e){
+        info.setText("Choose an amount of armies to move.");
+        RiskEventBounds r = (RiskEventBounds)e;
+        int armyNum = 0;
+        String str = "";
+        boolean cancel = false;
+        while (!cancel && ((armyNum > ((RiskEventBounds)e).getMaxChoice()) || (armyNum < ((RiskEventBounds)e).getMinChoice()))) {
+            try {
+                str = JOptionPane.showInputDialog("Choose a number of armies to move ( "+r.getMinChoice()+" - " + r.getMaxChoice() + ")"); //list options
+                if (str == null) {
+                    cancel = 0 == JOptionPane.showConfirmDialog(null, "Cancel fortify?");
+                }
+                else {
+                    armyNum = Integer.parseInt(str);
+                }
+            } catch (NumberFormatException excp) {
+                armyNum = 0;
+            }
+        }
+        if (cancel) {
+            rg.chooseFortifyFrom(); //note! some controller logic in here
+        }
+        else {
+            rg.fortify(armyNum);
+        }
+    }
+
+    /**
+     * End helper handler method.
+     */
+    private void handleEnd(RiskEvent e){
+        info.setText("Game over!");
+        RiskEventEnd endEvent = (RiskEventEnd)e;
+        List<Player> players = endEvent.getPlayers();
+        String message = "================ GAME OVER ================\n";
+        for(int i = 0; i <= players.size()-1; i++){
+            Player p = players.get(i);
+            if(p.getGameStanding() == 0){
+                if(i == 0){
+                    message += p.getName() + " wins!\n";
+                }
+                else{
+                    message += p.getName() + " had a standing of " + (rg.getNumPlayers() - p.getGameStanding() + 1) + "th place\n";
+                }
+            }
+        }
+        JOptionPane.showMessageDialog(this, message);
+    }
+
+    /**
+     * main method that creates a RiskMap and RiskFrame.
+     * Constructors of RIskMap and RiskFrame will then take care of everything else.
+     */
     public static void main(String[] args) {
         RiskMap riskMap = new RiskMap(false);
         RiskFrame rf = new RiskFrame(riskMap);

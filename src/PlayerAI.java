@@ -81,11 +81,6 @@ public class PlayerAI extends Player {
         //max number of dice possible
     }
 
-    public static int getAttackMoveNum(Territory fromTerritory) {
-        return fromTerritory.getArmies() - 1;
-        //max number of armies possible
-    }
-
     public Territory getMovingTerritory() {
         Territory movingTerritory = this.getTerritories().get(0);
         for (Territory t : this.getTerritories()) {

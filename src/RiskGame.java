@@ -653,7 +653,7 @@ public class RiskGame implements Observer {
                 notifyAllViews(new RiskEventBounds(this, TurnPhase.ATTACK_CHOOSE_MOVE, getCurrentPlayer(), attackDiceNum, fromTerritory.getArmies() - 1));
             }
             else {
-                move(PlayerAI.getAttackMoveNum(fromTerritory));
+                move(PlayerAI.getMoveNum(fromTerritory));
             }
         }
     }
