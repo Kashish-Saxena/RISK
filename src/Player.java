@@ -169,10 +169,18 @@ public class Player extends Observable {
         return this.armiesToPlace;
     }
 
+    /**
+     * Returns if the player is an AI player.
+     * @return if the player is an AI player.
+     */
     public boolean isAI() {
         return false;
     }
 
+    /**
+     * Updates player.
+     * @param player An input player.
+     */
     public void updatePlayer(Player player) {
         ownedTerritories = player.ownedTerritories;
         ownedContinents = player.ownedContinents;
