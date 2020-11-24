@@ -363,10 +363,6 @@ public class RiskGame implements Observer {
         }
     }
 
-    public int getTotalDeployAmount() {
-        return totalDeployAmount;
-    }
-
     /**
      * Calculates the valid territories to fortify from and makes user select one of those options
      * note, at any time the player may decide to skip their fortify phase, in which case they
@@ -418,7 +414,9 @@ public class RiskGame implements Observer {
     /**
      * Does a depth first search traversal starting at currentTerritory to determine all "connected" friendly territories.
      */
-    private void recursiveDepthFirstSearchOnFriendlyTerritories(Territory currentTerritory, ArrayList<Territory> visitedTerritories){
+
+    //note I made this method public for testing it but usually it would be private
+    public void recursiveDepthFirstSearchOnFriendlyTerritories(Territory currentTerritory, ArrayList<Territory> visitedTerritories){
         //mark currentTerritory as visited by adding it to visitedTerritories
         visitedTerritories.add(currentTerritory);
 
@@ -844,6 +842,24 @@ public class RiskGame implements Observer {
         if (testingMain || testingGame) {
             toTerritory = territory;
         }
+    }
+
+    /**
+     * Sets deployTerritory (used in testing).
+     * @param territory The input territory to set toTerritory to.
+     */
+    public void setDeployTerritory(Territory territory) {
+        if (testingMain || testingGame) {
+            deployTerritory = territory;
+        }
+    }
+
+    /**
+     * returns totalDeployAmount.
+     * @return totalDeployAmount.
+     */
+    public int getTotalDeployAmount() {
+        return totalDeployAmount;
     }
 
     /**
