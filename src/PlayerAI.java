@@ -17,7 +17,7 @@ public class PlayerAI extends Player {
     public boolean isAI () {
         return true;
     }
-    
+
     /**
      * Returns the Territory to deploy to (adjacent to an enemy Territory and has the greatest disparity between armies).
      * @return the Territory to deploy armies to.
@@ -114,19 +114,9 @@ public class PlayerAI extends Player {
      * @param defendingTerritory The Territory the PlayerAI is defending with.
      * @return the number of dice to defend with.
      */
-    public static int getDefendDiceNum(Territory defendingTerritory) {
-        return Math.max(1, Math.min(defendingTerritory.getArmies(), RiskGame.MAX_DEFEND_DICE));
+    public static int getDefendDiceNum(Territory attackingTerritory) {
+        return Math.max(1, Math.min(attackingTerritory.getArmies(), RiskGame.MAX_DEFEND_DICE));
         //max number of dice possible
-    }
-
-    /**
-     * Returns the greatest number of armies possible to move after an attack.
-     * @param fromTerritory The Territory the PlayerAI is moving from.
-     * @return the number of armies to move after an attack.
-     */
-    public static int getAttackMoveNum(Territory fromTerritory) {
-        return fromTerritory.getArmies() - 1;
-        //max number of armies possible
     }
 
     /**
