@@ -219,8 +219,8 @@ public class RiskGame implements Observer {
     }
 
     /**
-     * gives Territory tempTerr to Player tempPlay by setting Territory owner
-     * and adding 1 army to the Territory, aslo decrements the Player's armies to place field
+     * Gives Territory tempTerr to Player tempPlay by setting Territory owner
+     * and adding 1 army to the Territory, aslo decrements the Player's armies to place field.
      */
     private void giveTerritory(Territory tempTerr, Player tempPlay){
         tempTerr.setOwner(tempPlay);
@@ -230,8 +230,8 @@ public class RiskGame implements Observer {
     }
 
     /**
-     * now that every territory has at least 1 army on it, add the remaining
-     * player armies randomly across the territories which they own
+     * Now that every territory has at least 1 army on it, adds the remaining
+     * player armies randomly across the territories which they own.
      */
     private void addRemainingArmy() {
         Random ran = new Random();
@@ -248,14 +248,14 @@ public class RiskGame implements Observer {
     }
 
     /**
-     * returns the current player from, players who is taking their turn based off currentPlayerIndex
+     * Returns the current player from, players who is taking their turn based off currentPlayerIndex.
      */
     public Player getCurrentPlayer() {
         return players.get(currentPlayerIndex);
     }
 
     /**
-     * calculates how many armies the player has to deploy then begins the DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO phase
+     * Calculates how many armies the player has to deploy then begins the DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO phase.
      */
     public void calculateArmiesToDeploy() {
         System.out.println("==== entering calculateArmiesToDeploy for " + getCurrentPlayer().getName() + " ====");
@@ -365,9 +365,9 @@ public class RiskGame implements Observer {
     }
 
     /**
-     * calculates the valid territories to fortify from and makes user select one of those options
+     * Calculates the valid territories to fortify from and makes user select one of those options
      * note, at any time the player may decide to skip their fortify phase, in which case they
-     * click the pass turn button and the turn is passed to the next player
+     * click the pass turn button and the turn is passed to the next player.
      */
     public void chooseFortifyFrom(){
         System.out.println("===== entering fortify =====");
@@ -391,7 +391,7 @@ public class RiskGame implements Observer {
     }
 
     /**
-     * makes the player select the Territory to fortify/move armies to, note that this method
+     * Makes the player select the Territory to fortify/move armies to, note that this method
      * uses recursiveDepthFirstSearchOnFriendlyTerritories as a helper method to to determine all "connected" friendly territories
      * of the fromTerritory
      */
@@ -414,7 +414,7 @@ public class RiskGame implements Observer {
     }
 
     /**
-     * does a depth first search traversal starting at currentTerritory to determine all "connected" friendly territories
+     * Does a depth first search traversal starting at currentTerritory to determine all "connected" friendly territories.
      */
     private void recursiveDepthFirstSearchOnFriendlyTerritories(Territory currentTerritory, ArrayList<Territory> visitedTerritories){
         //mark currentTerritory as visited by adding it to visitedTerritories
@@ -430,6 +430,10 @@ public class RiskGame implements Observer {
         }
     }
 
+    /**
+     * Moves armies from one of the owned territories to another owned territory.
+     * @param fortifyArmyAmount The number of armies to move.
+     */
     public void fortify(int fortifyArmyAmount){
         fromTerritory.setArmies(fromTerritory.getArmies() - fortifyArmyAmount);
         toTerritory.setArmies(toTerritory.getArmies() + fortifyArmyAmount);
@@ -446,7 +450,7 @@ public class RiskGame implements Observer {
     }
 
     /**
-     * this method is invoked by RiskMapController whenever a territory button is clicked
+     * This method is invoked by RiskMapController whenever a territory button is clicked
      */
     public void processTerritory(Territory territory) {
         if(phase == TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO){
@@ -572,6 +576,12 @@ public class RiskGame implements Observer {
         rollDice();
     }
 
+    /**
+     *  Determines how many armies the attacking and defending territory lost and returns an array of ints.
+     * @param attackDice List of Attacker's dice rolls.
+     * @param defendDice List of Defender's dice rolls.
+     * @return Array of number of armies the attacking and defending territory lost.
+     */
     public int[] simulateBattleFromDiceLists(List<Integer> attackDice, List<Integer> defendDice) {
         Collections.sort(attackDice, Collections.reverseOrder());
         Collections.sort(defendDice, Collections.reverseOrder());
@@ -595,6 +605,9 @@ public class RiskGame implements Observer {
         return losses;
     }
 
+    /**
+     * Generates a list of dice rolls for the attacker and defender.
+     */
     private void rollDice() {
         Random rand = new Random();
         //this creates a list of results from rolling the number of dice that the attacker requested
@@ -613,6 +626,12 @@ public class RiskGame implements Observer {
         }
     }
 
+    /**
+     * Determines the result of the battle.
+     * @param battleResults An array of the result of the battle containing the number of armies the attacker and defender lost.
+     * @param attackDice A list of attacker's dice rolls.
+     * @param defendDice A list of defender's dice rolls.
+     */
     public void battleResults(int[] battleResults, List<Integer> attackDice, List<Integer> defendDice) {
         int attackArmyLoss = battleResults[0];
         int defendArmyLoss = battleResults[1];
@@ -810,18 +829,29 @@ public class RiskGame implements Observer {
         //}
     }
 
+    /**
+     * Sets fromTerritory to the input territory.
+     * @param territory The input territory to set fromTerritory to.
+     */
     public void setFromTerritory(Territory territory) {
         if (testingMain || testingGame) {
             fromTerritory = territory;
         }
     }
 
+    /**
+     * Sets toTerritory to the input territory.
+     * @param territory The input territory to set toTerritory to.
+     */
     public void setToTerritory(Territory territory) {
         if (testingMain || testingGame) {
             toTerritory = territory;
         }
     }
 
+    /**
+     * Cancels an Attack.
+     */
     public void cancelAttack() {
         phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
         riskFrame.handleRiskUpdate(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
