@@ -66,6 +66,14 @@ public class RiskFrame extends JFrame implements RiskView {
 
     }
 
+    /**
+     * handleRiskUpdate is the method that all classes which implement the RiskView interface must have.
+     * This method does 2 things. Firstly it propagates the update to mapPanel which also implements the RiskView
+     * interface so that it too can update itself accordingly. Secondly, it deals with the update event itself.
+     * This involves a variety of things including setting the text of labels, enabling/disabling and setting the text
+     * of the pass/fortify button and sending input popup prompts to the user for fetching inputs.
+     * @param e the RiskEvent which contains info of the update.
+     */
     @Override
     public void handleRiskUpdate(RiskEvent e) {
         //propagate the event to the map panel as well
