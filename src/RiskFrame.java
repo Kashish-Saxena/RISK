@@ -188,6 +188,8 @@ public class RiskFrame extends JFrame implements RiskView {
     private void handleAttackChooseAttackers(RiskEvent e){
         info.setText("Choose a Territory to attack with.");
         //also re-enable the fortify button that was disabled from deploy phase
+        passAndFortifyButton.setText("END ATTACK AND FORTIFY");
+        passAndFortifyButton.setActionCommand("fortify");
         passAndFortifyButton.setEnabled(true);
     }
 

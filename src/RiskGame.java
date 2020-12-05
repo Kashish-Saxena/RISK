@@ -443,6 +443,7 @@ public class RiskGame implements Observer {
         //update gui with changes
         phase = TurnPhase.FORTIFY_UPDATE_FORTIFIED_TERRITORIES;
         notifyAllViews(new RiskEventTerritories(this, TurnPhase.FORTIFY_UPDATE_FORTIFIED_TERRITORIES, getCurrentPlayer(), fromTerritory, toTerritory));
+
         //pass turn to next player
         passTurn();
     }
