@@ -1,0 +1,33 @@
+{
+  "territories": [
+    {
+      "name": "Alaska",
+      "xPos": 80,
+      "yPos": 100
+    },
+    {
+      "name": "Alberta",
+      "xPos": 175,
+      "yPos": 150
+    }
+  ],
+
+  "continents": [
+    {
+      "name": "North America",
+      "xPos": 20,
+      "yPos": 225,
+      "red": 50,
+      "green": 150,
+      "blue": 250
+    }
+  ],
+
+  "territoriesInContinents": [
+    {"continent": "North America", "territories": ["Alaska","Alberta"]}
+  ],
+
+  "territoryAdjacencies": [
+    {"territory": "Alaska", "territories": ["Alaska","Alberta","Kamchatka"]}
+  ]
+}
