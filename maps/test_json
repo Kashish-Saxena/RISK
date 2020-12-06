@@ -2,7 +2,7 @@
   "territories": [
     {
       "name": "Alaska",
-      "xPos": 80,
+      "xPos": 81,
       "yPos": 100
     },
     {
@@ -19,7 +19,8 @@
       "yPos": 225,
       "red": 50,
       "green": 150,
-      "blue": 250
+      "blue": 250,
+      "value": 5
     }
   ],
 

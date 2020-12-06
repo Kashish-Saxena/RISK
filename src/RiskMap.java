@@ -1,4 +1,5 @@
 
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
@@ -27,6 +28,7 @@ public class RiskMap {
 
     private static java.util.Map<String, Territory> territoryMap;
     private static java.util.Map<Territory, Continent> territoryContinentMap;
+    private static ArrayList<Territory> territories;
     private static ArrayList<Continent> continents;
 
     /**
@@ -38,6 +40,7 @@ public class RiskMap {
         territoryMap = new HashMap<>();
         territoryContinentMap = new HashMap<>();
         continents = new ArrayList<Continent>();
+        territories = new ArrayList<Territory>();
         if (!testing) {
             try{
                 createMap();
@@ -54,8 +57,8 @@ public class RiskMap {
      * Instantiates territories, continents and set adjacent territories connections.
      */
     public void createMap() throws IOException, ParseException {
-        ArrayList<Territory> tempTerritories = new ArrayList<Territory>();
-        ArrayList<Territory> tempContinents = new ArrayList<Territory>();
+//        ArrayList<Territory> tempTerritories = new ArrayList<Territory>();
+//        ArrayList<Continent> tempContinents = new ArrayList<Continent>();
 
 
         //note that JSON parsing is done using an external java library
@@ -70,6 +73,7 @@ public class RiskMap {
         //typecasting obj to JSONObject
         JSONObject jo = (JSONObject) obj;
 
+        Iterator<Map.Entry> itr1;
 
         //==========================================
         //   STEP 1, create territory objects
@@ -80,7 +84,7 @@ public class RiskMap {
 
         //traverse territoriesArray to create all territory objects
         Iterator territoryItr = territoriesArray.iterator();
-        Iterator<Map.Entry> itr1;
+
         while (territoryItr.hasNext()) {
             String tempName = "";
             int tempXPos = 0;
@@ -91,23 +95,86 @@ public class RiskMap {
                 Map.Entry pair = itr1.next();
                 //System.out.println(pair.getKey() + " : " + pair.getValue());
 
-                if(pair.getKey().equals("name")){
-                    tempName = (String)pair.getValue();
-                }
-                else if(pair.getKey().equals("xPos")){
-                    tempXPos = (Integer) pair.getValue();
-                }
-                else if(pair.getKey().equals("YPos")){
-                    tempYPos = (Integer) pair.getValue();
+                if (pair.getKey().equals("name")) {
+                    tempName = (String) pair.getValue();
+                } else if (pair.getKey().equals("xPos")) {
+                    tempXPos = (int)(long) pair.getValue();
+                } else if (pair.getKey().equals("YPos")) {
+                    tempYPos = (int)(long) pair.getValue();
                 }
             }
 
             Territory tempTer = new Territory(tempName,tempXPos,tempYPos);
-            tempTerritories.add(tempTer);
+            territories.add(tempTer);
+
+        }
+
+        //add all Territories to territoryMap hash map
+        for(Territory t: territories){
+            territoryMap.put(t.getName().toLowerCase(), t);
         }
 
         //==========================================
         //   STEP 2, create continent objects
+        //==========================================
+
+        //fetch territories from json file
+        JSONArray continentArray = (JSONArray) jo.get("continents");
+
+        //traverse territoriesArray to create all territory objects
+        Iterator continentItr = continentArray.iterator();
+
+        while (continentItr.hasNext()) {
+            String tempName = "";
+            int tempXPos = 0;
+            int tempYPos = 0;
+            int tempRed = 0;
+            int tempGreen = 0;
+            int tempBlue = 0;
+            int tempVal = 0;
+
+            itr1 = ((Map) continentItr.next()).entrySet().iterator();
+            while (itr1.hasNext()) {
+                Map.Entry pair = itr1.next();
+                System.out.println(pair.getKey() + " : " + pair.getValue());
+
+                if(pair.getKey().equals("name")){
+                    tempName = (String)pair.getValue();
+                }
+                else if(pair.getKey().equals("xPos")){
+                    tempXPos = (int)(long) pair.getValue();
+                }
+                else if(pair.getKey().equals("YPos")){
+                    tempYPos = (int)(long) pair.getValue();
+                }
+                else if(pair.getKey().equals("red")){
+                    tempRed = (int)(long) pair.getValue();
+                }
+                else if(pair.getKey().equals("green")){
+                    tempGreen = (int)(long) pair.getValue();
+                }
+                else if(pair.getKey().equals("blue")){
+                    tempBlue = (int)(long) pair.getValue();
+                }
+                else if(pair.getKey().equals("value")){
+                    tempVal = (int)(long) pair.getValue();
+                }
+            }
+
+            Continent tempContinent = new Continent(tempName, tempXPos, tempYPos, new Color(tempRed,tempGreen,tempBlue), tempVal);
+            continents.add(tempContinent);
+        }
+
+
+        //==========================================
+        // STEP 3, link continents to territories
+        //==========================================
+
+        //add all continents to territoryContinentMap hash map
+        // for(Territory t: northAmerica.getTerritories()){ territoryContinentMap.put(t, northAmerica); }
+
+        //==========================================
+        //   STEP 4, link adjacent territories
         //==========================================
 
 

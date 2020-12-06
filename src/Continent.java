@@ -21,15 +21,14 @@ public class Continent {
      * Constructor of the Continent class. It initializes the field values and maps
      * the continent to all the territories in the list of territories.
      * @param name Name of the continent.
-     * @param territories A list of territories associated with the continent.
+
      * @param xPos x coordinate of the Continent.
      * @param yPos y coordinate of the Continent.
      * @param color Color of the Continent.
      * @param value Number of extra armies player gets to place during deploy if they own the continent.
      */
-    public Continent(String name, List<Territory> territories, int xPos, int yPos, Color color, int value){
+    public Continent(String name, int xPos, int yPos, Color color, int value){
         this.name = name;
-        this.territories = territories;
         this.xPos = xPos;
         this.yPos = yPos;
         this.color = color;
@@ -42,6 +41,14 @@ public class Continent {
      */
     public String toString(){
         return this.name;
+    }
+
+    /**
+     * Sets the territories of the continent.
+     * * @param territories A list of territories associated with the continent.
+     */
+    public void setTerritories(List<Territory> territories){
+        this.territories = territories;
     }
 
     /**

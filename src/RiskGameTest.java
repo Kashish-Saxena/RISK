@@ -156,7 +156,8 @@ public class RiskGameTest implements RiskView {
         con.add(territory1);
         con.add(territory2);
         con.add(territory3);
-        Continent continent1 = new Continent("Continent", con, 0, 0, Color.BLACK, 0);
+        Continent continent1 = new Continent("Continent", 0, 0, Color.BLACK, 0);
+        continent1.setTerritories(con);
 
         RiskMap.addTerritory(territory1);
         RiskMap.addTerritory(territory2);
@@ -342,7 +343,8 @@ public class RiskGameTest implements RiskView {
         territoryList.add(territory2);
         territoryList.add(territory3);
 
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK, 0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK, 0);
+        continent1.setTerritories(territoryList);
 
         List<Territory> adj1 = new ArrayList<>();
         List<Territory> adj2 = new ArrayList<>();
@@ -404,7 +406,9 @@ public class RiskGameTest implements RiskView {
         territoryList.add(territory1);
         territoryList.add(territory2);
 
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK, 0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK, 0);
+        continent1.setTerritories(territoryList);
+
 
         List<Territory> adj1 = new ArrayList<>();
         List<Territory> adj2 = new ArrayList<>();
@@ -458,7 +462,8 @@ public class RiskGameTest implements RiskView {
         territoryList.add(territory1);
         territoryList.add(territory2);
 
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK,0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK,0);
+        continent1.setTerritories(territoryList);
 
         List<Territory> adj1 = new ArrayList<>();
         List<Territory> adj2 = new ArrayList<>();
@@ -513,7 +518,8 @@ public class RiskGameTest implements RiskView {
         territoryList.add(territory1);
         territoryList.add(territory2);
 
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK, 0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK, 0);
+        continent1.setTerritories(territoryList);
 
         List<Territory> adj1 = new ArrayList<>();
         List<Territory> adj2 = new ArrayList<>();
@@ -574,7 +580,8 @@ public class RiskGameTest implements RiskView {
         territoryList.add(territory2);
         territoryList.add(territory3);
 
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK,0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK,0);
+        continent1.setTerritories(territoryList);
 
         List<Territory> adj1 = new ArrayList<>();
         List<Territory> adj2 = new ArrayList<>();
@@ -639,7 +646,8 @@ public class RiskGameTest implements RiskView {
         territoryList.add(territory1);
         territoryList.add(territory2);
 
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK,0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK,0);
+        continent1.setTerritories(territoryList);
 
         List<Territory> adj1 = new ArrayList<>();
         List<Territory> adj2 = new ArrayList<>();
@@ -688,7 +696,8 @@ public class RiskGameTest implements RiskView {
         //players owns 1 territory and 1 continent worth 5
         Territory territory1 = new Territory("Territory1", 0, 0);
         RiskMap.addTerritory(territory1);
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK, 5);//value of 5
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK, 5);//value of 5
+        continent1.setTerritories(territoryList);
         RiskMap.addContinent(territory1, continent1);
         player1.addTerritory(territory1);
         rg.calculateArmiesToDeploy();
@@ -713,8 +722,10 @@ public class RiskGameTest implements RiskView {
         RiskMap.addTerritory(territory2);
         RiskMap.addTerritory(territory3);
 
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK, 5);//value of 5
-        Continent continent2 = new Continent("Continent2", territoryList, 0, 0, Color.BLACK, 0);//value of 0
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK, 5);//value of 5
+        continent1.setTerritories(territoryList);
+        Continent continent2 = new Continent("Continent2", 0, 0, Color.BLACK, 0);//value of 0
+        continent1.setTerritories(territoryList);
         RiskMap.addContinent(territory1, continent1);
         RiskMap.addContinent(territory2, continent2);
         RiskMap.addContinent(territory3, continent2);
@@ -753,7 +764,8 @@ public class RiskGameTest implements RiskView {
 
         Territory territory1 = new Territory("Territory1", 0, 0);
         RiskMap.addTerritory(territory1);
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK, 5);//value of 5
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK, 5);//value of 5
+        continent1.setTerritories(territoryList);
         RiskMap.addContinent(territory1, continent1);
         player1.addTerritory(territory1);
         rg.calculateArmiesToDeploy();

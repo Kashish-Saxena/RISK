@@ -35,7 +35,8 @@ public class PlayerAITest {
         territoriesInContinent.add(territory1);
         territoriesInContinent.add(territory2);
         territoriesInContinent.add(territory3);
-        Continent continent1 = new Continent("Continent1", territoriesInContinent, 0, 0, Color.BLACK,0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK,0);
+        continent1.setTerritories(territoriesInContinent);
 
         RiskMap.addTerritory(territory1);
         RiskMap.addTerritory(territory2);
@@ -86,7 +87,8 @@ public class PlayerAITest {
         territoriesInContinent.add(territory1);
         territoriesInContinent.add(territory2);
         territoriesInContinent.add(territory3);
-        Continent continent1 = new Continent("Continent1", territoriesInContinent, 0, 0, Color.BLACK,0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK,0);
+        continent1.setTerritories(territoriesInContinent);
 
         RiskMap.addTerritory(territory1);
         RiskMap.addTerritory(territory2);
@@ -134,7 +136,8 @@ public class PlayerAITest {
         territoriesInContinent.add(territory1);
         territoriesInContinent.add(territory2);
         territoriesInContinent.add(territory3);
-        Continent continent1 = new Continent("Continent1", territoriesInContinent, 0, 0, Color.BLACK,0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK,0);
+        continent1.setTerritories(territoriesInContinent);
 
         RiskMap.addTerritory(territory1);
         RiskMap.addTerritory(territory2);
@@ -174,7 +177,8 @@ public class PlayerAITest {
         territoriesInContinent.add(territory2);
         territoriesInContinent.add(territory3);
         territoriesInContinent.add(territory4);
-        Continent continent1 = new Continent("Continent1", territoriesInContinent, 0, 0, Color.BLACK,0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK,0);
+        continent1.setTerritories(territoriesInContinent);
 
         RiskMap.addTerritory(territory1);
         RiskMap.addTerritory(territory2);
@@ -241,7 +245,8 @@ public class PlayerAITest {
         territoriesInContinent.add(territory1);
         territoriesInContinent.add(territory2);
         territoriesInContinent.add(territory3);
-        Continent continent1 = new Continent("Continent1", territoriesInContinent, 0, 0, Color.BLACK,0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK,0);
+        continent1.setTerritories(territoriesInContinent);
 
         RiskMap.addTerritory(territory1);
         RiskMap.addTerritory(territory2);
@@ -282,7 +287,8 @@ public class PlayerAITest {
         territoriesInContinent.add(territory1);
         territoriesInContinent.add(territory2);
         territoriesInContinent.add(territory3);
-        Continent continent1 = new Continent("Continent1", territoriesInContinent, 0, 0, Color.BLACK,0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK,0);
+        continent1.setTerritories(territoriesInContinent);
 
         RiskMap.addTerritory(territory1);
         RiskMap.addTerritory(territory2);
