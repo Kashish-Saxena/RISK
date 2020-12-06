@@ -1,13 +1,18 @@
 {
   "territories": [
     {
-      "name": "Alaska",
-      "xPos": 81,
-      "yPos": 100
+      "name": "ter1",
+      "xPos": 500,
+      "yPos": 500
     },
     {
-      "name": "Alberta",
+      "name": "ter2",
       "xPos": 175,
+      "yPos": 150
+    },
+    {
+      "name": "ter3",
+      "xPos": 750,
       "yPos": 150
     }
   ],
@@ -25,10 +30,12 @@
   ],
 
   "territoriesInContinents": [
-    {"continent": "North America", "territories": ["Alaska","Alberta"]}
+    {"continent": "North America", "territories": "ter1,ter2,ter3"}
   ],
 
   "territoryAdjacencies": [
-    {"territory": "Alaska", "territories": ["Alaska","Alberta","Kamchatka"]}
+    {"territory": "ter1", "territories": "ter2"},
+    {"territory": "ter2", "territories": "ter1,ter3"},
+    {"territory": "ter3", "territories": "ter2"}
   ]
 }

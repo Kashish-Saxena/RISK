@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.*;
 import java.io.FileReader;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 
@@ -75,6 +76,8 @@ public class RiskMap {
 
         Iterator<Map.Entry> itr1;
 
+        //todo, seperate this into multiple smaller methods
+
         //==========================================
         //   STEP 1, create territory objects
         //==========================================
@@ -99,14 +102,13 @@ public class RiskMap {
                     tempName = (String) pair.getValue();
                 } else if (pair.getKey().equals("xPos")) {
                     tempXPos = (int)(long) pair.getValue();
-                } else if (pair.getKey().equals("YPos")) {
+                } else if (pair.getKey().equals("yPos")) {
                     tempYPos = (int)(long) pair.getValue();
                 }
             }
 
             Territory tempTer = new Territory(tempName,tempXPos,tempYPos);
             territories.add(tempTer);
-
         }
 
         //add all Territories to territoryMap hash map
@@ -136,7 +138,7 @@ public class RiskMap {
             itr1 = ((Map) continentItr.next()).entrySet().iterator();
             while (itr1.hasNext()) {
                 Map.Entry pair = itr1.next();
-                System.out.println(pair.getKey() + " : " + pair.getValue());
+                //System.out.println(pair.getKey() + " : " + pair.getValue());
 
                 if(pair.getKey().equals("name")){
                     tempName = (String)pair.getValue();
@@ -144,7 +146,7 @@ public class RiskMap {
                 else if(pair.getKey().equals("xPos")){
                     tempXPos = (int)(long) pair.getValue();
                 }
-                else if(pair.getKey().equals("YPos")){
+                else if(pair.getKey().equals("yPos")){
                     tempYPos = (int)(long) pair.getValue();
                 }
                 else if(pair.getKey().equals("red")){
@@ -170,12 +172,110 @@ public class RiskMap {
         // STEP 3, link continents to territories
         //==========================================
 
-        //add all continents to territoryContinentMap hash map
-        // for(Territory t: northAmerica.getTerritories()){ territoryContinentMap.put(t, northAmerica); }
+        //fetch territoriesInContinents from json file
+        JSONArray territoriesInContinentsArray = (JSONArray) jo.get("territoriesInContinents");
+
+        //traverse territoriesArray to create all territory objects
+        Iterator territoryToContinentItr = territoriesInContinentsArray.iterator();
+
+        while (territoryToContinentItr.hasNext()) {
+            String tempContinentName = "";
+            String tempTerritories = "";
+
+            Continent tempContinent = null;
+            List<Territory> territoriesInContinent = new ArrayList<Territory>();
+
+
+            itr1 = ((Map) territoryToContinentItr.next()).entrySet().iterator();
+            while (itr1.hasNext()) {
+                Map.Entry pair = itr1.next();
+                //System.out.println(pair.getKey() + " : " + pair.getValue());
+
+                if (pair.getKey().equals("continent")) {
+                    tempContinentName = (String) pair.getValue();
+                } else if (pair.getKey().equals("territories")) {
+                    tempTerritories = (String) pair.getValue();
+                }
+
+            }
+
+            //find the continent object with matching name in continents
+            for(Continent c: continents){
+                if(c.toString().equals(tempContinentName)){
+                    tempContinent = c;
+                }
+            }
+
+            //find all territory objects with matching names in territories
+            String[] parts = tempTerritories.split(",");
+            for (String terrName : parts) {
+                for (Territory t : territories) {
+                    if (t.getName().equals(terrName)) {
+                        territoriesInContinent.add(t);
+                    }
+                }
+
+            }
+
+            //finally add the territories to the continent
+            tempContinent.setTerritories(territoriesInContinent);
+
+            //also add all continent to territoryContinentMap hash map
+            for(Territory t: tempContinent.getTerritories()){ territoryContinentMap.put(t, tempContinent); }
+        }
+
 
         //==========================================
         //   STEP 4, link adjacent territories
         //==========================================
+        //fetch territoriesInContinents from json file
+        JSONArray territoryAdjacencyArray = (JSONArray) jo.get("territoryAdjacencies");
+
+        //traverse territoriesArray to create all territory objects
+        Iterator territoryToTerritoryItr = territoryAdjacencyArray.iterator();
+
+        while (territoryToTerritoryItr.hasNext()) {
+            String tempTerritoryName = "";
+            String tempTerritories = "";
+
+            Territory tempTerritory = null;
+            List<Territory> territoriesInTerritory = new ArrayList<Territory>();
+
+
+            itr1 = ((Map) territoryToTerritoryItr.next()).entrySet().iterator();
+            while (itr1.hasNext()) {
+                Map.Entry pair = itr1.next();
+                //System.out.println(pair.getKey() + " : " + pair.getValue());
+
+                if (pair.getKey().equals("territory")) {
+                    tempTerritoryName = (String) pair.getValue();
+                } else if (pair.getKey().equals("territories")) {
+                    tempTerritories = (String) pair.getValue();
+                }
+
+            }
+
+            //find the territory object with matching name in territories
+            for(Territory t: territories){
+                if(t.getName().equals(tempTerritoryName)){
+                    tempTerritory = t;
+                }
+            }
+
+            //find all territory objects with matching names in territories
+            String[] parts = tempTerritories.split(",");
+            for (String terrName : parts) {
+                for (Territory t : territories) {
+                    if (t.getName().equals(terrName)) {
+                        territoriesInTerritory.add(t);
+                    }
+                }
+
+            }
+
+            //finally add the territories to the continent
+            tempTerritory.setAdjacentTerritories(territoriesInTerritory);
+        }
 
 
 

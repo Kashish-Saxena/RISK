@@ -115,16 +115,7 @@ public class RiskMapPanel extends JPanel implements RiskView {
         Graphics2D g2 = (Graphics2D) g;
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 12f));
 
-        //draw world background image
-        try {
-            image = ImageIO.read(new File("res/world_map.png"));
-        } catch (IOException ignored) { }
-        g.drawImage(image, 0,0,1200,700,null);
-
-        //draw the special case "connection between Alaska and Kamchatka"
         g2.setStroke(new BasicStroke(3));
-        g2.drawLine(80,100,20,100);
-        g2.drawLine(1050, 90,1200,90);
 
         //draw each of the "connections" between Territories
         //todo, right now this approach actually draws each connection twice, is there a better way???
@@ -136,10 +127,7 @@ public class RiskMapPanel extends JPanel implements RiskView {
 
             //for each of the adjacent Territories of tempTerritory, draw the connection
             for(Territory t: tempTerritory.getAdjacentTerritories()){
-                //special case, don't draw the connection between Alaska and Kamchatka
-                if(t.getName() != "Alaska" && t.getName() != "Kamchatka"){
-                    g2.drawLine(tempTerritory.getXPos(),tempTerritory.getYPos(),t.getXPos(),t.getYPos());
-                }
+                g2.drawLine(tempTerritory.getXPos(),tempTerritory.getYPos(),t.getXPos(),t.getYPos());
             }
         }
 
