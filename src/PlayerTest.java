@@ -64,7 +64,8 @@ public class PlayerTest {
         territoriesInContinent.add(territory2);
         territoriesInContinent.add(enemyTerritory1);
         territoriesInContinent.add(enemyTerritory2);
-        Continent continent1 = new Continent("Continent1", territoriesInContinent, 0, 0, Color.BLACK,0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK,0);
+        continent1.setTerritories(territoriesInContinent);
 
         RiskMap.addTerritory(territory1);
         RiskMap.addTerritory(territory2);
@@ -100,7 +101,8 @@ public class PlayerTest {
         List<Territory> territoriesInContinent = new ArrayList<>();
         territoriesInContinent.add(territory1);
         territoriesInContinent.add(territory2);
-        Continent continent1 = new Continent("Continent1", territoriesInContinent, 0, 0, Color.BLACK,0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK,0);
+        continent1.setTerritories(territoriesInContinent);
 
         RiskMap.addTerritory(territory1);
         RiskMap.addTerritory(territory2);
@@ -123,7 +125,8 @@ public class PlayerTest {
         Territory territory1 = new Territory("Territory1", 0, 0);
         List<Territory> territoryList = new ArrayList<>();
         territoryList.add(territory1);
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK,0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK,0);
+        continent1.setTerritories(territoryList);
 
         RiskMap.addTerritory(territory1);
         RiskMap.addContinent(territory1, continent1);
@@ -140,7 +143,8 @@ public class PlayerTest {
         Territory territory1 = new Territory("Territory1", 0, 0);
         List<Territory> territoryList = new ArrayList<>();
         territoryList.add(territory1);
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK,0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK,0);
+        continent1.setTerritories(territoryList);
 
         RiskMap.addTerritory(territory1);
         RiskMap.addContinent(territory1, continent1);
@@ -163,7 +167,8 @@ public class PlayerTest {
         List<Territory> territoryList = new ArrayList<Territory>();
         territoryList.add(territory1);
         territoryList.add(territory2);
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK,0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK,0);
+        continent1.setTerritories(territoryList);
         List<Continent> continentList = new ArrayList<>();
         continentList.add(continent1);
 
@@ -187,7 +192,8 @@ public class PlayerTest {
         Territory territory1 = new Territory("Territory1", 0, 0);
         List<Territory> territoryList = new ArrayList<Territory>();
         territoryList.add(territory1);
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK,0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK,0);
+        continent1.setTerritories(territoryList);
 
         RiskMap.addTerritory(territory1);
         RiskMap.addContinent(territory1, continent1);
@@ -210,7 +216,8 @@ public class PlayerTest {
         List<Territory> territoryList = new ArrayList<Territory>();
         territoryList.add(territory1);
         territoryList.add(territory2);
-        Continent continent1 = new Continent("Continent1", territoryList, 0, 0, Color.BLACK,0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK,0);
+        continent1.setTerritories(territoryList);
         List<Continent> continentList = new ArrayList<>();
         continentList.add(continent1);
 
@@ -256,7 +263,8 @@ public class PlayerTest {
         List<Territory> territoriesInContinent = new ArrayList<Territory>();
         territoriesInContinent.add(territory1);
         territoriesInContinent.add(territory2);
-        Continent continent1 = new Continent("Continent1", territoriesInContinent, 0, 0, Color.BLACK,0);
+        Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK,0);
+        continent1.setTerritories(territoriesInContinent);
 
         RiskMap.addTerritory(territory1);
         RiskMap.addTerritory(territory2);
