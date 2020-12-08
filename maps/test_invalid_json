@@ -1,0 +1,46 @@
+{
+  "territories": [
+    {
+      "name": "ter1",
+      "xPos": 500,
+      "yPos": 500
+    },
+    {
+      "name": "ter2",
+      "xPos": 175,
+      "yPos": 150
+    },
+    {
+      "name": "ter3",
+      "xPos": 750,
+      "yPos": 150
+    },
+    {
+      "name": "ter4",
+      "xPos": 1000,
+      "yPos": 650
+    }
+  ],
+
+  "continents": [
+    {
+      "name": "North America",
+      "xPos": 20,
+      "yPos": 225,
+      "red": 50,
+      "green": 150,
+      "blue": 250,
+      "value": 5
+    }
+  ],
+
+  "territoriesInContinents": [
+    {"continent": "North America", "territories": "ter1,ter2,ter3,ter4"}
+  ],
+
+  "territoryAdjacencies": [
+    {"territory": "ter1", "territories": "ter2"},
+    {"territory": "ter2", "territories": "ter1,ter3"},
+    {"territory": "ter3", "territories": "ter2"}
+  ]
+}
