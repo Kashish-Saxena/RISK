@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -354,5 +355,35 @@ public class RiskFrame extends JFrame implements RiskView {
             }
         }
         JOptionPane.showMessageDialog(this, message);
+    }
+
+    // Serializing riskframe
+    public void serializeRiskFrame (String filename){
+        try {
+            FileOutputStream fileOut = new FileOutputStream(filename);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(this);
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Deserializing riskframe
+    public RiskFrame deserializeRiskFrame(String filepath) {
+        try {
+            FileInputStream fileIn = new FileInputStream(filepath);
+            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+
+            RiskFrame rf = (RiskFrame) objectIn.readObject();
+            objectIn.close();
+            return rf;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 }

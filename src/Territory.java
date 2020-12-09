@@ -14,7 +14,7 @@ import java.util.List;
  * @author David Sciola - 101082459 and Kevin Quach - 101115704
  * @version November 23, 2020
  */
-public class Territory implements Serializable {
+public class Territory {
 
     private String name;
     private Player owner;
@@ -156,64 +156,5 @@ public class Territory implements Serializable {
      */
     public void setAdjacentTerritories(List<Territory> adjacentTerritories) {
         this.adjacentTerritories = adjacentTerritories;
-    }
-
-    // Writing object to json
-    /*public void toJson() throws FileNotFoundException {
-        JSONObject terr = new JSONObject();
-        terr.put("name", name);
-        terr.put("owner", owner);
-        terr.put("numArmies", numArmies);
-        terr.put("adjacentTerritories", adjacentTerritories);
-        terr.put("xPos", xPos);
-        terr.put("yPos", yPos);
-
-        PrintWriter pw = new PrintWriter("Territory.json");
-        pw.write(terr.toJSONString());
-        pw.flush();
-        pw.close();
-    }
-
-    // Reading from Json file
-    public void fromJson(){
-        Object obj = new JSONParser().parse(new FileReader("Territory.json"));
-
-        // typecasting obj to JSONObject
-        JSONObject jo = (JSONObject) obj;
-
-        // getting firstName and lastName
-        String name = (String) jo.get("name");
-        Player owner = (Player) jo.get("owner");
-
-    }*/
-
-    //Serializing territory
-    public void serializeTerr (String filename){
-        try {
-            FileOutputStream fileOut = new FileOutputStream(filename);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(this);
-            out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    //Deserializing territory
-    public Territory deserializeTerr(String filepath) {
-        try {
-            FileInputStream fileIn = new FileInputStream(filepath);
-            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
-
-            Territory territoryObject = (Territory) objectIn.readObject();
-            objectIn.close();
-            return territoryObject;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
     }
 }
