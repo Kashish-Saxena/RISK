@@ -340,9 +340,6 @@ public class RiskMap {
         recursiveDepthFirstSearchOnTerritories(territories.get(0), visitedTerritories);
         //after calling recursiveDepthFirstSearchOnFriendlyTerritories, visitedTerritories contains all the visited Territories
 
-        System.out.println(territories.size());
-        System.out.println(visitedTerritories.size());
-
         //if the visitedTerritories the same size as the original territories exit program
         if(! (territories.size() == visitedTerritories.size())){
             if(!testingMapWasOverrided){

@@ -217,26 +217,26 @@
       "name": "North America",
       "xPos": 20,
       "yPos": 225,
-      "red": 50,
-      "green": 150,
-      "blue": 250,
+      "red": 255,
+      "green": 255,
+      "blue": 0,
       "value": 5
     },
     {
       "name": "South America",
       "xPos": 100,
       "yPos": 460,
-      "red": 50,
-      "green": 150,
-      "blue": 250,
+      "red": 255,
+      "green": 50,
+      "blue": 50,
       "value": 2
     },
     {
       "name": "Europe",
       "xPos": 600,
       "yPos": 30,
-      "red": 50,
-      "green": 150,
+      "red": 100,
+      "green": 170,
       "blue": 250,
       "value": 5
     },
@@ -244,26 +244,26 @@
       "name": "Africa",
       "xPos": 495,
       "yPos": 505,
-      "red": 50,
+      "red": 255,
       "green": 150,
-      "blue": 250,
+      "blue": 50,
       "value": 3
     },
     {
       "name": "Asia",
       "xPos": 1100,
       "yPos": 300,
-      "red": 50,
-      "green": 150,
-      "blue": 250,
+      "red": 100,
+      "green": 250,
+      "blue": 100,
       "value": 7
     },
     {
       "name": "Australia",
       "xPos": 1100,
       "yPos": 385,
-      "red": 50,
-      "green": 150,
+      "red": 250,
+      "green": 100,
       "blue": 250,
       "value": 2
     }
@@ -271,7 +271,7 @@
 
   "territoriesInContinents": [
     {"continent": "North America", "territories": "Alaska,Alberta,Cnt America,Eastern US,Greenland,NW Territory,Ontario,Quebec,Western US"},
-    {"continent": "South America", "territories": "Argentina,Brazil,Peru,Eastern US,Venezuela"},
+    {"continent": "South America", "territories": "Argentina,Brazil,Peru,Venezuela"},
     {"continent": "Europe", "territories": "Great Britain,Iceland,Northern EU,Scandinavia,Southern EU,Ukraine,Western EU"},
     {"continent": "Africa", "territories": "Congo,East Africa,Egypt,Madagascar,North Africa,South Africa"},
     {"continent": "Asia", "territories": "Afghanistan,China,India,Irkutsk,Japan,Kamchatka,Middle East,Mongolia,Siam,Siberia,Ural,Yakutsk"},

@@ -118,7 +118,6 @@ public class RiskMapPanel extends JPanel implements RiskView {
         g2.setStroke(new BasicStroke(3));
 
         //draw each of the "connections" between Territories
-        //todo, right now this approach actually draws each connection twice, is there a better way???
         g2.setColor(Color.black);
         Iterator hmIterator = riskMap.getTerritoryMap().entrySet().iterator();
         while (hmIterator.hasNext()) {
@@ -141,7 +140,7 @@ public class RiskMapPanel extends JPanel implements RiskView {
             //draw mini background rectangle for Territory name and number of armies
             g2.setColor(Color.black);
             g2.drawRect(tempTerritory.getXPos(), tempTerritory.getYPos()-14, 90,26);
-            g2.setColor(Color.cyan);
+            g2.setColor(RiskMap.getContinentFromTerritory(tempTerritory).getColor());
             g2.fillRect(tempTerritory.getXPos(), tempTerritory.getYPos()-14, 90,26);
         }
 
@@ -156,7 +155,6 @@ public class RiskMapPanel extends JPanel implements RiskView {
 
         //draw the continent ownership values table at the bottom left corner
         g2.setColor(Color.black);
-        //g2.drawRect(25, 500, 200,100);
         g2.drawString("Continent Ownership values", 25, 530);
         g2.drawLine(25,535,200,535);
         int offset = 0;
