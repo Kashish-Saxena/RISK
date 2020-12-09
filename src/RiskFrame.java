@@ -23,9 +23,9 @@ public class RiskFrame extends JFrame implements RiskView {
      * Constructor of the RiskFrame class. It initializes the field values
      * @param riskMap Map of the game.
      */
-    public RiskFrame(RiskMap riskMap) {
+    public RiskFrame(RiskMap riskMap, RiskGame rg) {
         super("RISK");
-        rg = new RiskGame(false, false);
+        this.rg = rg;
         this.setLayout(new BorderLayout());
 
         //create a mapPanel and pass a reference to the RiskMap and RiskGame
@@ -80,8 +80,10 @@ public class RiskFrame extends JFrame implements RiskView {
         //propagate the event to the map panel as well
         mapPanel.handleRiskUpdate(e);
 
-        //update turn label
-        turn.setText(e.getCurrentPlayer().getName() + "'s turn");
+        if (e.getPhase() != TurnPhase.INITIAL_SETUP) {
+            //update turn label
+            turn.setText(e.getCurrentPlayer().getName() + "'s turn");
+        }
 
         //also invoke the proper handling method so that this RiskFrame reacts to the update accordingly
 
@@ -352,14 +354,5 @@ public class RiskFrame extends JFrame implements RiskView {
             }
         }
         JOptionPane.showMessageDialog(this, message);
-    }
-
-    /**
-     * main method that creates a RiskMap and RiskFrame.
-     * Constructors of RIskMap and RiskFrame will then take care of everything else.
-     */
-    public static void main(String[] args) {
-        RiskMap riskMap = new RiskMap(false, false);
-        RiskFrame rf = new RiskFrame(riskMap);
     }
 }

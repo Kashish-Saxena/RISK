@@ -53,19 +53,8 @@ public class RiskGame implements Observer {
         riskViews = new ArrayList<RiskView>();
         gameInProgress = true;
 
-        //create all Players, Territories and Continents
-        if (!testingMain && !testingGame) {
-            setupOptions();
-        }
-        else {
-            numPlayers = 0;
-        }
+        numPlayers = 0;
         currentPlayerIndex = 0;
-
-        if (!testingMain && !testingGame) {
-            //auto assign starting player armies to territories
-            autoPlaceArmies();
-        }
 
         attackDiceNum = 0;
         defendDiceNum = 0;
@@ -80,6 +69,9 @@ public class RiskGame implements Observer {
      */
     public void addView(RiskView view) {
         riskViews.add(view);
+        if (riskViews.size() == 1) { //first view added must initialize the game
+            notifyAllViews(new RiskEventBounds(this, TurnPhase.INITIAL_SETUP, new Player("player", this), RiskGame.MIN_PLAYERS, RiskGame.MAX_PLAYERS));
+        }
     }
 
     /**
@@ -144,7 +136,7 @@ public class RiskGame implements Observer {
      * autoPlaceArmies is the auto unit placement algorithm. it dynamically sets Territory Ownership and army numbers
      * for all players in a few grouped clusters.
      */
-    private void autoPlaceArmies() {
+    public void autoPlaceArmies() {
 
         //calculate the number of armies each player has to place
         int numArmiesToPlace;
@@ -766,6 +758,10 @@ public class RiskGame implements Observer {
      */
     public int getNumPlayers() {
         return numPlayers;
+    }
+
+    public void setNumPlayers(int numPlayers) {
+        this.numPlayers = numPlayers;
     }
 
     //below methods are for testing only
