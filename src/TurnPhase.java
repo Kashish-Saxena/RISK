@@ -5,6 +5,9 @@
  * @version November 25, 2020
  */
 public enum TurnPhase {
+    //initial game setup
+    INITIAL_SETUP,
+
     //deploy phases
     DEPLOY_CALCULATE_ARMIES_TO_PLACE,
     DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO,

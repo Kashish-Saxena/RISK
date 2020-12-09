@@ -53,19 +53,8 @@ public class RiskGame implements Observer {
         riskViews = new ArrayList<RiskView>();
         gameInProgress = true;
 
-        //create all Players, Territories and Continents
-        if (!testingMain && !testingGame) {
-            setupOptions();
-        }
-        else {
-            numPlayers = 0;
-        }
+        numPlayers = 0;
         currentPlayerIndex = 0;
-
-        if (!testingMain && !testingGame) {
-            //auto assign starting player armies to territories
-            autoPlaceArmies();
-        }
 
         attackDiceNum = 0;
         defendDiceNum = 0;
@@ -80,6 +69,9 @@ public class RiskGame implements Observer {
      */
     public void addView(RiskView view) {
         riskViews.add(view);
+        if (riskViews.size() == 1) { //first view added must initialize the game
+            notifyAllViews(new RiskEventBounds(this, TurnPhase.INITIAL_SETUP, new Player("player", this), RiskGame.MIN_PLAYERS, RiskGame.MAX_PLAYERS));
+        }
     }
 
     /**
@@ -94,57 +86,10 @@ public class RiskGame implements Observer {
     }
 
     /**
-     * Takes input from user for the number of players and player names and instantiates player objects.
-     */
-    private void setupOptions(){
-        System.out.println("===========================================");
-        System.out.println("==           RISK MILESTONE 3            ==");
-        System.out.println("==                  By                   ==");
-        System.out.println("==         David Sciola 101082459        ==");
-        System.out.println("==         Kevin Quach 101115704         ==");
-        System.out.println("==         Kashish Saxena 101107204      ==");
-        System.out.println("===========================================");
-
-        //Prompting for player information
-        numPlayers = 0;
-        String str = "";
-        while (!(numPlayers >= MIN_PLAYERS && numPlayers <= MAX_PLAYERS)) {
-            try {
-                str = JOptionPane.showInputDialog("Enter Number of Players (2-6):");
-                if (str != null) { //cannot cancel a player number choice
-                    numPlayers = Integer.parseInt(str);
-                }
-            } catch (NumberFormatException excp) {
-                numPlayers = 0;
-            }
-        }
-
-        String name = "";
-        int isAI = 0;
-        for (int i = 0; i < numPlayers; i++) {
-            name = "";
-            while (name == null || name.equals("")) {
-                name = JOptionPane.showInputDialog("Enter Player " + (i + 1) + "'s name:");
-            }
-
-            isAI = JOptionPane.showConfirmDialog(null, "Is " + name + " an AI?");
-            //0 corresponds to yes button, 1 corresponds to no button
-            if (isAI == 0) {
-                Player player = new PlayerAI(name + " (ai)", this);
-                players.add(player);
-            }
-            else {
-                Player player = new Player(name, this);
-                players.add(player);
-            }
-        }
-    }
-
-    /**
      * autoPlaceArmies is the auto unit placement algorithm. it dynamically sets Territory Ownership and army numbers
      * for all players in a few grouped clusters.
      */
-    private void autoPlaceArmies() {
+    public void autoPlaceArmies() {
 
         //calculate the number of armies each player has to place
         int numArmiesToPlace;
@@ -766,6 +711,10 @@ public class RiskGame implements Observer {
      */
     public int getNumPlayers() {
         return numPlayers;
+    }
+
+    public void setNumPlayers(int numPlayers) {
+        this.numPlayers = numPlayers;
     }
 
     //below methods are for testing only
