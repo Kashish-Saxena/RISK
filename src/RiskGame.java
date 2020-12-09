@@ -717,17 +717,12 @@ public class RiskGame implements Observer {
         this.numPlayers = numPlayers;
     }
 
-    //below methods are for testing only
-
     /**
      * Adds the input player to the list of players in the game.
      * @param player Player to be added.
      */
     public void addPlayer(Player player) {
-        if (testingMain || testingGame) {
-            players.add(player);
-            numPlayers++;
-        }
+        players.add(player);
     }
 
     /**
@@ -735,10 +730,22 @@ public class RiskGame implements Observer {
      * @return The TurnPhase of the player.
      */
     public TurnPhase getPhase() {
-        //if (testing || testingGame) { //this shouldn't be used, use the RiskEvent
-            return phase;
-        //}
+        return phase;
     }
+    //below methods are for testing only
+
+    /**
+     * Adds the input player to the list of players in the game.
+     * @param player Player to be added.
+     */
+    public void addPlayerTest(Player player) {
+        if (testingMain || testingGame) {
+            players.add(player);
+            numPlayers++;
+        }
+    }
+
+
 
     /**
      * Sets the TurnPhase of the player.

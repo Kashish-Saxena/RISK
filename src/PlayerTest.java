@@ -1,4 +1,3 @@
-import org.junit.Before;
 import org.junit.Test;
 
 import java.awt.*;
@@ -197,7 +196,7 @@ public class PlayerTest {
 
         RiskMap.addTerritory(territory1);
         RiskMap.addContinent(territory1, continent1);
-        rg.addPlayer(player1);
+        rg.addPlayerTest(player1);
 
         player1.addTerritory(territory1);
         assertArrayEquals(territoryList.toArray(), player1.getTerritories().toArray());
@@ -276,8 +275,8 @@ public class PlayerTest {
         player1.addTerritory(territory1);
         player2.addTerritory(territory2);
 
-        rg.addPlayer(player1);
-        rg.addPlayer(player2);
+        rg.addPlayerTest(player1);
+        rg.addPlayerTest(player2);
 
         assertTrue(player1.canAttack());
 
