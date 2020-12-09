@@ -35,10 +35,10 @@ public class RiskInitializer implements RiskView {
                 //0 corresponds to yes button, 1 corresponds to no button
                 if (isAI == 0) {
                     Player player = new PlayerAI(name + " (ai)", rg);
-                    rg.getPlayers().add(player);
+                    rg.addPlayer(player);
                 } else {
                     Player player = new Player(name, rg);
-                    rg.getPlayers().add(player);
+                    rg.addPlayer(player);
                 }
             }
             rg.autoPlaceArmies();

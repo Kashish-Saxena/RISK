@@ -140,9 +140,9 @@ public class RiskGameTest implements RiskView {
         Player player1 = new Player("Player1", rg);
         Player player2 = new Player("Player2", rg);
         Player player3 = new Player("Player3", rg);
-        rg.addPlayer(player1);
-        rg.addPlayer(player2);
-        rg.addPlayer(player3);
+        rg.addPlayerTest(player1);
+        rg.addPlayerTest(player2);
+        rg.addPlayerTest(player3);
         rg.addView(this);
 
         Territory territory1 = new Territory("Territory1", 0, 0);
@@ -248,7 +248,7 @@ public class RiskGameTest implements RiskView {
         Territory territory1 = new Territory("Territory1", 0, 0);
         territory1.setArmies(1);
         territory1.setOwner(player1);
-        rg.addPlayer(player1);
+        rg.addPlayerTest(player1);
         rg.addView(this);
 
         rg.setToTerritory(territory1);
@@ -330,8 +330,8 @@ public class RiskGameTest implements RiskView {
         RiskMap rm = new RiskMap(true, false);
         Player player1 = new Player("Player1", rg);
         Player player2 = new Player("Player2", rg);
-        rg.addPlayer(player1);
-        rg.addPlayer(player2);
+        rg.addPlayerTest(player1);
+        rg.addPlayerTest(player2);
         Territory territory1 = new Territory("Territory1", 0, 0);
         Territory territory2 = new Territory("Territory2", 0, 0);
         Territory territory3 = new Territory("Territory3", 0, 0);
@@ -396,8 +396,8 @@ public class RiskGameTest implements RiskView {
         RiskMap rm = new RiskMap(true, false);
         Player player1 = new Player("Player1", rg);
         Player player2 = new Player("Player2", rg);
-        rg.addPlayer(player1);
-        rg.addPlayer(player2);
+        rg.addPlayerTest(player1);
+        rg.addPlayerTest(player2);
         Territory territory1 = new Territory("Territory1", 0, 0);
         Territory territory2 = new Territory("Territory2", 0, 0);
         territory1.setArmies(3);
@@ -452,8 +452,8 @@ public class RiskGameTest implements RiskView {
         RiskMap rm = new RiskMap(true, false);
         Player player1 = new Player("Player1", rg);
         Player player2 = new Player("Player2", rg);
-        rg.addPlayer(player1);
-        rg.addPlayer(player2);
+        rg.addPlayerTest(player1);
+        rg.addPlayerTest(player2);
         Territory territory1 = new Territory("Territory1", 0, 0);
         Territory territory2 = new Territory("Territory2", 0, 0);
         territory1.setArmies(2);
@@ -508,8 +508,8 @@ public class RiskGameTest implements RiskView {
         RiskMap rm = new RiskMap(true, false);
         Player player1 = new Player("Player1", rg);
         Player player2 = new Player("Player2", rg);
-        rg.addPlayer(player1);
-        rg.addPlayer(player2);
+        rg.addPlayerTest(player1);
+        rg.addPlayerTest(player2);
         Territory territory1 = new Territory("Territory1", 0, 0);
         Territory territory2 = new Territory("Territory2", 0, 0);
         territory1.setArmies(5);
@@ -566,9 +566,9 @@ public class RiskGameTest implements RiskView {
         Player player1 = new Player("Player1", rg);
         Player player2 = new Player("Player2", rg);
         Player player3 = new Player("Player3", rg);
-        rg.addPlayer(player1);
-        rg.addPlayer(player2);
-        rg.addPlayer(player3);
+        rg.addPlayerTest(player1);
+        rg.addPlayerTest(player2);
+        rg.addPlayerTest(player3);
         Territory territory1 = new Territory("Territory1", 0, 0);
         Territory territory2 = new Territory("Territory2", 0, 0);
         Territory territory3 = new Territory("Territory3", 0, 0);
@@ -636,8 +636,8 @@ public class RiskGameTest implements RiskView {
         RiskMap rm = new RiskMap(true, false);
         Player player1 = new Player("Player1", rg);
         Player player2 = new Player("Player2", rg);
-        rg.addPlayer(player1);
-        rg.addPlayer(player2);
+        rg.addPlayerTest(player1);
+        rg.addPlayerTest(player2);
         Territory territory1 = new Territory("Territory1", 0, 0);
         Territory territory2 = new Territory("Territory2", 0, 0);
         territory1.setArmies(2);
@@ -691,7 +691,7 @@ public class RiskGameTest implements RiskView {
         rg = new RiskGame(true, true);
         Player player1 = new Player("Player1", rg);
         RiskMap rm = new RiskMap(true, false);
-        rg.addPlayer(player1);
+        rg.addPlayerTest(player1);
         rg.addView(this);
 
         //players owns 1 territory and 1 continent worth 5
@@ -712,7 +712,7 @@ public class RiskGameTest implements RiskView {
         rg = new RiskGame(true, true);
         Player player1 = new Player("Player1", rg);
         RiskMap rm = new RiskMap(true, false);
-        rg.addPlayer(player1);
+        rg.addPlayerTest(player1);
         rg.addView(this);
 
         //player owns 3 territories and 2 continents, one worth 5 and one worth 5
@@ -745,7 +745,7 @@ public class RiskGameTest implements RiskView {
         rg = new RiskGame(true, true);
         Player player1 = new Player("Player1", rg);
         RiskMap rm = new RiskMap(true, false);
-        rg.addPlayer(player1);
+        rg.addPlayerTest(player1);
         rg.addView(this);
 
         //player owns nothing
@@ -760,7 +760,7 @@ public class RiskGameTest implements RiskView {
         rg = new RiskGame(true, true);
         Player player1 = new Player("Player1", rg);
         RiskMap rm = new RiskMap(true, false);
-        rg.addPlayer(player1);
+        rg.addPlayerTest(player1);
         rg.addView(this);
 
         Territory territory1 = new Territory("Territory1", 0, 0);
@@ -790,7 +790,7 @@ public class RiskGameTest implements RiskView {
         rg = new RiskGame(true, true);
         Player player1 = new Player("Player1", rg);
         RiskMap rm = new RiskMap(true, false);
-        rg.addPlayer(player1);
+        rg.addPlayerTest(player1);
         rg.addView(this);
 
         //territory1 has 10

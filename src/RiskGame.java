@@ -717,13 +717,20 @@ public class RiskGame implements Observer {
         this.numPlayers = numPlayers;
     }
 
+    /**
+     * Adds the input player to the list of players in the game.
+     * @param player Player to be added.
+     */
+    public void addPlayer(Player player) {
+        players.add(player);
+    }
     //below methods are for testing only
 
     /**
      * Adds the input player to the list of players in the game.
      * @param player Player to be added.
      */
-    public void addPlayer(Player player) {
+    public void addPlayerTest(Player player) {
         if (testingMain || testingGame) {
             players.add(player);
             numPlayers++;
