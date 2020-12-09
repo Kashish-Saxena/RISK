@@ -111,7 +111,7 @@ public class RiskMap {
             //selectMapPath();
 
             //todo, remove hard coded path before final submission
-            mapPath = "maps/sample_map_1";
+            mapPath = "maps/world_map";
         }
 
         //create JSONObject jo based on the file path mapPath
@@ -340,8 +340,11 @@ public class RiskMap {
         recursiveDepthFirstSearchOnTerritories(territories.get(0), visitedTerritories);
         //after calling recursiveDepthFirstSearchOnFriendlyTerritories, visitedTerritories contains all the visited Territories
 
-        //if the visitedTerritories does not contain all the original territories exit program
-        if(! territories.equals(visitedTerritories)){
+        System.out.println(territories.size());
+        System.out.println(visitedTerritories.size());
+
+        //if the visitedTerritories the same size as the original territories exit program
+        if(! (territories.size() == visitedTerritories.size())){
             if(!testingMapWasOverrided){
                 JOptionPane.showMessageDialog(null, "Selected custom map is not valid");
                 System.exit(0);

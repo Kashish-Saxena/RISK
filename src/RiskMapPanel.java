@@ -127,7 +127,9 @@ public class RiskMapPanel extends JPanel implements RiskView {
 
             //for each of the adjacent Territories of tempTerritory, draw the connection
             for(Territory t: tempTerritory.getAdjacentTerritories()){
-                g2.drawLine(tempTerritory.getXPos(),tempTerritory.getYPos(),t.getXPos(),t.getYPos());
+                if(!(t.getName().equals("Alaska") || t.getName().equals("Kamchatka"))){//special Alaska/Kamchatka case where we don't draw line
+                    g2.drawLine(tempTerritory.getXPos(),tempTerritory.getYPos(),t.getXPos(),t.getYPos());
+                }
             }
         }
 
