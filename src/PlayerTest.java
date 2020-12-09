@@ -13,7 +13,7 @@ public class PlayerTest {
 
     @org.junit.Before
     public void setUp() throws Exception {
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         rg = new RiskGame(true, false);
     }
 

@@ -33,22 +33,28 @@ public class RiskMap {
     private static java.util.Map<Territory, Continent> territoryContinentMap;
     private static ArrayList<Territory> territories;
     private static ArrayList<Continent> continents;
-    private String mapPath;
+    private static String mapPath;
+
+    //variables used for testing purposes
+    private boolean mapWasValid;
+    private boolean testingMapWasOverrided;
+
 
     /**
      * Constructor of the RiskMap class. It initializes all the field values and invokes the createMap() method that initializes
      * the Risk Map.
      * @param testing Boolean that restricts initialization of the normal Risk map when testing, allows otherwise.
      */
-    public RiskMap(boolean testing) {
+    public RiskMap(boolean testing, boolean testingOverrideMapFilePath) {
         territoryMap = new HashMap<>();
         territoryContinentMap = new HashMap<>();
         continents = new ArrayList<Continent>();
         territories = new ArrayList<Territory>();
+        this.testingMapWasOverrided = testingOverrideMapFilePath;
         if (!testing) {
             try{
                 //first create the map
-                createMap();
+                createMap(testingOverrideMapFilePath);
 
                 //then validate it
                 validateMap();
@@ -67,6 +73,7 @@ public class RiskMap {
      */
     private void selectMapPath(){
         JOptionPane.showMessageDialog(null, "Please select a map from maps folder (included in zip submission)");
+        mapPath = "";
         while(mapPath.equals("")){
             // create an object of JFileChooser class
             JFileChooser j = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
@@ -97,12 +104,15 @@ public class RiskMap {
      *
      * jar file was downloaded from https://mvnrepository.com/artifact/org.json/json
      */
-    private void createMap() throws IOException, ParseException {
-        //make user choose a json file to load the custom map from
-        //selectMapPath();
+    private void createMap(boolean testingOverrideMapFilePath) throws IOException, ParseException {
+        //not the special testing case where the mapPath was set directly
+        if(!testingOverrideMapFilePath){
+            //make user choose a json file to load the custom map from
+            //selectMapPath();
 
-        //todo, remove hard coded path before final submission
-        mapPath = "maps/sample_map_1";
+            //todo, remove hard coded path before final submission
+            mapPath = "maps/sample_map_1";
+        }
 
         //create JSONObject jo based on the file path mapPath
         Object obj = new JSONParser().parse(new FileReader(mapPath));
@@ -212,7 +222,6 @@ public class RiskMap {
         }
     }
 
-
     /**
      * STEP 3, link the territories to their respective continents
      */
@@ -268,9 +277,6 @@ public class RiskMap {
         }
     }
 
-
-
-
     /**
      * STEP 4, link the territories to themselves/ set territory adjacencies
      */
@@ -294,7 +300,6 @@ public class RiskMap {
             itr = ((Map) territoryToTerritoryItr.next()).entrySet().iterator();
             while (itr.hasNext()) {
                 Map.Entry pair = itr.next();
-                System.out.println(pair.getKey() + " : " + pair.getValue());
 
                 if (pair.getKey().equals("territory")) {
                     tempTerritoryName = (String) pair.getValue();
@@ -326,7 +331,6 @@ public class RiskMap {
         }
     }
 
-
     /**
      * Validates the custom map that was loaded from a json file by doing a depth first search
      * starting at the territory that was first added to territories in map creation.
@@ -334,14 +338,23 @@ public class RiskMap {
     private void validateMap(){
         ArrayList<Territory> visitedTerritories = new ArrayList<Territory>();
         recursiveDepthFirstSearchOnTerritories(territories.get(0), visitedTerritories);
-        //after calling recursiveDepthFirstSearchOnFriendlyTerritories, validChoices contains all the visited Territories
+        //after calling recursiveDepthFirstSearchOnFriendlyTerritories, visitedTerritories contains all the visited Territories
 
         //if the visitedTerritories does not contain all the original territories exit program
         if(! territories.equals(visitedTerritories)){
-            JOptionPane.showMessageDialog(null, "Selected custom map is not valid");
-            System.exit(0);
+            if(!testingMapWasOverrided){
+                JOptionPane.showMessageDialog(null, "Selected custom map is not valid");
+                System.exit(0);
+            }else{
+                mapWasValid = false;
+            }
+        //else it was valid
         }else{
-            System.out.println("map is valid");
+            if(!testingMapWasOverrided){
+                System.out.println("map is valid");
+            }else{
+                mapWasValid = true;
+            }
         }
     }
 
@@ -429,6 +442,23 @@ public class RiskMap {
     public static void addContinent(Territory territory, Continent continent) {
         territoryContinentMap.put(territory, continent);
         continents.add(continent);
+    }
+
+    /**
+     * Method user during testing that overrides the mapPath variables.
+     * @param newMapPath The new map path.
+     */
+    public static void overrideMapPath(String newMapPath){
+        mapPath = newMapPath;
+    }
+
+    /**
+     * Method user during testing that returns whether or not the map
+     * generated was valid.
+     * @return  whether or not map was valid.
+     */
+    public boolean wasMapValid(){
+        return this.mapWasValid;
     }
 }
 

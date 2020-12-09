@@ -135,7 +135,7 @@ public class RiskGameTest implements RiskView {
     @Test
     public void testPassTurn() {
         rg = new RiskGame(true, false);
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         Player player1 = new Player("Player1", rg);
         Player player2 = new Player("Player2", rg);
         Player player3 = new Player("Player3", rg);
@@ -213,7 +213,7 @@ public class RiskGameTest implements RiskView {
     @Test
     public void testSetAttackDice() {
         rg = new RiskGame(true, false);
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         Player player1 = new Player("Player1", rg);
         Territory territory1 = new Territory("Territory1", 0, 0);
         territory1.setArmies(1);
@@ -242,7 +242,7 @@ public class RiskGameTest implements RiskView {
     @Test
     public void testSetDefendDice() {
         rg = new RiskGame(true, false);
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         Player player1 = new Player("Player1", rg);
         Territory territory1 = new Territory("Territory1", 0, 0);
         territory1.setArmies(1);
@@ -326,7 +326,7 @@ public class RiskGameTest implements RiskView {
     @Test
     public void testMove() {
         rg = new RiskGame(true, false);
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         Player player1 = new Player("Player1", rg);
         Player player2 = new Player("Player2", rg);
         rg.addPlayer(player1);
@@ -392,7 +392,7 @@ public class RiskGameTest implements RiskView {
     @Test
     public void testBattleNoDeathAttackerLoss1() {
         rg = new RiskGame(false, true);
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         Player player1 = new Player("Player1", rg);
         Player player2 = new Player("Player2", rg);
         rg.addPlayer(player1);
@@ -448,7 +448,7 @@ public class RiskGameTest implements RiskView {
     @Test
     public void testBattleNoDeathDefenderLoss() {
         rg = new RiskGame(false, true);
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         Player player1 = new Player("Player1", rg);
         Player player2 = new Player("Player2", rg);
         rg.addPlayer(player1);
@@ -504,7 +504,7 @@ public class RiskGameTest implements RiskView {
     @Test
     public void testBattleDeathChooseMove() {
         rg = new RiskGame(false, true);
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         Player player1 = new Player("Player1", rg);
         Player player2 = new Player("Player2", rg);
         rg.addPlayer(player1);
@@ -561,7 +561,7 @@ public class RiskGameTest implements RiskView {
     @Test
     public void testPlayerElimination() {
         rg = new RiskGame(false, true);
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         Player player1 = new Player("Player1", rg);
         Player player2 = new Player("Player2", rg);
         Player player3 = new Player("Player3", rg);
@@ -632,7 +632,7 @@ public class RiskGameTest implements RiskView {
     @Test
     public void testGameOver() {
         rg = new RiskGame(false, true);
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         Player player1 = new Player("Player1", rg);
         Player player2 = new Player("Player2", rg);
         rg.addPlayer(player1);
@@ -689,7 +689,7 @@ public class RiskGameTest implements RiskView {
     public void testCalculateArmiesToDeploy1(){
         rg = new RiskGame(true, true);
         Player player1 = new Player("Player1", rg);
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         rg.addPlayer(player1);
         rg.addView(this);
 
@@ -710,7 +710,7 @@ public class RiskGameTest implements RiskView {
     public void testCalculateArmiesToDeploy2(){
         rg = new RiskGame(true, true);
         Player player1 = new Player("Player1", rg);
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         rg.addPlayer(player1);
         rg.addView(this);
 
@@ -725,7 +725,7 @@ public class RiskGameTest implements RiskView {
         Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK, 5);//value of 5
         continent1.setTerritories(territoryList);
         Continent continent2 = new Continent("Continent2", 0, 0, Color.BLACK, 0);//value of 0
-        continent1.setTerritories(territoryList);
+        continent2.setTerritories(territoryList);
         RiskMap.addContinent(territory1, continent1);
         RiskMap.addContinent(territory2, continent2);
         RiskMap.addContinent(territory3, continent2);
@@ -743,7 +743,7 @@ public class RiskGameTest implements RiskView {
     public void testCalculateArmiesToDeploy3(){
         rg = new RiskGame(true, true);
         Player player1 = new Player("Player1", rg);
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         rg.addPlayer(player1);
         rg.addView(this);
 
@@ -758,7 +758,7 @@ public class RiskGameTest implements RiskView {
     public void testDeployScenario(){
         rg = new RiskGame(true, true);
         Player player1 = new Player("Player1", rg);
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         rg.addPlayer(player1);
         rg.addView(this);
 
@@ -788,7 +788,7 @@ public class RiskGameTest implements RiskView {
     public void testFortifyScenario(){
         rg = new RiskGame(true, true);
         Player player1 = new Player("Player1", rg);
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         rg.addPlayer(player1);
         rg.addView(this);
 

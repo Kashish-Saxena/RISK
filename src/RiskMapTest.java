@@ -10,7 +10,7 @@ public class RiskMapTest {
 
     @Test
     public void testGetTerritoryFromString() {
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         Territory territory1 = new Territory("Territory1", 0, 0);
         RiskMap.addTerritory(territory1);
         assertEquals(territory1, RiskMap.getTerritoryFromString("Territory1"));
@@ -18,7 +18,7 @@ public class RiskMapTest {
 
     @Test
     public void testGetTerritoryFromIndex() {
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         Territory territory1 = new Territory("Territory1", 0, 0);
         RiskMap.addTerritory(territory1);
         assertEquals(territory1, RiskMap.getTerritoryFromIndex(0));
@@ -30,7 +30,7 @@ public class RiskMapTest {
 
     @Test
     public void testGetContinentFromTerritory() {
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         Territory territory1 = new Territory("Territory1", 0, 0);
         Territory territory2 = new Territory("Territory2", 0, 0);
         List<Territory> territoryList = new ArrayList<>();
@@ -49,7 +49,7 @@ public class RiskMapTest {
 
     @Test
     public void testNumTerritories() {
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         Territory territory1 = new Territory("Territory1", 0, 0);
         Territory territory2 = new Territory("Territory2", 0, 0);
 
@@ -62,7 +62,7 @@ public class RiskMapTest {
 
     @Test
     public void testGetTerritoryMap() {
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         Territory territory1 = new Territory("Territory1", 0, 0);
         Territory territory2 = new Territory("Territory2", 0, 0);
         Map territoryMap = new HashMap<>();
@@ -80,7 +80,7 @@ public class RiskMapTest {
 
     @Test
     public void testGetContinentArrayList() {
-        RiskMap rm = new RiskMap(true);
+        RiskMap rm = new RiskMap(true, false);
         Territory territory1 = new Territory("Territory1", 0, 0);
         Territory territory2 = new Territory("Territory2", 0, 0);
         List<Territory> continent1Territories = new ArrayList<>();
@@ -102,5 +102,19 @@ public class RiskMapTest {
         RiskMap.addContinent(territory2, continent2);
         continentList.add(continent2);
         assertEquals(continentList, RiskMap.getContinentsArrayList());
+    }
+
+    @Test
+    public void testValidMapGeneration() {
+        RiskMap.overrideMapPath("maps/sample_map_1");
+        RiskMap rm = new RiskMap(false, true);
+        assertTrue(rm.wasMapValid());
+    }
+
+    @Test
+    public void testInvalidMapGeneration() {
+        RiskMap.overrideMapPath("maps/sample_invalid_map_1");
+        RiskMap rm = new RiskMap(false, true);
+        assertFalse(rm.wasMapValid());
     }
 }
