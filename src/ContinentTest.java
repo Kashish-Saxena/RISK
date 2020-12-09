@@ -17,6 +17,7 @@ public class ContinentTest {
     @Test
     public void testGetTerritoriesEmpty() {
         Continent continent1 = new Continent("Continent1", 0, 0, Color.BLACK,0);
+        continent1.setTerritories(  new ArrayList<Territory>()) ;
         assertArrayEquals((new ArrayList<Territory>()).toArray(), continent1.getTerritories().toArray());
     }
 

@@ -359,7 +359,7 @@ public class RiskFrame extends JFrame implements RiskView {
      * Constructors of RIskMap and RiskFrame will then take care of everything else.
      */
     public static void main(String[] args) {
-        RiskMap riskMap = new RiskMap(false);
+        RiskMap riskMap = new RiskMap(false, false);
         RiskFrame rf = new RiskFrame(riskMap);
     }
 }
