@@ -1,6 +1,7 @@
 
 import java.awt.*;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.*;
 import java.io.FileReader;
 import java.util.Iterator;
@@ -27,7 +28,7 @@ import javax.swing.filechooser.FileSystemView;
  *
  */
 
-public class RiskMap {
+public class RiskMap implements Serializable {
 
     private static java.util.Map<String, Territory> territoryMap;
     private static java.util.Map<Territory, Continent> territoryContinentMap;

@@ -14,7 +14,7 @@ import java.util.List;
  * @author David Sciola - 101082459 and Kevin Quach - 101115704
  * @version November 23, 2020
  */
-public class Territory {
+public class Territory implements Serializable {
 
     private String name;
     private Player owner;

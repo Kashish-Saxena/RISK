@@ -11,7 +11,7 @@ import java.util.Observable;
  * @author David Sciola - 101082459, Kevin Quach - 101115704 and Kashish Saxena - 101107204
  * @version November 23, 2020
  */
-public class Player extends Observable {
+public class Player extends Observable implements Serializable {
 
     private final String name;
     private List<Territory> ownedTerritories;

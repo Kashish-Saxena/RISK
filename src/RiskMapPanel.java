@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -20,7 +21,7 @@ import java.util.List;
  * @version November 23, 2020
  */
 
-public class RiskMapPanel extends JPanel implements RiskView {
+public class RiskMapPanel extends JPanel implements RiskView, Serializable {
     private RiskMap riskMap;
     private BufferedImage image;
     private List<JButton> territoryButtons;

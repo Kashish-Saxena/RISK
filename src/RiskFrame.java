@@ -12,7 +12,7 @@ import java.util.List;
  * @version November 23, 2020
  */
 
-public class RiskFrame extends JFrame implements RiskView {
+public class RiskFrame extends JFrame implements RiskView, Serializable {
 
     private RiskGame rg;
     private RiskMapPanel mapPanel;

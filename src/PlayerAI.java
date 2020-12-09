@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerAI extends Player {
+public class PlayerAI extends Player implements Serializable {
     
     /**
      * Constructor of the PlayerAI class. It has no further purpose than the constructor for Player.
