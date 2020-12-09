@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -11,7 +12,7 @@ import java.util.*;
  * @version November 23, 2020
  */
 
-public class RiskGame implements Observer {
+public class RiskGame implements Observer, Serializable {
 
     private List<Player> players;
     private int currentPlayerIndex;
@@ -815,5 +816,35 @@ public class RiskGame implements Observer {
     public void cancelAttack() {
         phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
         notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
+    }
+
+    // Serializing RiskGame
+    public void serializeRiskGame (String filename){
+        try {
+            FileOutputStream fileOut = new FileOutputStream(filename);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(this);
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Deserializing RiskGame
+    public RiskGame deserializeRiskGame(String filepath) {
+        try {
+            FileInputStream fileIn = new FileInputStream(filepath);
+            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+
+            RiskGame game = (RiskGame) objectIn.readObject();
+            objectIn.close();
+            return game;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 }

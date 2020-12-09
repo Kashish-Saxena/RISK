@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -8,7 +9,7 @@ import java.util.List;
  * @author David Sciola - 101082459 and Kevin Quach - 101115704
  * @version November 23, 2020
  */
-public class Continent {
+public class Continent implements Serializable {
 
     private String name;
     private List<Territory> territories;
