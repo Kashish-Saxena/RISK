@@ -27,6 +27,20 @@ public class RiskMapController implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         Territory territory = RiskMap.getTerritoryFromString(e.getActionCommand());
-        rg.processTerritory(territory);
+        if (rg.getPhase() == TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO) {
+            rg.setDeployTerritory(territory);
+        }
+        else if (rg.getPhase() == TurnPhase.ATTACK_CHOOSE_ATTACKERS) {
+            rg.setAttackerTerritory(territory);
+        }
+        else if (rg.getPhase() == TurnPhase.ATTACK_CHOOSE_ENEMY) {
+            rg.setEnemyTerritory(territory);
+        }
+        else if (rg.getPhase() == TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY) {
+            rg.setFortifierTerritory(territory);
+        }
+        else if (rg.getPhase() == TurnPhase.FORTIFY_CHOOSE_TO_TERRITORY) {
+            rg.setFortifiedTerritory(territory);
+        }
     }
 }
