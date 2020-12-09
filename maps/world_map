@@ -1,0 +1,325 @@
+{
+  "territories": [
+    {
+      "name": "Alaska",
+      "xPos": 80,
+      "yPos": 100
+    },
+    {
+      "name": "Alberta",
+      "xPos": 140,
+      "yPos": 170
+    },
+    {
+      "name": "Cnt America",
+      "xPos": 170,
+      "yPos": 225
+    },
+    {
+      "name": "Eastern US",
+      "xPos": 280,
+      "yPos": 265
+    },
+    {
+      "name": "Greenland",
+      "xPos": 400,
+      "yPos": 40
+    },
+    {
+      "name": "NW Territory",
+      "xPos": 200,
+      "yPos": 100
+    },
+    {
+      "name": "Ontario",
+      "xPos": 270,
+      "yPos": 190
+    },
+    {
+      "name": "Quebec",
+      "xPos": 350,
+      "yPos": 140
+    },
+    {
+      "name": "Western US",
+      "xPos": 190,
+      "yPos": 310
+    },
+    {
+      "name": "Argentina",
+      "xPos": 300,
+      "yPos": 550
+    },
+    {
+      "name": "Brazil",
+      "xPos": 400,
+      "yPos": 460
+    },
+    {
+      "name": "Peru",
+      "xPos": 270,
+      "yPos": 460
+    },
+    {
+      "name": "Venezuela",
+      "xPos": 280,
+      "yPos": 370
+    },
+    {
+      "name": "Great Britain",
+      "xPos": 450,
+      "yPos": 190
+    },
+    {
+      "name": "Iceland",
+      "xPos": 480,
+      "yPos": 130
+    },
+    {
+      "name": "Northern EU",
+      "xPos": 580,
+      "yPos": 200
+    },
+    {
+      "name": "Scandinavia",
+      "xPos": 600,
+      "yPos": 110
+    },
+    {
+      "name": "Southern EU",
+      "xPos": 600,
+      "yPos": 255
+    },
+    {
+      "name": "Ukraine",
+      "xPos": 700,
+      "yPos": 170
+    },
+    {
+      "name": "Western EU",
+      "xPos": 510,
+      "yPos": 300
+    },
+    {
+      "name": "Congo",
+      "xPos": 635,
+      "yPos": 505
+    },
+    {
+      "name": "East Africa",
+      "xPos": 700,
+      "yPos": 460
+    },
+    {
+      "name": "Egypt",
+      "xPos": 635,
+      "yPos": 370
+    },
+    {
+      "name": "Madagascar",
+      "xPos": 755,
+      "yPos": 585
+    },
+    {
+      "name": "North Africa",
+      "xPos": 510,
+      "yPos": 390
+    },
+    {
+      "name": "South Africa",
+      "xPos": 635,
+      "yPos": 570
+    },
+    {
+      "name": "Afghanistan",
+      "xPos": 750,
+      "yPos": 225
+    },
+    {
+      "name": "China",
+      "xPos": 915,
+      "yPos": 300
+    },
+    {
+      "name": "India",
+      "xPos": 850,
+      "yPos": 370
+    },
+    {
+      "name": "Irkutsk",
+      "xPos": 950,
+      "yPos": 170
+    },
+    {
+      "name": "Japan",
+      "xPos": 1100,
+      "yPos": 225
+    },
+    {
+      "name": "Kamchatka",
+      "xPos": 1050,
+      "yPos": 90
+    },
+    {
+      "name": "Middle East",
+      "xPos": 700,
+      "yPos": 310
+    },
+    {
+      "name": "Mongolia",
+      "xPos": 925,
+      "yPos": 225
+    },
+    {
+      "name": "Siam",
+      "xPos": 980,
+      "yPos": 385
+    },
+    {
+      "name": "Siberia",
+      "xPos": 870,
+      "yPos": 90
+    },
+    {
+      "name": "Ural",
+      "xPos": 825,
+      "yPos": 170
+    },
+    {
+      "name": "Yakutsk",
+      "xPos": 950,
+      "yPos": 50
+    },
+    {
+      "name": "Eastern AUS",
+      "xPos": 1125,
+      "yPos": 570
+    },
+    {
+      "name": "Indonesia",
+      "xPos": 945,
+      "yPos": 485
+    },
+    {
+      "name": "New Guinea",
+      "xPos": 1100,
+      "yPos": 460
+    },
+    {
+      "name": "Western AUS",
+      "xPos": 1000,
+      "yPos": 570
+    }
+  ],
+
+  "continents": [
+    {
+      "name": "North America",
+      "xPos": 20,
+      "yPos": 225,
+      "red": 255,
+      "green": 255,
+      "blue": 0,
+      "value": 5
+    },
+    {
+      "name": "South America",
+      "xPos": 100,
+      "yPos": 460,
+      "red": 255,
+      "green": 50,
+      "blue": 50,
+      "value": 2
+    },
+    {
+      "name": "Europe",
+      "xPos": 600,
+      "yPos": 30,
+      "red": 100,
+      "green": 170,
+      "blue": 250,
+      "value": 5
+    },
+    {
+      "name": "Africa",
+      "xPos": 495,
+      "yPos": 505,
+      "red": 255,
+      "green": 150,
+      "blue": 50,
+      "value": 3
+    },
+    {
+      "name": "Asia",
+      "xPos": 1100,
+      "yPos": 300,
+      "red": 100,
+      "green": 250,
+      "blue": 100,
+      "value": 7
+    },
+    {
+      "name": "Australia",
+      "xPos": 1100,
+      "yPos": 385,
+      "red": 250,
+      "green": 100,
+      "blue": 250,
+      "value": 2
+    }
+  ],
+
+  "territoriesInContinents": [
+    {"continent": "North America", "territories": "Alaska,Alberta,Cnt America,Eastern US,Greenland,NW Territory,Ontario,Quebec,Western US"},
+    {"continent": "South America", "territories": "Argentina,Brazil,Peru,Venezuela"},
+    {"continent": "Europe", "territories": "Great Britain,Iceland,Northern EU,Scandinavia,Southern EU,Ukraine,Western EU"},
+    {"continent": "Africa", "territories": "Congo,East Africa,Egypt,Madagascar,North Africa,South Africa"},
+    {"continent": "Asia", "territories": "Afghanistan,China,India,Irkutsk,Japan,Kamchatka,Middle East,Mongolia,Siam,Siberia,Ural,Yakutsk"},
+    {"continent": "Australia", "territories": "Eastern AUS,Indonesia,New Guinea,Western AUS"}
+  ],
+
+  "territoryAdjacencies": [
+    {"territory": "Alaska", "territories": "Alberta,NW Territory,Kamchatka"},
+    {"territory": "Alberta", "territories": "Alaska,NW Territory,Ontario,Cnt America"},
+    {"territory": "Cnt America", "territories": "Alberta,Eastern US,Western US"},
+    {"territory": "Eastern US", "territories": "Cnt America,Western US,Ontario,Quebec"},
+    {"territory": "Greenland", "territories": "NW Territory,Ontario,Quebec,Iceland"},
+    {"territory": "NW Territory", "territories": "Alaska,Alberta,Ontario,Greenland"},
+    {"territory": "Ontario", "territories": "Alberta,NW Territory,Eastern US,Quebec,Greenland"},
+    {"territory": "Quebec", "territories": "Greenland,Ontario,Eastern US"},
+    {"territory": "Western US", "territories": "Eastern US,Cnt America,Venezuela"},
+    {"territory": "Argentina", "territories": "Brazil,Peru"},
+    {"territory": "Brazil", "territories": "Venezuela,Peru,Argentina,North Africa"},
+    {"territory": "Peru", "territories": "Venezuela,Brazil,Argentina"},
+    {"territory": "Venezuela", "territories": "Brazil,Peru,Western US"},
+    {"territory": "Great Britain", "territories": "Iceland,Scandinavia,Northern EU,Western EU"},
+    {"territory": "Iceland", "territories": "Greenland,Scandinavia,Great Britain"},
+    {"territory": "Northern EU", "territories": "Scandinavia,Great Britain,Western EU,Southern EU,Ukraine"},
+    {"territory": "Scandinavia", "territories": "Iceland,Great Britain,Northern EU,Ukraine"},
+    {"territory": "Southern EU", "territories": "Northern EU,Western EU,Ukraine,North Africa,Egypt,Middle East"},
+    {"territory": "Ukraine", "territories": "Scandinavia,Northern EU,Southern EU,Middle East,Afghanistan,Ural"},
+    {"territory": "Western EU", "territories": "Great Britain,Northern EU,Southern EU,North Africa"},
+    {"territory": "Congo", "territories": "South Africa,East Africa,North Africa"},
+    {"territory": "East Africa", "territories": "Congo,South Africa,Madagascar,North Africa,Egypt,Middle East"},
+    {"territory": "Egypt", "territories": "North Africa,East Africa,Middle East,Southern EU"},
+    {"territory": "Madagascar", "territories": "East Africa,South Africa"},
+    {"territory": "North Africa", "territories": "Brazil,Western EU,Southern EU,Egypt,East Africa,Congo"},
+    {"territory": "South Africa", "territories": "Congo,East Africa,Madagascar"},
+    {"territory": "Afghanistan", "territories": "Ukraine,Ural,China,India,Middle East"},
+    {"territory": "China", "territories": "Ural,Afghanistan,India,Siam,Mongolia,Siberia"},
+    {"territory": "India", "territories": "Siam,China,Afghanistan,Middle East"},
+    {"territory": "Irkutsk", "territories": "Kamchatka,Yakutsk,Siberia,Mongolia"},
+    {"territory": "Japan", "territories": "Kamchatka,Mongolia"},
+    {"territory": "Kamchatka", "territories": "Alaska,Yakutsk,Irkutsk,Mongolia,Japan"},
+    {"territory": "Middle East", "territories": "India,Afghanistan,Ukraine,Southern EU,Egypt,East Africa"},
+    {"territory": "Mongolia", "territories": "Japan,Irkutsk,Kamchatka,Siberia,China"},
+    {"territory": "Siam", "territories": "China,India,Indonesia"},
+    {"territory": "Siberia", "territories": "Yakutsk,Irkutsk,Mongolia,China,Ural"},
+    {"territory": "Ural", "territories": "Siberia,China,Afghanistan,Ukraine"},
+    {"territory": "Yakutsk", "territories": "Kamchatka,Irkutsk,Siberia"},
+    {"territory": "Eastern AUS", "territories": "New Guinea,Western AUS"},
+    {"territory": "Indonesia", "territories": "Siam,New Guinea,Western AUS"},
+    {"territory": "New Guinea", "territories": "Eastern AUS,Indonesia,Western AUS"},
+    {"territory": "Western AUS", "territories": "Indonesia,Eastern AUS,New Guinea"}
+  ]
+}
