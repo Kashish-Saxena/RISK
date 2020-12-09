@@ -724,6 +724,14 @@ public class RiskGame implements Observer {
     public void addPlayer(Player player) {
         players.add(player);
     }
+
+    /**
+     * Returns the TurnPhase of the player.
+     * @return The TurnPhase of the player.
+     */
+    public TurnPhase getPhase() {
+        return phase;
+    }
     //below methods are for testing only
 
     /**
@@ -737,15 +745,7 @@ public class RiskGame implements Observer {
         }
     }
 
-    /**
-     * Returns the TurnPhase of the player.
-     * @return The TurnPhase of the player.
-     */
-    public TurnPhase getPhase() {
-        //if (testing || testingGame) { //this shouldn't be used, use the RiskEvent
-            return phase;
-        //}
-    }
+
 
     /**
      * Sets the TurnPhase of the player.
