@@ -50,7 +50,7 @@ public class RiskMap {
                 //first create the map
                 createMap();
 
-                //the validate it
+                //then validate it
                 validateMap();
             }
             catch(Exception e){
@@ -62,7 +62,8 @@ public class RiskMap {
     }
 
     /**
-     * Makes user select the json file to use for the custom map.
+     * Makes user select the json file to use for the custom map using the swing file chooser.
+     * Once the user selects a file its path is stored in mapPath
      */
     private void selectMapPath(){
         JOptionPane.showMessageDialog(null, "Please select a map from maps folder (included in zip submission)");
@@ -89,54 +90,53 @@ public class RiskMap {
 
     /**
      * Instantiates territories, continents and set adjacent territories connections.
+     * This is done by parsing a json file which contains the required information to load
+     * a custom map. Note that custom maps are located within the "maps" folder (included in zip submission)
+     * and note that the JSON parsing is done using an external java library and the java library was
+     * included within the "json external library" folder
+     *
+     * jar file was downloaded from https://mvnrepository.com/artifact/org.json/json
      */
     private void createMap() throws IOException, ParseException {
-
-        //note that JSON parsing is done using an external java library
-        //the java library was included within the "json external library" folder
-        //jar file was downloaded from https://mvnrepository.com/artifact/org.json/json
-
-        //first make user select the json file containing the custom map to load
-        //custom maps are also located within the "maps" folder (included in zip submission)
-        String mapPath = "";
+        //make user choose a json file to load the custom map from
+        //selectMapPath();
 
         //todo, remove hard coded path before final submission
-        //selectMapPath();
-        mapPath = "maps/test_invalid_json";
+        mapPath = "maps/sample_map_1";
 
-
-
-
-        //parsing file "JSONExample.json"
+        //create JSONObject jo based on the file path mapPath
         Object obj = new JSONParser().parse(new FileReader(mapPath));
-
-        //typecasting obj to JSONObject
         JSONObject jo = (JSONObject) obj;
 
-        Iterator<Map.Entry> itr1;
+        //invoke steps 1, 2, 3 and 4 to create the map
+        createTerritories(jo);//STEP 1
+        createContinents(jo);//STEP 2
+        linkContinentsAndTerritories(jo);//STEP 3
+        linkAdjacentTerritories(jo);//STEP 4
+    }
 
-        //todo, seperate this into multiple smaller methods
-
-        //==========================================
-        //   STEP 1, create territory objects
-        //==========================================
+    /**
+     * STEP 1, create territory objects
+     */
+    private void createTerritories(JSONObject jo){
+        Iterator<Map.Entry> itr;
 
         //fetch territories from json file
         JSONArray territoriesArray = (JSONArray) jo.get("territories");
 
         //traverse territoriesArray to create all territory objects
         Iterator territoryItr = territoriesArray.iterator();
-
         while (territoryItr.hasNext()) {
+
+            //temporary variables
             String tempName = "";
             int tempXPos = 0;
             int tempYPos = 0;
 
-            itr1 = ((Map) territoryItr.next()).entrySet().iterator();
-            while (itr1.hasNext()) {
-                Map.Entry pair = itr1.next();
-                //System.out.println(pair.getKey() + " : " + pair.getValue());
-
+            //fill temporary variables
+            itr = ((Map) territoryItr.next()).entrySet().iterator();
+            while (itr.hasNext()) {
+                Map.Entry pair = itr.next();
                 if (pair.getKey().equals("name")) {
                     tempName = (String) pair.getValue();
                 } else if (pair.getKey().equals("xPos")) {
@@ -146,6 +146,7 @@ public class RiskMap {
                 }
             }
 
+            //use temporary variables to create Territory and add to territories
             Territory tempTer = new Territory(tempName,tempXPos,tempYPos);
             territories.add(tempTer);
         }
@@ -154,18 +155,22 @@ public class RiskMap {
         for(Territory t: territories){
             territoryMap.put(t.getName().toLowerCase(), t);
         }
+    }
 
-        //==========================================
-        //   STEP 2, create continent objects
-        //==========================================
+    /**
+     * STEP 2, create continent objects
+     */
+    private void createContinents(JSONObject jo){
+        Iterator<Map.Entry> itr;
 
         //fetch territories from json file
         JSONArray continentArray = (JSONArray) jo.get("continents");
 
         //traverse territoriesArray to create all territory objects
         Iterator continentItr = continentArray.iterator();
-
         while (continentItr.hasNext()) {
+
+            //temporary variables
             String tempName = "";
             int tempXPos = 0;
             int tempYPos = 0;
@@ -174,11 +179,10 @@ public class RiskMap {
             int tempBlue = 0;
             int tempVal = 0;
 
-            itr1 = ((Map) continentItr.next()).entrySet().iterator();
-            while (itr1.hasNext()) {
-                Map.Entry pair = itr1.next();
-                //System.out.println(pair.getKey() + " : " + pair.getValue());
-
+            //fill temporary variables
+            itr = ((Map) continentItr.next()).entrySet().iterator();
+            while (itr.hasNext()) {
+                Map.Entry pair = itr.next();
                 if(pair.getKey().equals("name")){
                     tempName = (String)pair.getValue();
                 }
@@ -202,50 +206,51 @@ public class RiskMap {
                 }
             }
 
+            //use temporary variables to create continent and add to continents
             Continent tempContinent = new Continent(tempName, tempXPos, tempYPos, new Color(tempRed,tempGreen,tempBlue), tempVal);
             continents.add(tempContinent);
         }
+    }
 
 
-        //==========================================
-        // STEP 3, link continents to territories
-        //==========================================
+    /**
+     * STEP 3, link the territories to their respective continents
+     */
+    private void linkContinentsAndTerritories(JSONObject jo){
+        Iterator<Map.Entry> itr;
 
         //fetch territoriesInContinents from json file
         JSONArray territoriesInContinentsArray = (JSONArray) jo.get("territoriesInContinents");
 
         //traverse territoriesArray to create all territory objects
         Iterator territoryToContinentItr = territoriesInContinentsArray.iterator();
-
         while (territoryToContinentItr.hasNext()) {
+
+            //temporary variables
             String tempContinentName = "";
             String tempTerritories = "";
-
             Continent tempContinent = null;
             List<Territory> territoriesInContinent = new ArrayList<Territory>();
 
-
-            itr1 = ((Map) territoryToContinentItr.next()).entrySet().iterator();
-            while (itr1.hasNext()) {
-                Map.Entry pair = itr1.next();
-                //System.out.println(pair.getKey() + " : " + pair.getValue());
-
+            //fill tempContinentName and tempTerritories
+            itr = ((Map) territoryToContinentItr.next()).entrySet().iterator();
+            while (itr.hasNext()) {
+                Map.Entry pair = itr.next();
                 if (pair.getKey().equals("continent")) {
                     tempContinentName = (String) pair.getValue();
                 } else if (pair.getKey().equals("territories")) {
                     tempTerritories = (String) pair.getValue();
                 }
-
             }
 
-            //find the continent object with matching name in continents
+            //use tempContinentName to find the continent object with matching name in continents
             for(Continent c: continents){
                 if(c.toString().equals(tempContinentName)){
                     tempContinent = c;
                 }
             }
 
-            //find all territory objects with matching names in territories
+            //use tempTerritories to find all territory objects with matching names in territories
             String[] parts = tempTerritories.split(",");
             for (String terrName : parts) {
                 for (Territory t : territories) {
@@ -253,7 +258,6 @@ public class RiskMap {
                         territoriesInContinent.add(t);
                     }
                 }
-
             }
 
             //finally add the territories to the continent
@@ -262,28 +266,34 @@ public class RiskMap {
             //also add all continent to territoryContinentMap hash map
             for(Territory t: tempContinent.getTerritories()){ territoryContinentMap.put(t, tempContinent); }
         }
+    }
 
 
-        //==========================================
-        //   STEP 4, link adjacent territories
-        //==========================================
+
+
+    /**
+     * STEP 4, link the territories to themselves/ set territory adjacencies
+     */
+    private void linkAdjacentTerritories(JSONObject jo){
+        Iterator<Map.Entry> itr;
+
         //fetch territoriesInContinents from json file
         JSONArray territoryAdjacencyArray = (JSONArray) jo.get("territoryAdjacencies");
 
         //traverse territoriesArray to create all territory objects
         Iterator territoryToTerritoryItr = territoryAdjacencyArray.iterator();
-
         while (territoryToTerritoryItr.hasNext()) {
+
+            //temporary variables
             String tempTerritoryName = "";
             String tempTerritories = "";
-
             Territory tempTerritory = null;
             List<Territory> territoriesInTerritory = new ArrayList<Territory>();
 
-
-            itr1 = ((Map) territoryToTerritoryItr.next()).entrySet().iterator();
-            while (itr1.hasNext()) {
-                Map.Entry pair = itr1.next();
+            //fill tempTerritoryName and tempTerritories
+            itr = ((Map) territoryToTerritoryItr.next()).entrySet().iterator();
+            while (itr.hasNext()) {
+                Map.Entry pair = itr.next();
                 System.out.println(pair.getKey() + " : " + pair.getValue());
 
                 if (pair.getKey().equals("territory")) {
@@ -294,14 +304,14 @@ public class RiskMap {
 
             }
 
-            //find the territory object with matching name in territories
+            //use tempTerritoryName to find the territory object with matching name in territories
             for(Territory t: territories){
                 if(t.getName().equals(tempTerritoryName)){
                     tempTerritory = t;
                 }
             }
 
-            //find all territory objects with matching names in territories
+            //use tempTerritories to find all territory objects with matching names in territories
             String[] parts = tempTerritories.split(",");
             for (String terrName : parts) {
                 for (Territory t : territories) {
@@ -309,15 +319,13 @@ public class RiskMap {
                         territoriesInTerritory.add(t);
                     }
                 }
-
             }
 
             //finally add the territories to the continent
             tempTerritory.setAdjacentTerritories(territoriesInTerritory);
-
-
         }
     }
+
 
     /**
      * Validates the custom map that was loaded from a json file by doing a depth first search
