@@ -296,15 +296,19 @@ public class RiskGame implements Observer {
                 notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
             }
             else {
-                PlayerAI player = (PlayerAI) getCurrentPlayer();
-                if (player.hasFavorableAttacks()) {
-                    setAttackerTerritory(player.getAttackingTerritory());
-                }
-                else {
-                    phase = TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY;
-                    chooseFortifyFrom();
-                }
+                aiTryAttack();
             }
+        }
+    }
+
+    private void aiTryAttack() {
+        PlayerAI player = (PlayerAI) getCurrentPlayer();
+        if (player.hasFavorableAttacks()) {
+            setAttackerTerritory(player.getAttackingTerritory());
+        }
+        else {
+            phase = TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY;
+            chooseFortifyFrom();
         }
     }
 
@@ -576,47 +580,46 @@ public class RiskGame implements Observer {
         fromTerritory.subtractArmies(attackArmyLoss);
         Player defender = toTerritory.getOwner();
         if (toTerritory.getArmies() > defendArmyLoss) { //territory not conquered
-            toTerritory.subtractArmies(defendArmyLoss);
-            notifyAllViews(new RiskEventDiceResults(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), fromTerritory, toTerritory, attackDice, defendDice, attackArmyLoss, defendArmyLoss, defender));
-            if (getCurrentPlayer().canAttack()) {
-                phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
-                if (!getCurrentPlayer().isAI()) {
-                    notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
-                }
-                else {
-                    PlayerAI player = (PlayerAI) getCurrentPlayer();
-                    if (player.hasFavorableAttacks()) {
-                        setAttackerTerritory(player.getAttackingTerritory());
-                    }
-                    else {
-                        phase = TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY;
-                        chooseFortifyFrom();
-                    }
-                }
-            }
-            else {
-                phase = TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY;
-                chooseFortifyFrom();//start fortify phase
-            }
+            battleResultsNoConquer(defender, attackArmyLoss, defendArmyLoss, attackDice, defendDice);
         }
         else { //territory conquered
-            defender.removeTerritory(toTerritory);
-            getCurrentPlayer().addTerritory(toTerritory);
-            notifyAllViews(new RiskEventContinent(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), RiskMap.getContinentFromTerritory(toTerritory)));
-
-
-            toTerritory.setArmies(0);
-            phase = TurnPhase.ATTACK_CHOOSE_MOVE;
-            notifyAllViews(new RiskEventDiceResults(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), fromTerritory, toTerritory, attackDice, defendDice, attackArmyLoss, -1, defender));
-            if (!getCurrentPlayer().isAI()) {
-                notifyAllViews(new RiskEventBounds(this, TurnPhase.ATTACK_CHOOSE_MOVE, getCurrentPlayer(), attackDiceNum, fromTerritory.getArmies() - 1));
-            }
-            else {
-                move(PlayerAI.getMoveNum(fromTerritory));
-            }
+            battleResultsConquer(defender, attackArmyLoss, attackDice, defendDice);
         }
     }
 
+    private void battleResultsNoConquer(Player defender, int attackArmyLoss, int defendArmyLoss, List<Integer> attackDice, List<Integer> defendDice) {
+        toTerritory.subtractArmies(defendArmyLoss);
+        notifyAllViews(new RiskEventDiceResults(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), fromTerritory, toTerritory, attackDice, defendDice, attackArmyLoss, defendArmyLoss, defender));
+        if (getCurrentPlayer().canAttack()) {
+            phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
+            if (!getCurrentPlayer().isAI()) {
+                notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
+            }
+            else {
+                aiTryAttack();
+            }
+        }
+        else {
+            phase = TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY;
+            chooseFortifyFrom();//start fortify phase
+        }
+    }
+
+    private void battleResultsConquer(Player defender, int attackArmyLoss, List<Integer> attackDice, List<Integer> defendDice) {
+        defender.removeTerritory(toTerritory);
+        getCurrentPlayer().addTerritory(toTerritory);
+        notifyAllViews(new RiskEventContinent(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), RiskMap.getContinentFromTerritory(toTerritory)));
+
+        toTerritory.setArmies(0);
+        phase = TurnPhase.ATTACK_CHOOSE_MOVE;
+        notifyAllViews(new RiskEventDiceResults(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), fromTerritory, toTerritory, attackDice, defendDice, attackArmyLoss, -1, defender));
+        if (!getCurrentPlayer().isAI()) {
+            notifyAllViews(new RiskEventBounds(this, TurnPhase.ATTACK_CHOOSE_MOVE, getCurrentPlayer(), attackDiceNum, fromTerritory.getArmies() - 1));
+        }
+        else {
+            move(PlayerAI.getMoveNum(fromTerritory));
+        }
+    }
     /**
      * Moves the input number of armies from attacking territory to the territory attacked.
      * @param num The number of armies to be moved.
@@ -637,14 +640,7 @@ public class RiskGame implements Observer {
                 notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
             }
             else {
-                PlayerAI player = (PlayerAI) getCurrentPlayer();
-                if (player.hasFavorableAttacks()) {
-                    setAttackerTerritory(player.getAttackingTerritory());
-                }
-                else {
-                    phase = TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY;
-                    chooseFortifyFrom();
-                }
+                aiTryAttack();
             }
         }
         else {
@@ -744,8 +740,6 @@ public class RiskGame implements Observer {
             numPlayers++;
         }
     }
-
-
 
     /**
      * Sets the TurnPhase of the player.
