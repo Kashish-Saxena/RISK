@@ -1,7 +1,12 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -15,10 +20,12 @@ import java.util.List;
 public class RiskFrame extends JFrame implements RiskView, Serializable {
 
     private RiskGame rg;
+    private RiskMap rm;
     private RiskMapPanel mapPanel;
     private JLabel turn;
     private JLabel info;
     private JButton passAndFortifyButton;
+    private JButton saveButton;
 
     /**
      * Constructor of the RiskFrame class. It initializes the field values
@@ -27,6 +34,7 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
     public RiskFrame(RiskMap riskMap, RiskGame rg) {
         super("RISK");
         this.rg = rg;
+        this.rm = riskMap;
         this.setLayout(new BorderLayout());
 
         //create a mapPanel and pass a reference to the RiskMap and RiskGame
@@ -43,9 +51,27 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
         passAndFortifyButton.setActionCommand("fortify");
         passAndFortifyButton.setEnabled(false);
 
+        saveButton = new JButton("Save game");
+        //whenever save button is clicked saveGame() method is invoked
+        saveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    saveGame();
+                }catch (Exception ex){
+                    System.out.println("something we wrong with saving");
+                    ex.printStackTrace();
+                }
+
+            }
+        } );
+
+
         buttonpanel.add(passAndFortifyButton);
+        buttonpanel.add(saveButton);
         playerInputPanel.add(turnpanel);
         playerInputPanel.add(buttonpanel);
+
+
 
         RiskFrameController rfc = new RiskFrameController(rg);
         passAndFortifyButton.addActionListener(rfc);
@@ -357,33 +383,63 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
         JOptionPane.showMessageDialog(this, message);
     }
 
-    // Serializing riskframe
-    public void serializeRiskFrame (String filename){
-        try {
-            FileOutputStream fileOut = new FileOutputStream(filename);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(this);
-            out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+//    // Serializing riskframe
+//    public void serializeRiskFrame (String filename){
+//        try {
+//            FileOutputStream fileOut = new FileOutputStream(filename);
+//            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+//            out.writeObject(this);
+//            out.close();
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    //Deserializing riskframe
+//    public RiskFrame deserializeRiskFrame(String filepath) {
+//        try {
+//            FileInputStream fileIn = new FileInputStream(filepath);
+//            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+//
+//            RiskFrame rf = (RiskFrame) objectIn.readObject();
+//            objectIn.close();
+//            return rf;
+//
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            return null;
+//        }
+//    }
+
+
+    private void saveGame() throws IOException {
+        System.out.println("ENTERING SAVE GAME");
+
+        //todo, maybe move this saving code to RiskInitializer
+
+        //prompt user for save file name
+        String saveName = "";
+        while (saveName == null || saveName.equals("")) {
+            saveName = JOptionPane.showInputDialog("Enter a save name:");
         }
-    }
 
-    //Deserializing riskframe
-    public RiskFrame deserializeRiskFrame(String filepath) {
-        try {
-            FileInputStream fileIn = new FileInputStream(filepath);
-            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+        //create saves folder
+//        String fileName = "/saves";
+//        Path path = Paths.get(fileName);
+//
+//        if (!Files.exists(path)) {
+//            Files.createDirectory(path);
+//            System.out.println("saves directory created");
+//        } else {
+//            System.out.println("saves directory already exists");
+//        }
 
-            RiskFrame rf = (RiskFrame) objectIn.readObject();
-            objectIn.close();
-            return rf;
+        //serialize RiskGame
+        this.rg.serializeRiskGame(saveName);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
+        //serialize RiskMap
+        this.rm.serializeRiskMap(saveName);
     }
 }

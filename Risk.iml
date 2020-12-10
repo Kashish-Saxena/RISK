@@ -33,24 +33,5 @@
         <jarDirectory url="file://$MODULE_DIR$/json external library" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES />
-        <JAVADOC />
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/maps" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <ANNOTATIONS>
-          <root url="file://$MODULE_DIR$/maps" />
-        </ANNOTATIONS>
-        <CLASSES />
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
   </component>
 </module>

@@ -821,7 +821,7 @@ public class RiskGame implements Observer, Serializable {
     // Serializing RiskGame
     public void serializeRiskGame (String filename){
         try {
-            FileOutputStream fileOut = new FileOutputStream(filename);
+            FileOutputStream fileOut = new FileOutputStream("saves/" + filename + "_rg");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(this);
             out.close();

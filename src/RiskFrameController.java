@@ -1,5 +1,6 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Serializable;
 
 /**
  * RiskFrameController class controls the Pass JButton on the JFrame.
@@ -8,7 +9,7 @@ import java.awt.event.ActionListener;
  * @version November 23, 2020
  */
 
-public class RiskFrameController implements ActionListener {
+public class RiskFrameController implements ActionListener, Serializable {
     private RiskGame rg;
 
     /**
