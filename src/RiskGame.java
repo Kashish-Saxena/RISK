@@ -23,6 +23,7 @@ public class RiskGame implements Observer, Serializable {
     private Territory deployTerritory;
     private Territory fromTerritory;
     private Territory toTerritory;
+    private List<Territory> enabledTerritories;
     private int attackDiceNum;
     private int defendDiceNum;
     private int totalDeployAmount;
@@ -51,6 +52,7 @@ public class RiskGame implements Observer, Serializable {
         this.testingMain = testingMain;
         this.testingGame = testingGame;
         players = new ArrayList<>();
+        enabledTerritories = new ArrayList<>();
         riskViews = new ArrayList<RiskView>();
         gameInProgress = true;
 
@@ -240,6 +242,7 @@ public class RiskGame implements Observer, Serializable {
         //set phase to DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO to let player choose the territory(s) to deploy to
         phase = TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO;
         if (!getCurrentPlayer().isAI()) {
+            enabledTerritories = getCurrentPlayer().getTerritories();
             notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO, getCurrentPlayer(), getCurrentPlayer().getTerritories()));
         }
         else {
@@ -283,6 +286,7 @@ public class RiskGame implements Observer, Serializable {
             //set phase to DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO to let player choose more territory(s) to deploy to
             phase = TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO;
             if (!getCurrentPlayer().isAI()) {
+                enabledTerritories = getCurrentPlayer().getTerritories();
                 notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO, getCurrentPlayer(), getCurrentPlayer().getTerritories()));
             }
             else {
@@ -294,6 +298,7 @@ public class RiskGame implements Observer, Serializable {
         else {
             phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
             if (!getCurrentPlayer().isAI()) {
+                enabledTerritories = getCurrentPlayer().getAttackableTerritories();
                 notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
             }
             else {
@@ -330,6 +335,7 @@ public class RiskGame implements Observer, Serializable {
                     validChoices.add(t);
                 }
             }
+            enabledTerritories = validChoices;
             notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY, currPlayer, validChoices));
         }
         else {
@@ -353,6 +359,7 @@ public class RiskGame implements Observer, Serializable {
             //remove fromTerritory from choices since you can't move armies from one Territory to itself
             validChoices.remove(fromTerritory);
 
+            enabledTerritories = validChoices;
             notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.FORTIFY_CHOOSE_TO_TERRITORY, getCurrentPlayer(), validChoices));
         }
         else {
@@ -417,6 +424,7 @@ public class RiskGame implements Observer, Serializable {
         fromTerritory = territory;
         phase = TurnPhase.ATTACK_CHOOSE_ENEMY;
         if (!getCurrentPlayer().isAI()) {
+            enabledTerritories = territory.getAdjacentEnemyTerritories();
             notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ENEMY, getCurrentPlayer(), territory.getAdjacentEnemyTerritories()));
         }
         else {
@@ -597,6 +605,7 @@ public class RiskGame implements Observer, Serializable {
         if (getCurrentPlayer().canAttack()) {
             phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
             if (!getCurrentPlayer().isAI()) {
+                enabledTerritories = getCurrentPlayer().getAttackableTerritories();
                 notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
             }
             else {
@@ -645,6 +654,7 @@ public class RiskGame implements Observer, Serializable {
         if (getCurrentPlayer().canAttack()) {
             phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
             if (!getCurrentPlayer().isAI()) {
+                enabledTerritories = getCurrentPlayer().getAttackableTerritories();
                 notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
             }
             else {
@@ -736,6 +746,11 @@ public class RiskGame implements Observer, Serializable {
     public TurnPhase getPhase() {
         return phase;
     }
+
+    public List<Territory> getEnabledTerritories() {
+        return enabledTerritories;
+    }
+
     //below methods are for testing only
 
     /**
@@ -822,6 +837,7 @@ public class RiskGame implements Observer, Serializable {
      */
     public void cancelAttack() {
         phase = TurnPhase.ATTACK_CHOOSE_ATTACKERS;
+        enabledTerritories = getCurrentPlayer().getAttackableTerritories();
         notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
     }
 
