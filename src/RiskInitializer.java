@@ -1,6 +1,7 @@
 import javax.swing.*;
+import java.io.Serializable;
 
-public class RiskInitializer implements RiskView {
+public class RiskInitializer implements RiskView, Serializable {
     private RiskGame rg;
 
     public RiskInitializer(RiskGame rg) {

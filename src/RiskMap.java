@@ -1,9 +1,7 @@
 
 import java.awt.*;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
-import java.io.FileReader;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -443,6 +441,36 @@ public class RiskMap implements Serializable {
     public static void addContinent(Territory territory, Continent continent) {
         territoryContinentMap.put(territory, continent);
         continents.add(continent);
+    }
+
+    // Serializing RiskGame
+    public void serializeRiskMap (String filename){
+        try {
+            FileOutputStream fileOut = new FileOutputStream("saves/" + filename + "_rm");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(this);
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Deserializing RiskGame
+    public RiskMap deserializeRiskMap(String filepath) {
+        try {
+            FileInputStream fileIn = new FileInputStream(filepath);
+            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+
+            RiskMap map = (RiskMap) objectIn.readObject();
+            objectIn.close();
+            return map;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     /**

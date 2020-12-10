@@ -1,5 +1,6 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Serializable;
 
 /**
  * The RiskMapController class passes the territory to the processTerritory() method in the model (RiskGame) which sets
@@ -8,7 +9,7 @@ import java.awt.event.ActionListener;
  * @author David Sciola - 101082459, Kevin Quach - 101115704 and Kashish Saxena - 101107204
  * @version November 23, 2020
  */
-public class RiskMapController implements ActionListener {
+public class RiskMapController implements ActionListener, Serializable {
 
     private RiskGame rg;
 

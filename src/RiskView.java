@@ -1,3 +1,5 @@
+
+
 /**
  * The RiskView interface contains a signature for the handleRiskUpdate() method which is responsible for changing the
  * map state in the GUI whenever the model changes.
@@ -6,6 +8,6 @@
  * @version November 23, 2020
  */
 
-public interface RiskView {
+public interface RiskView  {
     public void handleRiskUpdate(RiskEvent e);
 }

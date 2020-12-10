@@ -383,35 +383,35 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
         JOptionPane.showMessageDialog(this, message);
     }
 
-    // Serializing riskframe
-    public void serializeRiskFrame (String filename){
-        try {
-            FileOutputStream fileOut = new FileOutputStream(filename);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(this);
-            out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    //Deserializing riskframe
-    public RiskFrame deserializeRiskFrame(String filepath) {
-        try {
-            FileInputStream fileIn = new FileInputStream(filepath);
-            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
-
-            RiskFrame rf = (RiskFrame) objectIn.readObject();
-            objectIn.close();
-            return rf;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
+//    // Serializing riskframe
+//    public void serializeRiskFrame (String filename){
+//        try {
+//            FileOutputStream fileOut = new FileOutputStream(filename);
+//            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+//            out.writeObject(this);
+//            out.close();
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    //Deserializing riskframe
+//    public RiskFrame deserializeRiskFrame(String filepath) {
+//        try {
+//            FileInputStream fileIn = new FileInputStream(filepath);
+//            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+//
+//            RiskFrame rf = (RiskFrame) objectIn.readObject();
+//            objectIn.close();
+//            return rf;
+//
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            return null;
+//        }
+//    }
 
 
     private void saveGame() throws IOException {
@@ -423,14 +423,12 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
             saveName = JOptionPane.showInputDialog("Enter a save name:");
         }
 
-        //create saves folder
-
-        Path path = Paths.get("/saves");
-
-        //java.nio.file.Files;
-        Files.createDirectories(path);
+        //create saves folder???
 
         //serialize RiskGame
-        //this.serializeRiskGame(saveName);
+        this.rg.serializeRiskGame(saveName);
+
+        //serialize RiskMap
+        this.rm.serializeRiskMap(saveName);
     }
 }
