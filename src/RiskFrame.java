@@ -1,7 +1,12 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -15,10 +20,12 @@ import java.util.List;
 public class RiskFrame extends JFrame implements RiskView, Serializable {
 
     private RiskGame rg;
+    private RiskMap rm;
     private RiskMapPanel mapPanel;
     private JLabel turn;
     private JLabel info;
     private JButton passAndFortifyButton;
+    private JButton saveButton;
 
     /**
      * Constructor of the RiskFrame class. It initializes the field values
@@ -27,6 +34,7 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
     public RiskFrame(RiskMap riskMap, RiskGame rg) {
         super("RISK");
         this.rg = rg;
+        this.rm = riskMap;
         this.setLayout(new BorderLayout());
 
         //create a mapPanel and pass a reference to the RiskMap and RiskGame
@@ -43,9 +51,27 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
         passAndFortifyButton.setActionCommand("fortify");
         passAndFortifyButton.setEnabled(false);
 
+        saveButton = new JButton("Save game");
+        //whenever save button is clicked saveGame() method is invoked
+        saveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    saveGame();
+                }catch (Exception ex){
+                    System.out.println("something we wrong with saving");
+                    ex.printStackTrace();
+                }
+
+            }
+        } );
+
+
         buttonpanel.add(passAndFortifyButton);
+        buttonpanel.add(saveButton);
         playerInputPanel.add(turnpanel);
         playerInputPanel.add(buttonpanel);
+
+
 
         RiskFrameController rfc = new RiskFrameController(rg);
         passAndFortifyButton.addActionListener(rfc);
@@ -385,5 +411,26 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
             ex.printStackTrace();
             return null;
         }
+    }
+
+
+    private void saveGame() throws IOException {
+        System.out.println("ENTERING SAVE GAME");
+
+        //prompt user for save file name
+        String saveName = "";
+        while (saveName == null || saveName.equals("")) {
+            saveName = JOptionPane.showInputDialog("Enter a save name:");
+        }
+
+        //create saves folder
+
+        Path path = Paths.get("/saves");
+
+        //java.nio.file.Files;
+        Files.createDirectories(path);
+
+        //serialize RiskGame
+        //this.serializeRiskGame(saveName);
     }
 }

@@ -112,7 +112,7 @@ public class RiskMap implements Serializable {
             //selectMapPath();
 
             //todo, remove hard coded path before final submission
-            mapPath = "maps/world_map";
+            mapPath = "maps/sample_map_1";
         }
 
         //create JSONObject jo based on the file path mapPath
