@@ -103,7 +103,6 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
         //start the game by telling RiskGame to start off by calculating
         //the first player's amount of armies to deploy
         rg.calculateArmiesToDeploy();
-
     }
 
     /**
@@ -447,6 +446,7 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
         RiskMap loadedRm = RiskMap.deserializeRiskMap(loadName);
 
         loadedRm.loadState();//telling rm to load its non-static fields that were saved back into the original static fields
+
 
         rg = loadedRg;
         rm = loadedRm;

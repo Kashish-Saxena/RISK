@@ -45,8 +45,6 @@ public class RiskMap implements Serializable {
     private String mapPath2;
 
 
-
-
     /**
      * Constructor of the RiskMap class. It initializes all the field values and invokes the createMap() method that initializes
      * the Risk Map.
@@ -115,10 +113,7 @@ public class RiskMap implements Serializable {
         //not the special testing case where the mapPath was set directly
         if(!testingOverrideMapFilePath){
             //make user choose a json file to load the custom map from
-            //selectMapPath();
-
-            //todo, remove hard coded path before final submission
-            mapPath = "maps/sample_map_1";
+            selectMapPath();
         }
 
         //create JSONObject jo based on the file path mapPath

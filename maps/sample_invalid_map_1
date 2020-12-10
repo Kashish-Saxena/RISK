@@ -17,7 +17,12 @@
     },
     {
       "name": "ter4",
-      "xPos": 500,
+      "xPos": 450,
+      "yPos": 500
+    },
+    {
+      "name": "ter5",
+      "xPos": 450,
       "yPos": 500
     }
   ],
@@ -31,16 +36,27 @@
       "green": 150,
       "blue": 250,
       "value": 5
+    },
+    {
+      "name": "cont 2",
+      "xPos": 500,
+      "yPos": 450,
+      "red": 250,
+      "green": 50,
+      "blue": 50,
+      "value": 10
     }
   ],
 
   "territoriesInContinents": [
-    {"continent": "cont 1", "territories": "ter1,ter2,ter3,ter4"}
+    {"continent": "cont 1", "territories": "ter1,ter2,ter3"},
+    {"continent": "cont 2", "territories": "ter4,ter5"}
   ],
 
   "territoryAdjacencies": [
     {"territory": "ter1", "territories": "ter2"},
     {"territory": "ter2", "territories": "ter1,ter3"},
-    {"territory": "ter3", "territories": "ter2"}
+    {"territory": "ter3", "territories": "ter2,ter4"},
+    {"territory": "ter4", "territories": "ter3"}
   ]
 }

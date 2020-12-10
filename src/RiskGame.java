@@ -596,6 +596,9 @@ public class RiskGame implements Observer, Serializable {
         }
     }
 
+    /**
+     * Invoked when a player did not conquer the territory of another player.
+     */
     private void battleResultsNoConquer(Player defender, int attackArmyLoss, int defendArmyLoss, List<Integer> attackDice, List<Integer> defendDice) {
         toTerritory.subtractArmies(defendArmyLoss);
         notifyAllViews(new RiskEventDiceResults(this, TurnPhase.ATTACK_RESULT, getCurrentPlayer(), fromTerritory, toTerritory, attackDice, defendDice, attackArmyLoss, defendArmyLoss, defender));
@@ -615,6 +618,9 @@ public class RiskGame implements Observer, Serializable {
         }
     }
 
+    /**
+     * Invoked when a player conquered the territory of another player.
+     */
     private void battleResultsConquer(Player defender, int attackArmyLoss, List<Integer> attackDice, List<Integer> defendDice) {
         defender.removeTerritory(toTerritory);
         getCurrentPlayer().addTerritory(toTerritory);
@@ -630,6 +636,7 @@ public class RiskGame implements Observer, Serializable {
             move(PlayerAI.getMoveNum(fromTerritory));
         }
     }
+
     /**
      * Moves the input number of armies from attacking territory to the territory attacked.
      * @param num The number of armies to be moved.
@@ -834,7 +841,9 @@ public class RiskGame implements Observer, Serializable {
         notifyAllViews(new RiskEventChooseTerritory(this, TurnPhase.ATTACK_CHOOSE_ATTACKERS, getCurrentPlayer(), getCurrentPlayer().getAttackableTerritories()));
     }
 
-    // Serializing RiskGame
+    /**
+     * saves/serializes this RiskGame object within saves folder.
+     */
     public void serializeRiskGame (String filename){
         try {
             FileOutputStream fileOut = new FileOutputStream("saves/" + filename + "_rg");
@@ -848,7 +857,9 @@ public class RiskGame implements Observer, Serializable {
         }
     }
 
-    //Deserializing RiskGame
+    /**
+     * loads/deserializes RiskGame object from saves folder.
+     */
     public static RiskGame deserializeRiskGame(String filepath) {
         try {
             FileInputStream fileIn = new FileInputStream("saves/" +filepath+ "_rg");
