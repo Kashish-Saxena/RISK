@@ -438,9 +438,6 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
      * load a game.
      */
     private void loadGame(){
-        //set old frame visibility to false
-        //this.setVisible(false);
-
         String loadName = "";
         while (loadName == null || loadName.equals("")) {
             loadName = JOptionPane.showInputDialog("Enter a load name (same name that was entered while saving):");
@@ -450,9 +447,6 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
         RiskMap loadedRm = RiskMap.deserializeRiskMap(loadName);
 
         loadedRm.loadState();//telling rm to load its non-static fields that were saved back into the original static fields
-
-        //create new RiskFrame
-        //RiskFrame rf = new RiskFrame(loadedRm, loadedRg);
 
         rg = loadedRg;
         rm = loadedRm;

@@ -4,6 +4,7 @@ import org.json.simple.parser.JSONParser;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The Territory class represents a location in a continent. It includes the
@@ -156,5 +157,17 @@ public class Territory implements Serializable {
      */
     public void setAdjacentTerritories(List<Territory> adjacentTerritories) {
         this.adjacentTerritories = adjacentTerritories;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || !(o instanceof Territory)) return false;
+        Territory territory = (Territory) o;
+        return numArmies == territory.numArmies &&
+                xPos == territory.xPos &&
+                yPos == territory.yPos &&
+                Objects.equals(name, territory.name) &&
+                Objects.equals(owner, territory.owner);
     }
 }

@@ -242,13 +242,8 @@ public class RiskMapPanel extends JPanel implements RiskView, Serializable {
     }
 
     public void loadFromState(TurnPhase currentPhase, List<Territory> enabledTerritories) {
-        /*for (Territory t : enabledTerritories) {
-            System.out.println(t + " " + t.getOwner().getName());
-        }*/
-        //System.out.println(enabledTerritories.contains(RiskMap.getTerritoryFromString("ter2")));
         for (JButton buttonTerritory : territoryButtons) {
             if (currentPhase != TurnPhase.END) {
-                //System.out.println(buttonTerritory.getActionCommand());
                 if (enabledTerritories.contains(RiskMap.getTerritoryFromString(buttonTerritory.getActionCommand()))) {
                     buttonTerritory.setEnabled(true);
                 }
