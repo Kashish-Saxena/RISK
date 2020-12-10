@@ -386,9 +386,6 @@ public class RiskMap implements Serializable {
      * @return A territory associated with the input territory.
      */
     public static Territory getTerritoryFromString(String input) {
-        /*for (String key : territoryMap.keySet()) {
-            System.out.println("key: " + key);
-        }*/
         return territoryMap.get(input.toLowerCase());
     }
 
