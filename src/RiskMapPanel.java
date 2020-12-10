@@ -63,7 +63,6 @@ public class RiskMapPanel extends JPanel implements RiskView, Serializable {
             this.add(buttonTerritory);
 
             //draw Territory name and owner
-            //TODO: refactor into a multiline text box
             JLabel labelTerritoryName = new JLabel(tempTerritory.getName());
             labelTerritoryName.setBounds(tempTerritory.getXPos()+19, tempTerritory.getYPos()-28, 80, 40);
             this.add(labelTerritoryName);
