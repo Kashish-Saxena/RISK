@@ -395,6 +395,26 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
         JOptionPane.showMessageDialog(this, message);
     }
 
+    private void updateInfoText() {
+        if (rg.getPhase() == TurnPhase.DEPLOY_CHOOSE_TERRITORY_TO_DEPLOY_TO) {
+            info.setText("Choose a territory to deploy to.");
+        }
+        else if (rg.getPhase() == TurnPhase.ATTACK_CHOOSE_ATTACKERS) {
+            info.setText("Choose a Territory to attack with.");
+        }
+        else if (rg.getPhase() == TurnPhase.ATTACK_CHOOSE_ENEMY) {
+            info.setText("Choose a Territory to attack.");
+        }
+        else if (rg.getPhase() == TurnPhase.FORTIFY_CHOOSE_FROM_TERRITORY) {
+            info.setText("Choose a Territory to move armies from.");
+        }
+        else if (rg.getPhase() == TurnPhase.FORTIFY_CHOOSE_TO_TERRITORY) {
+            info.setText("Choose a Territory to move armies to.");
+        }
+        else if (rg.getPhase() == TurnPhase.END) {
+            info.setText("Game over!");
+        }
+    }
 
     /**
      * save current game.
@@ -419,7 +439,7 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
      */
     private void loadGame(){
         //set old frame visibility to false
-        this.setVisible(false);
+        //this.setVisible(false);
 
         String loadName = "";
         while (loadName == null || loadName.equals("")) {
@@ -432,15 +452,17 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
         loadedRm.loadState();//telling rm to load its non-static fields that were saved back into the original static fields
 
         //create new RiskFrame
-        RiskFrame rf = new RiskFrame(loadedRm, loadedRg);
+        //RiskFrame rf = new RiskFrame(loadedRm, loadedRg);
 
+        rg = loadedRg;
+        rm = loadedRm;
 
+        turn.setText(rg.getCurrentPlayer().getName() + "'s turn");
+        updateInfoText();
 
-
-
-
-
-
+        this.remove(mapPanel);
+        mapPanel = new RiskMapPanel(rm, rg);
+        mapPanel.loadFromState(rg.getPhase(), rg.getEnabledTerritories());
+        this.add(mapPanel,BorderLayout.CENTER);
     }
-
 }
