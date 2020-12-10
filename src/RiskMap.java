@@ -38,6 +38,14 @@ public class RiskMap implements Serializable {
     private boolean mapWasValid;
     private boolean testingMapWasOverrided;
 
+    private java.util.Map<String, Territory> territoryMap2;
+    private java.util.Map<Territory, Continent> territoryContinentMap2;
+    private ArrayList<Territory> territories2;
+    private ArrayList<Continent> continents2;
+    private String mapPath2;
+
+
+
 
     /**
      * Constructor of the RiskMap class. It initializes all the field values and invokes the createMap() method that initializes
@@ -458,9 +466,9 @@ public class RiskMap implements Serializable {
     }
 
     //Deserializing RiskGame
-    public RiskMap deserializeRiskMap(String filepath) {
+    public static RiskMap deserializeRiskMap(String filepath) {
         try {
-            FileInputStream fileIn = new FileInputStream(filepath);
+            FileInputStream fileIn = new FileInputStream("saves/" + filepath + "_rm");
             ObjectInputStream objectIn = new ObjectInputStream(fileIn);
 
             RiskMap map = (RiskMap) objectIn.readObject();
@@ -472,6 +480,29 @@ public class RiskMap implements Serializable {
             return null;
         }
     }
+
+    /**
+     * saves the 5 main static fields into normal non-static fields (used when saving/serializing).
+     */
+    public void saveState(){
+        this.territoryMap2 = territoryMap;
+        this.territoryContinentMap2 = territoryContinentMap;
+        this.territories2 = territories;
+        this.continents2 = continents;
+        this.mapPath2 = mapPath;
+    }
+
+    /**
+     * loads the 5 normal non-static field back into the 5 main static fields.
+     */
+    public void loadState(){
+        territoryMap = this.territoryMap2;
+        territoryContinentMap = this.territoryContinentMap2;
+        territories = this.territories2;
+        continents = this.continents2;
+        mapPath = this.mapPath2;
+    }
+
 
     /**
      * Method user during testing that overrides the mapPath variables.

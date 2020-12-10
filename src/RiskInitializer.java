@@ -46,6 +46,7 @@ public class RiskInitializer implements RiskView, Serializable {
         }
     }
 
+
     public static void main(String[] args) {
         RiskMap riskMap = new RiskMap(false, false);
         RiskGame rg = new RiskGame(false, false);

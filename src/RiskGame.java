@@ -833,9 +833,9 @@ public class RiskGame implements Observer, Serializable {
     }
 
     //Deserializing RiskGame
-    public RiskGame deserializeRiskGame(String filepath) {
+    public static RiskGame deserializeRiskGame(String filepath) {
         try {
-            FileInputStream fileIn = new FileInputStream(filepath);
+            FileInputStream fileIn = new FileInputStream("saves/" +filepath+ "_rg");
             ObjectInputStream objectIn = new ObjectInputStream(fileIn);
 
             RiskGame game = (RiskGame) objectIn.readObject();

@@ -26,6 +26,7 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
     private JLabel info;
     private JButton passAndFortifyButton;
     private JButton saveButton;
+    private JButton loadButton;
 
     /**
      * Constructor of the RiskFrame class. It initializes the field values
@@ -52,6 +53,7 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
         passAndFortifyButton.setEnabled(false);
 
         saveButton = new JButton("Save game");
+
         //whenever save button is clicked saveGame() method is invoked
         saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -65,9 +67,19 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
             }
         } );
 
+        loadButton = new JButton("Load Game");
+
+        //whenever save button is clicked saveGame() method is invoked
+        loadButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                loadGame();
+            }
+        } );
+
 
         buttonpanel.add(passAndFortifyButton);
         buttonpanel.add(saveButton);
+        buttonpanel.add(loadButton);
         playerInputPanel.add(turnpanel);
         playerInputPanel.add(buttonpanel);
 
@@ -383,63 +395,52 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
         JOptionPane.showMessageDialog(this, message);
     }
 
-//    // Serializing riskframe
-//    public void serializeRiskFrame (String filename){
-//        try {
-//            FileOutputStream fileOut = new FileOutputStream(filename);
-//            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-//            out.writeObject(this);
-//            out.close();
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    //Deserializing riskframe
-//    public RiskFrame deserializeRiskFrame(String filepath) {
-//        try {
-//            FileInputStream fileIn = new FileInputStream(filepath);
-//            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
-//
-//            RiskFrame rf = (RiskFrame) objectIn.readObject();
-//            objectIn.close();
-//            return rf;
-//
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            return null;
-//        }
-//    }
 
-
+    /**
+     * save current game.
+     */
     private void saveGame() throws IOException {
-        System.out.println("ENTERING SAVE GAME");
-
-        //todo, maybe move this saving code to RiskInitializer
-
         //prompt user for save file name
         String saveName = "";
         while (saveName == null || saveName.equals("")) {
             saveName = JOptionPane.showInputDialog("Enter a save name:");
         }
 
-        //create saves folder
-//        String fileName = "/saves";
-//        Path path = Paths.get(fileName);
-//
-//        if (!Files.exists(path)) {
-//            Files.createDirectory(path);
-//            System.out.println("saves directory created");
-//        } else {
-//            System.out.println("saves directory already exists");
-//        }
-
         //serialize RiskGame
         this.rg.serializeRiskGame(saveName);
 
         //serialize RiskMap
+        this.rm.saveState();//telling rm to save its static fields into normal non-static fields
         this.rm.serializeRiskMap(saveName);
     }
+
+    /**
+     * load a game.
+     */
+    private void loadGame(){
+        //set old frame visibility to false
+        this.setVisible(false);
+
+        String loadName = "";
+        while (loadName == null || loadName.equals("")) {
+            loadName = JOptionPane.showInputDialog("Enter a load name (same name that was entered while saving):");
+        }
+
+        RiskGame loadedRg = RiskGame.deserializeRiskGame(loadName);
+        RiskMap loadedRm = RiskMap.deserializeRiskMap(loadName);
+
+        loadedRm.loadState();//telling rm to load its non-static fields that were saved back into the original static fields
+
+        //create new RiskFrame
+        RiskFrame rf = new RiskFrame(loadedRm, loadedRg);
+
+
+
+
+
+
+
+
+    }
+
 }
