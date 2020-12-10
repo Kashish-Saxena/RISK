@@ -417,13 +417,24 @@ public class RiskFrame extends JFrame implements RiskView, Serializable {
     private void saveGame() throws IOException {
         System.out.println("ENTERING SAVE GAME");
 
+        //todo, maybe move this saving code to RiskInitializer
+
         //prompt user for save file name
         String saveName = "";
         while (saveName == null || saveName.equals("")) {
             saveName = JOptionPane.showInputDialog("Enter a save name:");
         }
 
-        //create saves folder???
+        //create saves folder
+//        String fileName = "/saves";
+//        Path path = Paths.get(fileName);
+//
+//        if (!Files.exists(path)) {
+//            Files.createDirectory(path);
+//            System.out.println("saves directory created");
+//        } else {
+//            System.out.println("saves directory already exists");
+//        }
 
         //serialize RiskGame
         this.rg.serializeRiskGame(saveName);
