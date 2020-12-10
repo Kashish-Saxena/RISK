@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Observable;
 
 /**
@@ -176,5 +177,15 @@ public class Player extends Observable implements Serializable {
      */
     public boolean isAI() {
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || !(o instanceof Player)) return false;
+        Player player = (Player) o;
+        return gameStanding == player.gameStanding &&
+                armiesToPlace == player.armiesToPlace &&
+                Objects.equals(name, player.name);
     }
 }
